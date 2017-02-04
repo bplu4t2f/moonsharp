@@ -14,10 +14,16 @@ namespace MoonSharp.Interpreter.Tree
 		int m_SourceId;
 		bool m_AutoSkipComments = false;
 
-		public Lexer(int sourceID, string scriptContent, bool autoSkipComments)
+		/// <summary>
+		/// Because this class is used for Lua and Json we need this info to accomodate for minor language differences.
+		/// </summary>
+		private readonly bool m_json;
+
+		public Lexer(int sourceID, string scriptContent, bool autoSkipComments, bool json)
 		{
 			m_Code = scriptContent;
 			m_SourceId = sourceID;
+			this.m_json = json;
 
 			// remove unicode BOM if any
 			if (m_Code.Length > 0 && m_Code[0] == 0xFEFF)
@@ -511,7 +517,7 @@ namespace MoonSharp.Interpreter.Tree
 				{
 					CursorCharNext();
 					Token t = CreateToken(TokenType.String, fromLine, fromCol);
-					t.Text = LexerUtils.UnescapeLuaString(t, text.ToString());
+					t.Text = LexerUtils.UnescapeLuaString(t, text.ToString(), this.m_json);
 					return t;
 				}
 				else

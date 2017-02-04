@@ -136,7 +136,7 @@ namespace MoonSharp.Interpreter.Tree
 			return str;
 		}
 
-		public static string UnescapeLuaString(Token token, string str)
+		public static string UnescapeLuaString(Token token, string str, bool json)
 		{
 			if (!Framework.Do.StringContainsChar(str, '\\'))
 				return str;
@@ -168,7 +168,7 @@ namespace MoonSharp.Interpreter.Tree
 						else if (c == 'v') { sb.Append('\v'); escape = false; }
 						else if (c == '\\') { sb.Append('\\'); escape = false; zmode = false; }
 						// Forward slash is escaped in json, which also uses this lexer.
-						else if (c == '/') { sb.Append('/'); escape = false; zmode = false; }
+						else if (json && c == '/') { sb.Append('/'); escape = false; zmode = false; }
 						else if (c == '"') { sb.Append('\"'); escape = false; zmode = false; }
 						else if (c == '\'') { sb.Append('\''); escape = false; zmode = false; }
 						else if (c == '[') { sb.Append('['); escape = false; zmode = false; }
