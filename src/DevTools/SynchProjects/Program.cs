@@ -162,8 +162,8 @@ namespace SynchProjects
 					string file = xe.GetAttribute("Include");
 					string link = Path.GetFileName(file);
 
-					if (link.Contains(".g4"))
-					{
+					if (link.Contains(".g4") || link.Equals("AssemblyInfo.cs", StringComparison.OrdinalIgnoreCase))
+                    {
 						continue;
 					}
 
