@@ -223,7 +223,8 @@ namespace MoonSharp.Interpreter.CoreLib
 				else
 					ee = DynValue.NewString(args[0].Number.ToString(CultureInfo.InvariantCulture));
 
-				int bb = (int)b.Number;
+                // TODO what if base is not an integer?
+                int bb = (int)b.Number;
 
                 // Lua supports negative integers here, and well as integers larger than 32 bit.
                 // FFFFffffFFFFffff parses as -1 in the reference implementation, through, so long will probably do.
