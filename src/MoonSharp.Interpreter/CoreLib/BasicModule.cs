@@ -205,7 +205,8 @@ namespace MoonSharp.Interpreter.CoreLib
 				double d;
 				if (double.TryParse(e.String, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
 				{
-					return DynValue.NewNumber(d);
+                    //!COMPAT: In case of an invalid char, standard Lua tonumber returns Nil.
+                    return DynValue.NewNumber(d);
 				}
 				return DynValue.Nil;
 			}
@@ -213,32 +214,79 @@ namespace MoonSharp.Interpreter.CoreLib
 			{
                 //!COMPAT: tonumber supports only 2,8,10 or 16 as base
                 //UPDATE: added support for 3-9 base numbers
+                //UPDATE: added radix 11-36
                 DynValue ee;
 
+                //!COMPAT: In standard Lua first tonumber arg MUST be string if base is specified
 				if (args[0].Type != DataType.Number)
 					ee = args.AsType(0, "tonumber", DataType.String, false);
 				else
-					ee = DynValue.NewString(args[0].Number.ToString(CultureInfo.InvariantCulture)); ;
+					ee = DynValue.NewString(args[0].Number.ToString(CultureInfo.InvariantCulture));
 
 				int bb = (int)b.Number;
 
-			    uint uiv = 0;
+                // Lua supports negative integers here, and well as integers larger than 32 bit.
+                // FFFFffffFFFFffff parses as -1 in the reference implementation, through, so long will probably do.
+			    long uiv = 0;
                 if (bb == 2 || bb == 8 || bb == 10 || bb == 16)
 			    {
-                    uiv = Convert.ToUInt32(ee.String.Trim(), bb);
+                    //!COMPAT: In case of an invalid char, standard Lua tonumber returns Nil.
+                    // TODO Consider using the code path below. It handles all cases and doesn't throw on invalid char.
+                    uiv = Convert.ToInt64(ee.String.Trim(), bb);
                 }
-			    else if (bb < 10 && bb > 2) // Support for 3, 4, 5, 6, 7 and 9 based numbers
+			    else if (bb <= 36 && bb >= 2) // Support for bases 2 .. 36.
 			    {
-			        foreach (char digit in ee.String.Trim())
+                    var trimmedString = ee.String.Trim();
+                    if (trimmedString.Length == 0)
+                    {
+                        return DynValue.Nil;
+                    }
+                    bool isNegative = false;
+                    int currentCharIndex = 0;
+                    if (trimmedString[currentCharIndex] == '-')
+                    {
+                        // This is a negative number.
+                        isNegative = true;
+                        currentCharIndex += 1;
+                        if (trimmedString.Length <= 1)
+                        {
+                            // This is nothing but an unary minus. Lua returns null in this case.
+                            return DynValue.Nil;
+                        }
+                    }
+			        for (; currentCharIndex < trimmedString.Length; ++currentCharIndex)
 			        {
-			            int value = digit - 48;
-			            if (value < 0 || value >= bb)
+                        char digit = trimmedString[currentCharIndex];
+                        int value = Int32.MaxValue;
+                        if (digit >= '0' && digit <= '9')
+                        {
+                            value = digit - '0';
+                        }
+                        else if (digit >= 'A' && digit <= 'Z')
+                        {
+                            value = digit - 'A' + 10;
+                        }
+                        else if (digit >= 'a' && digit <= 'z')
+                        {
+                            value = digit - 'a' + 10;
+                        }
+			            
+                        // Handles invalid character (i.e. none of the ifs above hit) as well as digit greater than base.
+                        if (value >= bb)
 			            {
-                            throw new ScriptRuntimeException("bad argument #1 to 'tonumber' (invalid character)");
+                            //!COMPAT: In case of an invalid char, standard Lua tonumber returns Nil.
+                            // TODO REMOVE IF DECISION WAS MADE
+                            //throw new ScriptRuntimeException("bad argument #1 to 'tonumber' (invalid character)");
+                            return DynValue.Nil;
                         }
 
-                        uiv = (uint)(uiv * bb) + (uint)value;
+                        uiv = (uiv * bb) + value;
 			        }
+
+                    if (isNegative)
+                    {
+                        uiv = -uiv;
+                    }
                 }
 			    else
 			    {
