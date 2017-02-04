@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MoonSharp.Interpreter;
+using MoonSharp.Interpreter.Serialization.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -92,6 +94,107 @@ namespace SynchProjects
 			Console.WriteLine("\n");
 		}
 
+		private static void CopyCompileFilesAsLinksProjectJson(string platformName, string srcCsProj, string platformDest, string pathPrefix)
+		{
+			platformName = AdjustBasePath(platformName);
+			srcCsProj = AdjustBasePath(srcCsProj);
+			platformDest = AdjustBasePath(platformDest);
+			pathPrefix = AdjustBasePath(pathPrefix);
+
+			string dstCsProj = string.Format(platformDest, platformName);
+			try
+			{
+				int warningCount = 0;
+				const string XMLNS = "http://schemas.microsoft.com/developer/msbuild/2003";
+				HashSet<string> linksDone = new HashSet<string>();
+
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.WriteLine("Synch vsproj compiles {0}/project.json ...", platformName);
+
+				XmlDocument xsrc = new XmlDocument();
+
+				xsrc.Load(srcCsProj);
+				Table jdst = JsonTableConverter.JsonToTable(File.ReadAllText(dstCsProj));
+
+				XmlNamespaceManager sxns = new XmlNamespaceManager(xsrc.NameTable);
+
+				sxns.AddNamespace("ms", XMLNS);
+
+				XmlElement srccont = xsrc.SelectSingleNode("/ms:Project/ms:ItemGroup[count(ms:Compile) != 0]", sxns) as XmlElement;
+
+
+				// The JSON we need to add is:
+#if false
+  "buildOptions": {
+    "compile": {
+      "includeFiles": [
+        "../../Class1.cs",
+        "../../Class2.cs"
+      ]
+    }
+  }
+#endif
+				// Some of these nodes may already exist.
+
+				DynValue buildOptions = jdst.Get("buildOptions");
+				DynValue compile = buildOptions.Table.Get("compile");
+				if (compile.IsNil())
+				{
+					compile = DynValue.NewTable(script: null);
+					buildOptions.Table.Set("compile", compile);
+				}
+
+				DynValue includeFiles = compile.Table.Get("includeFiles");
+				if (includeFiles.IsNil())
+				{
+					includeFiles = DynValue.NewTable(script: null);
+					compile.Table.Set("includeFiles", includeFiles);
+				}
+				else
+				{
+					// We clear this currently because there shouldn't be any files exclusive to the destination project
+					// that are included this way.
+					includeFiles.Table.Clear();
+				}
+
+				foreach (XmlElement xe in srccont.ChildNodes.OfType<XmlElement>())
+				{
+					string file = xe.GetAttribute("Include");
+					string link = Path.GetFileName(file);
+
+					if (link.Contains(".g4"))
+					{
+						continue;
+					}
+
+					if (!linksDone.Add(link))
+					{
+						++warningCount;
+						Console.ForegroundColor = ConsoleColor.Yellow;
+						Console.WriteLine("\t[WARNING] - Duplicate file: {0}", link);
+					}
+
+					file = (pathPrefix + file).Replace('\\', '/');
+
+					includeFiles.Table.Append(DynValue.NewString(file));
+				}
+
+				// TODO: Add an "escape forward slash" bool option to TableToJson.
+				var resultJson = JsonTableConverter.TableToJson(jdst);
+				File.WriteAllText($"{dstCsProj}", resultJson);
+				
+				Console.ForegroundColor = ConsoleColor.Green;
+				Console.WriteLine("\t[DONE] ({0} warnings)", warningCount);
+			}
+			catch (Exception ex)
+			{
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("\t[ERROR] - {0}", ex.Message);
+			}
+
+			Console.WriteLine("\n");
+		}
+
 		private static string AdjustBasePath(string str)
 		{
 			return str.Replace("{BASEPATH}", BASEPATH);
@@ -109,6 +212,9 @@ namespace SynchProjects
 			const string INTERPRETER_SUBPROJECTS_PATHS = @"{BASEPATH}\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.{0}\MoonSharp.Interpreter.{0}.csproj";
 			const string INTERPRETER_PATH_PREFIX = @"..\..\";
 
+			const string INTERPRETER_JSON_SUBPROJECTS_PATHS = @"{BASEPATH}\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.{0}\project.json";
+			const string INTERPRETER_JSON_PATH_PREFIX = @"..\..\";
+
 			const string DEBUGGER_PROJECT = @"{BASEPATH}\MoonSharp.RemoteDebugger\MoonSharp.RemoteDebugger.net35-client.csproj";
 			const string DEBUGGER_SUBPROJECTS_PATHS = @"{BASEPATH}\MoonSharp.RemoteDebugger\_Projects\MoonSharp.RemoteDebugger.{0}\MoonSharp.RemoteDebugger.{0}.csproj";
 			const string DEBUGGER_PATH_PREFIX = @"..\..\";
@@ -122,14 +228,22 @@ namespace SynchProjects
 			const string TESTS_PATH_PREFIX = @"..\..\";
 
 			string[] INTERPRETER_PLATFORMS = new string[] { "net40-client", "portable40" };
+			string[] INTERPRETER_JSON_PLATFORMS = new string[] { "netcore" };
 			string[] DEBUGGER_PLATFORMS = new string[] { "net40-client" };
 			string[] VSCODEDEBUGGER_PLATFORMS = new string[] { "net40-client" };
 			string[] TESTS_PLATFORMS = new string[] { "net40-client", "portable40", "Embeddable.portable40" };
 
 			CalcBasePath();
 
-			foreach (string platform in INTERPRETER_PLATFORMS)
+            foreach (string platform in INTERPRETER_PLATFORMS)
 				CopyCompileFilesAsLinks(platform, INTERPRETER_PROJECT, INTERPRETER_SUBPROJECTS_PATHS, INTERPRETER_PATH_PREFIX);
+
+			foreach (string platform in INTERPRETER_JSON_PLATFORMS)
+			{
+				// netcore uses project.json.
+				// This is very dodgy but MS plans to drop the horribly inconvenient project.json format anyway
+				CopyCompileFilesAsLinksProjectJson(platform, INTERPRETER_PROJECT, INTERPRETER_JSON_SUBPROJECTS_PATHS, INTERPRETER_JSON_PATH_PREFIX);
+			}
 
 			foreach (string platform in DEBUGGER_PLATFORMS)
 				CopyCompileFilesAsLinks(platform, DEBUGGER_PROJECT, DEBUGGER_SUBPROJECTS_PATHS, DEBUGGER_PATH_PREFIX);
