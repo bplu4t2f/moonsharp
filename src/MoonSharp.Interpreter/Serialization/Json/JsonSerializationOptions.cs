@@ -5,9 +5,15 @@ using System.Text;
 
 namespace MoonSharp.Interpreter.Serialization.Json
 {
+    /// <summary>
+    /// Can be used to customize the JSON serialization output.
+    /// </summary>
     public class JsonSerializationOptions
     {
-        public bool EscapeForwardSlashes { get; set; }
-        public bool InsertNewLines { get; set; }
+        /// <summary>
+        /// Whether forward slashes ("/") that occur in strings should be escaped ("\/").
+        /// <para>Defaults to <c>true</c>.</para>
+        /// </summary>
+        public bool EscapeForwardSlashes { get; set; } = true;
     }
 }
