@@ -315,6 +315,14 @@ is(tonumber('111  ', 3), 13)
 is(tonumber('111', 4), 21)
 is(tonumber('1234', 5), 194)
 is(tonumber('54321', 6), 7465)
+is(tonumber('-2.72'), -2.72)
+is(tonumber(' -2.72'), -2.72)
+is(tonumber('10aZg', 36), 1693852)
+is(tonumber('-10aZg', 36), -1693852)
+is(tonumber('*(#$^&'), nil)
+is(tonumber('9ab', 11), nil)
+is(tonumber('- 2.72'), nil)
+is(tonumber('ffffffffffff', 16), 281474976710655)
 
 a = {}
 is(tonumber(a), nil)
@@ -327,9 +335,10 @@ error_like(function () tonumber('111', 200) end,
            "^[^:]+:%d+: bad argument #2 to 'tonumber' %(base out of range%)",
            "function tonumber (bad base)")
 
-error_like(function () tonumber('17', 6) end,
-           "^[^:]+:%d+: bad argument #1 to 'tonumber' %(invalid character%)",
-           "function tonumber (bad base)")
+-- TBD - the reference implementation returns nil (case covered above)
+--error_like(function () tonumber('17', 6) end,
+--          "^[^:]+:%d+: bad argument #1 to 'tonumber' %(invalid character%)",
+--           "function tonumber (bad base)")
 
 is(tostring('text'), 'text', "function tostring")
 is(tostring(3.14), '3.14')
