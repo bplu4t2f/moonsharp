@@ -690,6 +690,9 @@
     <Compile Include="..\..\Serialization\Json\JsonNull.cs">
       <Link>JsonNull.cs</Link>
     </Compile>
+    <Compile Include="..\..\Serialization\Json\JsonSerializationOptions.cs">
+      <Link>JsonSerializationOptions.cs</Link>
+    </Compile>
     <Compile Include="..\..\Serialization\Json\JsonTableConverter.cs">
       <Link>JsonTableConverter.cs</Link>
     </Compile>

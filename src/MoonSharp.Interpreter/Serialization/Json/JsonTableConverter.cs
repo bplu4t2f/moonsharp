@@ -20,22 +20,27 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		/// </summary>
 		/// <param name="table">The table.</param>
 		/// <returns></returns>
-		public static string TableToJson(this Table table)
+		public static string TableToJson(this Table table, JsonSerializationOptions options = null)
 		{
 			StringBuilder sb = new StringBuilder();
-			TableToJson(sb, table);
+			TableToJson(sb, table, options);
 			return sb.ToString();
 		}
 
-		/// <summary>
-		/// Tables to json.
-		/// </summary>
-		/// <param name="sb">The sb.</param>
-		/// <param name="table">The table.</param>
-		private static void TableToJson(StringBuilder sb, Table table)
+        /// <summary>
+        /// Tables to json.
+        /// </summary>
+        /// <param name="sb">The sb.</param>
+        /// <param name="table">The table.</param>
+        /// <remarks>I LOVE GHOSTDOC</remarks>
+        private static void TableToJson(StringBuilder sb, Table table, JsonSerializationOptions options = null)
 		{
 			bool first = true;
-
+            if (options == null)
+            {
+                options = new JsonSerializationOptions();
+            }
+            
 			if (table.Length == 0)
 			{
 				sb.Append("{");
@@ -46,9 +51,9 @@ namespace MoonSharp.Interpreter.Serialization.Json
 						if (!first)
 							sb.Append(',');
 
-						ValueToJson(sb, pair.Key);
+						ValueToJson(sb, pair.Key, options);
 						sb.Append(':');
-						ValueToJson(sb, pair.Value);
+						ValueToJson(sb, pair.Value, options);
 
 						first = false;
 					}
@@ -66,7 +71,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 						if (!first)
 							sb.Append(',');
 
-						ValueToJson(sb, value);
+						ValueToJson(sb, value, options);
 
 						first = false;
 					}
@@ -78,15 +83,15 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		/// <summary>
 		/// Converts a generic object to JSON
 		/// </summary>
-		public static string ObjectToJson(object obj)
+		public static string ObjectToJson(object obj, JsonSerializationOptions options = null)
 		{
 			DynValue v = ObjectValueConverter.SerializeObjectToDynValue(null, obj, JsonNull.Create());
-			return JsonTableConverter.TableToJson(v.Table);
+			return JsonTableConverter.TableToJson(v.Table, options);
 		}
 
 
 
-		private static void ValueToJson(StringBuilder sb, DynValue value)
+		private static void ValueToJson(StringBuilder sb, DynValue value, JsonSerializationOptions options)
 		{
 			switch (value.Type)
 			{
@@ -97,7 +102,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 					sb.Append(value.Number.ToString("r"));
 					break;
 				case DataType.String:
-					sb.Append(EscapeString(value.String ?? ""));
+					sb.Append(EscapeString(value.String ?? "", options.EscapeForwardSlashes));
 					break;
 				case DataType.Table:
 					TableToJson(sb, value.Table);
@@ -111,10 +116,13 @@ namespace MoonSharp.Interpreter.Serialization.Json
 			}
 		}
 
-		private static string EscapeString(string s)
+		private static string EscapeString(string s, bool escapeForwardSlashes)
 		{
 			s = s.Replace(@"\", @"\\");
-			s = s.Replace(@"/", @"\/");
+            if (escapeForwardSlashes)
+            {
+                s = s.Replace(@"/", @"\/");
+            }
 			s = s.Replace("\"", "\\\"");
 			s = s.Replace("\f", @"\f");
 			s = s.Replace("\b", @"\b");

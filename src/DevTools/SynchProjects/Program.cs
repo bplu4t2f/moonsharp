@@ -179,8 +179,9 @@ namespace SynchProjects
 					includeFiles.Table.Append(DynValue.NewString(file));
 				}
 
-				// TODO: Add an "escape forward slash" bool option to TableToJson.
-				var resultJson = JsonTableConverter.TableToJson(jdst);
+                // TODO: Add an "escape forward slash" bool option to TableToJson.
+                var options = new JsonSerializationOptions();
+                var resultJson = JsonTableConverter.TableToJson(jdst, options);
 				File.WriteAllText($"{dstCsProj}", resultJson);
 				
 				Console.ForegroundColor = ConsoleColor.Green;
