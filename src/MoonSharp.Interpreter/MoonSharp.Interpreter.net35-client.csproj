@@ -345,6 +345,7 @@
     <Compile Include="ScriptGlobalOptions.cs" />
     <Compile Include="ScriptOptions.cs" />
     <Compile Include="Serialization\Json\JsonNull.cs" />
+    <Compile Include="Serialization\Json\JsonSerializationOptions.cs" />
     <Compile Include="Serialization\Json\JsonTableConverter.cs" />
     <Compile Include="Serialization\ObjectValueConverter.cs" />
     <Compile Include="Serialization\SerializationExtensions.cs" />
