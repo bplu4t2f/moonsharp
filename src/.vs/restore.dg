@@ -1,7 +1,7 @@
-#:Z:\git\my\moonsharp\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj
-Z:\git\my\moonsharp\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj|Z:\git\my\moonsharp\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
-#:Z:\git\my\moonsharp\src\TestRunners\DotNetCoreTestRunner\DotNetCoreTestRunner.xproj
-Z:\git\my\moonsharp\src\TestRunners\DotNetCoreTestRunner\DotNetCoreTestRunner.xproj|Z:\git\my\moonsharp\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
-Z:\git\my\moonsharp\src\TestRunners\DotNetCoreTestRunner\DotNetCoreTestRunner.xproj|Z:\git\my\moonsharp\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj
-Z:\git\my\moonsharp\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj|Z:\git\my\moonsharp\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
-#:Z:\git\my\moonsharp\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
+#:D:\dev\moonsharp2\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
+#:D:\dev\moonsharp2\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj
+D:\dev\moonsharp2\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj|D:\dev\moonsharp2\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
+#:D:\dev\moonsharp2\src\TestRunners\DotNetCoreTestRunner\DotNetCoreTestRunner.xproj
+D:\dev\moonsharp2\src\TestRunners\DotNetCoreTestRunner\DotNetCoreTestRunner.xproj|D:\dev\moonsharp2\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
+D:\dev\moonsharp2\src\TestRunners\DotNetCoreTestRunner\DotNetCoreTestRunner.xproj|D:\dev\moonsharp2\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj
+D:\dev\moonsharp2\src\MoonSharp.VsCodeDebugger\_Projects\MoonSharp.VsCodeDebugger.netcore\MoonSharp.VsCodeDebugger.netcore.xproj|D:\dev\moonsharp2\src\MoonSharp.Interpreter\_Projects\MoonSharp.Interpreter.netcore\MoonSharp.Interpreter.netcore.xproj
