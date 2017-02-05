@@ -37,7 +37,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// </summary>
 		/// <param name="type">The type.</param>
 		/// <param name="mode">The InteropAccessMode.</param>
-		public static void RegisterExtensionType(Type type, InteropAccessMode mode = InteropAccessMode.Default)
+		public static void RegisterExtensionType(UserDataRegistries.TypeDescriptorRegistry registry, Type type, InteropAccessMode mode = InteropAccessMode.Default)
 		{
 			lock (s_Lock)
 			{
@@ -60,7 +60,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 					if (!MethodMemberDescriptor.CheckMethodIsCompatible(mi, false))
 						continue;
 
-					var desc = new MethodMemberDescriptor(mi, mode);
+					var desc = new MethodMemberDescriptor(registry, mi, mode);
 
 					s_Registry.Add(mi.Name, desc);
 					changesDone = true;
@@ -106,7 +106,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// <param name="name">The name.</param>
 		/// <param name="extendedType">The extended type.</param>
 		/// <returns></returns>
-		public static List<IOverloadableMemberDescriptor> GetExtensionMethodsByNameAndType(string name, Type extendedType)
+		public static List<IOverloadableMemberDescriptor> GetExtensionMethodsByNameAndType(UserDataRegistries.TypeDescriptorRegistry registry, string name, Type extendedType)
 		{
 			List<UnresolvedGenericMethod> unresolvedGenerics = null;
 
@@ -133,7 +133,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 							if (!MethodMemberDescriptor.CheckMethodIsCompatible(mi, false))
 								continue;
 
-							var desc = new MethodMemberDescriptor(mi, ugm.AccessMode);
+							var desc = new MethodMemberDescriptor(registry, mi, ugm.AccessMode);
 
 							s_Registry.Add(ugm.Method.Name, desc);
 							++s_ExtensionMethodChangeVersion;

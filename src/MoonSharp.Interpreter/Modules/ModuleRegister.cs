@@ -84,6 +84,12 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="System.ArgumentException">If the module contains some incompatibility</exception>
 		public static Table RegisterModuleType(this Table gtable, Type t)
 		{
+            // MoonSharpInit may require the OwnerScript to get the type descriptor registry.
+            if (gtable.OwnerScript == null)
+            {
+                throw new ArgumentOutOfRangeException("Cannot register module on a table which has no owner script.");
+            }
+
 			Table table = CreateModuleNamespace(gtable, t);
 
 			foreach (MethodInfo mi in Framework.Do.GetMethods(t).Where(__mi => __mi.IsStatic))

@@ -42,15 +42,8 @@ namespace MoonSharp.Interpreter
 
 		static UserData()
 		{
-			RegistrationPolicy = InteropRegistrationPolicy.Default;
-
-			RegisterType<EventFacade>(InteropAccessMode.NoReflectionAllowed);
-			RegisterType<AnonWrapper>(InteropAccessMode.HideMembers);
-			RegisterType<EnumerableWrapper>(InteropAccessMode.NoReflectionAllowed);
-			RegisterType<JsonNull>(InteropAccessMode.Reflection);
-
-			DefaultAccessMode = InteropAccessMode.LazyOptimized;
-		}
+#warning TODO
+        }
 
 		/// <summary>
 		/// Registers a type for userdata interop
@@ -58,9 +51,9 @@ namespace MoonSharp.Interpreter
 		/// <typeparam name="T">The type to be registered</typeparam>
 		/// <param name="accessMode">The access mode (optional).</param>
 		/// <param name="friendlyName">Friendly name for the type (optional)</param>
-		public static IUserDataDescriptor RegisterType<T>(InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
+		public static IUserDataDescriptor RegisterType<T>(TypeDescriptorRegistry registry, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
 		{
-			return TypeDescriptorRegistry.RegisterType_Impl(typeof(T), accessMode, friendlyName, null);
+			return registry.RegisterType_Impl(typeof(T), accessMode, friendlyName, null);
 		}
 
 		/// <summary>
@@ -69,9 +62,9 @@ namespace MoonSharp.Interpreter
 		/// <param name="type">The type to be registered</param>
 		/// <param name="accessMode">The access mode (optional).</param>
 		/// <param name="friendlyName">Friendly name for the type (optional)</param>
-		public static IUserDataDescriptor RegisterType(Type type, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
+		public static IUserDataDescriptor RegisterType(TypeDescriptorRegistry registry, Type type, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
 		{
-			return TypeDescriptorRegistry.RegisterType_Impl(type, accessMode, friendlyName, null);
+			return registry.RegisterType_Impl(type, accessMode, friendlyName, null);
 		}
 
 
@@ -82,9 +75,9 @@ namespace MoonSharp.Interpreter
 		/// <param name="accessMode">The access mode.</param>
 		/// <param name="friendlyName">A friendly name for the descriptor.</param>
 		/// <returns></returns>
-		public static IUserDataDescriptor RegisterProxyType(IProxyFactory proxyFactory, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
+		public static IUserDataDescriptor RegisterProxyType(TypeDescriptorRegistry registry, IProxyFactory proxyFactory, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
 		{
-			return TypeDescriptorRegistry.RegisterProxyType_Impl(proxyFactory, accessMode, friendlyName);
+			return registry.RegisterProxyType_Impl(proxyFactory, accessMode, friendlyName);
 		}
 
 		/// <summary>
@@ -96,11 +89,11 @@ namespace MoonSharp.Interpreter
 		/// <param name="accessMode">The access mode.</param>
 		/// <param name="friendlyName">A friendly name for the descriptor.</param>
 		/// <returns></returns>
-		public static IUserDataDescriptor RegisterProxyType<TProxy, TTarget>(Func<TTarget, TProxy> wrapDelegate, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
+		public static IUserDataDescriptor RegisterProxyType<TProxy, TTarget>(TypeDescriptorRegistry registry, Func<TTarget, TProxy> wrapDelegate, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
 			where TProxy : class
 			where TTarget : class
 		{
-			return RegisterProxyType(new DelegateProxyFactory<TProxy, TTarget>(wrapDelegate), accessMode, friendlyName);
+			return RegisterProxyType(registry, new DelegateProxyFactory<TProxy, TTarget>(wrapDelegate), accessMode, friendlyName);
 		}
 
 
@@ -110,9 +103,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <typeparam name="T">The type to be registered</typeparam>
 		/// <param name="customDescriptor">The custom descriptor.</param>
-		public static IUserDataDescriptor RegisterType<T>(IUserDataDescriptor customDescriptor)
+		public static IUserDataDescriptor RegisterType<T>(TypeDescriptorRegistry registry, IUserDataDescriptor customDescriptor)
 		{
-			return TypeDescriptorRegistry.RegisterType_Impl(typeof(T), InteropAccessMode.Default, null, customDescriptor);
+			return registry.RegisterType_Impl(typeof(T), InteropAccessMode.Default, null, customDescriptor);
 		}
 
 		/// <summary>
@@ -120,18 +113,18 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="type">The type to be registered</param>
 		/// <param name="customDescriptor">The custom descriptor.</param>
-		public static IUserDataDescriptor RegisterType(Type type, IUserDataDescriptor customDescriptor)
+		public static IUserDataDescriptor RegisterType(TypeDescriptorRegistry registry, Type type, IUserDataDescriptor customDescriptor)
 		{
-			return TypeDescriptorRegistry.RegisterType_Impl(type, InteropAccessMode.Default, null, customDescriptor);
+			return registry.RegisterType_Impl(type, InteropAccessMode.Default, null, customDescriptor);
 		}
 
 		/// <summary>
 		/// Registers a type with a custom userdata descriptor
 		/// </summary>
 		/// <param name="customDescriptor">The custom descriptor.</param>
-		public static IUserDataDescriptor RegisterType(IUserDataDescriptor customDescriptor)
+		public static IUserDataDescriptor RegisterType(TypeDescriptorRegistry registry, IUserDataDescriptor customDescriptor)
 		{
-			return TypeDescriptorRegistry.RegisterType_Impl(customDescriptor.Type, InteropAccessMode.Default, null, customDescriptor);
+			return registry.RegisterType_Impl(customDescriptor.Type, InteropAccessMode.Default, null, customDescriptor);
 		}
 
 
@@ -140,7 +133,7 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="asm">The assembly.</param>
 		/// <param name="includeExtensionTypes">if set to <c>true</c> extension types are registered to the appropriate registry.</param>
-		public static void RegisterAssembly(Assembly asm = null, bool includeExtensionTypes = false)
+		public static void RegisterAssembly(TypeDescriptorRegistry registry, Assembly asm = null, bool includeExtensionTypes = false)
 		{
 			if (asm == null)
 			{
@@ -151,7 +144,7 @@ namespace MoonSharp.Interpreter
 				#endif
 			}
 
-			TypeDescriptorRegistry.RegisterAssembly(asm, includeExtensionTypes);
+			registry.RegisterAssembly(asm, includeExtensionTypes);
 		}
 
 		/// <summary>
@@ -161,9 +154,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="t">The type.</param>
 		/// <returns></returns>
-		public static bool IsTypeRegistered(Type t)
+		public static bool IsTypeRegistered(TypeDescriptorRegistry registry, Type t)
 		{
-			return TypeDescriptorRegistry.IsTypeRegistered(t);
+			return registry.IsTypeRegistered(t);
 		}
 
 		/// <summary>
@@ -173,9 +166,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <typeparam name="T">The type.</typeparam>
 		/// <returns></returns>
-		public static bool IsTypeRegistered<T>()
+		public static bool IsTypeRegistered<T>(TypeDescriptorRegistry registry)
 		{
-			return TypeDescriptorRegistry.IsTypeRegistered(typeof(T));
+			return registry.IsTypeRegistered(typeof(T));
 		}
 
 		/// <summary>
@@ -185,9 +178,9 @@ namespace MoonSharp.Interpreter
 		/// Additionally, it's a good practice to discard all previous loaded scripts after calling this method.
 		/// </summary>
 		/// <typeparam name="T">The type to be unregistered</typeparam>
-		public static void UnregisterType<T>()
+		public static void UnregisterType<T>(TypeDescriptorRegistry registry)
 		{
-			TypeDescriptorRegistry.UnregisterType(typeof(T));
+			registry.UnregisterType(typeof(T));
 		}
 
 		/// <summary>
@@ -197,9 +190,9 @@ namespace MoonSharp.Interpreter
 		/// Additionally, it's a good practice to discard all previous loaded scripts after calling this method.
 		/// </summary>
 		/// <param name="t">The The type to be unregistered</param>
-		public static void UnregisterType(Type t)
+		public static void UnregisterType(TypeDescriptorRegistry registry, Type t)
 		{
-			TypeDescriptorRegistry.UnregisterType(t);
+			registry.UnregisterType(t);
 		}
 
 		/// <summary>
@@ -222,13 +215,13 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="o">The object</param>
 		/// <returns></returns>
-		public static DynValue Create(object o)
+		public static DynValue Create(TypeDescriptorRegistry registry, object o)
 		{
-			var descr = GetDescriptorForObject(o);
+			var descr = GetDescriptorForObject(registry, o);
 			if (descr == null)
 			{
 				if (o is Type)
-					return CreateStatic((Type)o);
+					return CreateStatic(registry, (Type)o);
 
 				return null;
 			}
@@ -257,9 +250,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="t">The type</param>
 		/// <returns></returns>
-		public static DynValue CreateStatic(Type t)
+		public static DynValue CreateStatic(TypeDescriptorRegistry registry, Type t)
 		{
-			return CreateStatic(GetDescriptorForType(t, false));
+			return CreateStatic(GetDescriptorForType(registry, t, false));
 		}
 
 		/// <summary>
@@ -267,41 +260,53 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <typeparam name="T">The Type</typeparam>
 		/// <returns></returns>
-		public static DynValue CreateStatic<T>()
+		public static DynValue CreateStatic<T>(TypeDescriptorRegistry registry)
 		{
-			return CreateStatic(GetDescriptorForType(typeof(T), false));
+			return CreateStatic(GetDescriptorForType(registry, typeof(T), false));
 		}
 
-		/// <summary>
-		/// Gets or sets the registration policy to be used in the whole application
-		/// </summary>
-		public static IRegistrationPolicy RegistrationPolicy
-		{
-			get { return TypeDescriptorRegistry.RegistrationPolicy; }
-			set { TypeDescriptorRegistry.RegistrationPolicy = value; }
-		}
+        /// <summary>
+        /// Gets or sets the registration policy to be used in the whole application
+        /// </summary>
+        //public static IRegistrationPolicy RegistrationPolicy
+        //{
+        //	get { return TypeDescriptorRegistry.RegistrationPolicy; }
+        //	set { TypeDescriptorRegistry.RegistrationPolicy = value; }
+        //}
+#warning TODO
 
-		/// <summary>
-		/// Gets or sets the default access mode to be used in the whole application
-		/// </summary>
-		/// <value>
-		/// The default access mode.
-		/// </value>
-		/// <exception cref="System.ArgumentException">InteropAccessMode is InteropAccessMode.Default</exception>
-		public static InteropAccessMode DefaultAccessMode
-		{
-			get { return TypeDescriptorRegistry.DefaultAccessMode; }
-			set { TypeDescriptorRegistry.DefaultAccessMode = value; }
-		}
+        public static IRegistrationPolicy GetRegistrationPolicy(TypeDescriptorRegistry registry)
+        {
+            return registry.RegistrationPolicy;
+        }
 
-		/// <summary>
-		/// Registers an extension Type (that is a type containing extension methods)
-		/// </summary>
-		/// <param name="type">The type.</param>
-		/// <param name="mode">The InteropAccessMode.</param>
-		public static void RegisterExtensionType(Type type, InteropAccessMode mode = InteropAccessMode.Default)
+        public static void SetRegistrationPolicy(TypeDescriptorRegistry registry, IRegistrationPolicy value)
+        {
+            registry.RegistrationPolicy = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the default access mode to be used in the whole application
+        /// </summary>
+        /// <value>
+        /// The default access mode.
+        /// </value>
+        /// <exception cref="System.ArgumentException">InteropAccessMode is InteropAccessMode.Default</exception>
+        //public static InteropAccessMode DefaultAccessMode
+        //{
+        //	get { return TypeDescriptorRegistry.DefaultAccessMode; }
+        //	set { TypeDescriptorRegistry.DefaultAccessMode = value; }
+        //}
+#warning TODO
+
+        /// <summary>
+        /// Registers an extension Type (that is a type containing extension methods)
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="mode">The InteropAccessMode.</param>
+        public static void RegisterExtensionType(TypeDescriptorRegistry registry, Type type, InteropAccessMode mode = InteropAccessMode.Default)
 		{
-			ExtensionMethodsRegistry.RegisterExtensionType(type, mode);
+			ExtensionMethodsRegistry.RegisterExtensionType(registry, type, mode);
 		}
 
 		/// <summary>
@@ -310,9 +315,9 @@ namespace MoonSharp.Interpreter
 		/// <param name="name">The name.</param>
 		/// <param name="extendedType">The extended type.</param>
 		/// <returns></returns>
-		public static List<IOverloadableMemberDescriptor> GetExtensionMethodsByNameAndType(string name, Type extendedType)
+		public static List<IOverloadableMemberDescriptor> GetExtensionMethodsByNameAndType(TypeDescriptorRegistry registry, string name, Type extendedType)
 		{
-			return ExtensionMethodsRegistry.GetExtensionMethodsByNameAndType(name, extendedType);
+			return ExtensionMethodsRegistry.GetExtensionMethodsByNameAndType(registry, name, extendedType);
 		}
 
 		/// <summary>
@@ -331,9 +336,9 @@ namespace MoonSharp.Interpreter
 		/// <typeparam name="T">The CLR type for which the descriptor is desired.</typeparam>
 		/// <param name="searchInterfaces">if set to <c>true</c> interfaces are used in the search.</param>
 		/// <returns></returns>
-		public static IUserDataDescriptor GetDescriptorForType<T>(bool searchInterfaces)
+		public static IUserDataDescriptor GetDescriptorForType<T>(TypeDescriptorRegistry registry, bool searchInterfaces)
 		{
-			return TypeDescriptorRegistry.GetDescriptorForType(typeof(T), searchInterfaces);
+			return registry.GetDescriptorForType(typeof(T), searchInterfaces);
 		}
 
 		/// <summary>
@@ -342,9 +347,9 @@ namespace MoonSharp.Interpreter
 		/// <param name="type">The CLR type for which the descriptor is desired.</param>
 		/// <param name="searchInterfaces">if set to <c>true</c> interfaces are used in the search.</param>
 		/// <returns></returns>
-		public static IUserDataDescriptor GetDescriptorForType(Type type, bool searchInterfaces)
+		public static IUserDataDescriptor GetDescriptorForType(TypeDescriptorRegistry registry, Type type, bool searchInterfaces)
 		{
-			return TypeDescriptorRegistry.GetDescriptorForType(type, searchInterfaces);
+			return registry.GetDescriptorForType(type, searchInterfaces);
 		}
 
 
@@ -353,9 +358,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="o">The object.</param>
 		/// <returns></returns>
-		public static IUserDataDescriptor GetDescriptorForObject(object o)
+		public static IUserDataDescriptor GetDescriptorForObject(TypeDescriptorRegistry registry, object o)
 		{
-			return TypeDescriptorRegistry.GetDescriptorForType(o.GetType(), true);
+			return registry.GetDescriptorForType(o.GetType(), true);
 		}
 
 
@@ -364,10 +369,10 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="useHistoricalData">if set to true, it will also include the last found descriptor of all unregistered types.</param>
 		/// <returns></returns>
-		public static Table GetDescriptionOfRegisteredTypes(bool useHistoricalData = false)
+		public static Table GetDescriptionOfRegisteredTypes(TypeDescriptorRegistry registry, bool useHistoricalData = false)
 		{
 			DynValue output = DynValue.NewPrimeTable();
-			var registeredTypesPairs = useHistoricalData ? TypeDescriptorRegistry.RegisteredTypesHistory : TypeDescriptorRegistry.RegisteredTypes;
+			var registeredTypesPairs = useHistoricalData ? registry.RegisteredTypesHistory : registry.RegisteredTypes;
 
 			foreach (var descpair in registeredTypesPairs)
 			{
@@ -389,9 +394,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="useHistoricalData">if set to true, it will also include the last found descriptor of all unregistered types.</param>
 		/// <returns></returns>
-		public static IEnumerable<Type> GetRegisteredTypes(bool useHistoricalData = false)
+		public static IEnumerable<Type> GetRegisteredTypes(TypeDescriptorRegistry registry, bool useHistoricalData = false)
 		{
-			var registeredTypesPairs = useHistoricalData ? TypeDescriptorRegistry.RegisteredTypesHistory : TypeDescriptorRegistry.RegisteredTypes;
+			var registeredTypesPairs = useHistoricalData ? registry.RegisteredTypesHistory : registry.RegisteredTypes;
 			return registeredTypesPairs.Select(p => p.Value.Type);
 		}
 

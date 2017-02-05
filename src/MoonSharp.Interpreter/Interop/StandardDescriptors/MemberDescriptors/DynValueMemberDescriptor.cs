@@ -9,27 +9,28 @@ namespace MoonSharp.Interpreter.Interop
 	{
 		private DynValue m_Value;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DynValueMemberDescriptor" /> class.
-		/// </summary>
-		/// <param name="name">The name.</param>
-		/// <param name="serializedTableValue">A string containing a table whose first member is the dynvalue to be deserialized (convoluted...).</param>
-		protected DynValueMemberDescriptor(string name, string serializedTableValue)
-		{
-			Script s = new Script();
-			var exp = s.CreateDynamicExpression(serializedTableValue);
-			DynValue val = exp.Evaluate(null);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynValueMemberDescriptor" /> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="serializedTableValue">A string containing a table whose first member is the dynvalue to be deserialized (convoluted...).</param>
+        //protected DynValueMemberDescriptor(string name, string serializedTableValue)
+        //{
+        //	Script s = new Script();
+        //	var exp = s.CreateDynamicExpression(serializedTableValue);
+        //	DynValue val = exp.Evaluate(null);
 
-			m_Value = val.Table.Get(1);
-			Name = name;
-			MemberAccess = MemberDescriptorAccess.CanRead;
-		}
+        //	m_Value = val.Table.Get(1);
+        //	Name = name;
+        //	MemberAccess = MemberDescriptorAccess.CanRead;
+        //}
+#warning TODO
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DynValueMemberDescriptor" /> class.
-		/// </summary>
-		/// <param name="name">The name.</param>
-		protected DynValueMemberDescriptor(string name)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DynValueMemberDescriptor" /> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        protected DynValueMemberDescriptor(string name)
 		{
 			MemberAccess = MemberDescriptorAccess.CanRead;
 			m_Value = null;

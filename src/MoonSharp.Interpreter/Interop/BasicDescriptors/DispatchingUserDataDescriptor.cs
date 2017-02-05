@@ -263,7 +263,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <exception cref="System.NotImplementedException"></exception>
 		private DynValue TryIndexOnExtMethod(Script script, object obj, string indexName)
 		{
-			List<IOverloadableMemberDescriptor> methods = UserData.GetExtensionMethodsByNameAndType(indexName, this.Type);
+			List<IOverloadableMemberDescriptor> methods = UserData.GetExtensionMethodsByNameAndType(script.TypeRegistry, indexName, this.Type);
 
 			if (methods != null && methods.Count > 0)
 			{

@@ -107,11 +107,11 @@ namespace MoonSharp.Interpreter.Interop.Converters
 
 			if (v != null) return v;
 
-			v = UserData.Create(obj);
+			v = UserData.Create(script.TypeRegistry, obj);
 			if (v != null) return v;
 
 			if (obj is Type)
-				v = UserData.CreateStatic(obj as Type);
+				v = UserData.CreateStatic(script.TypeRegistry, obj as Type);
 
 			// unregistered enums go as integers
 			if (obj is Enum)

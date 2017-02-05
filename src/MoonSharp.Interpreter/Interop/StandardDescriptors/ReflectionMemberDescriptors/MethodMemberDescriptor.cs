@@ -41,7 +41,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="methodBase">The MethodBase (MethodInfo or ConstructorInfo) got through reflection.</param>
 		/// <param name="accessMode">The interop access mode.</param>
 		/// <exception cref="System.ArgumentException">Invalid accessMode</exception>
-		public MethodMemberDescriptor(MethodBase methodBase, InteropAccessMode accessMode = InteropAccessMode.Default)
+		public MethodMemberDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, MethodBase methodBase, InteropAccessMode accessMode = InteropAccessMode.Default)
 		{
 			CheckMethodIsCompatible(methodBase, true);
 
@@ -84,7 +84,7 @@ namespace MoonSharp.Interpreter.Interop
 				accessMode = InteropAccessMode.Reflection;
 
 			if (accessMode == InteropAccessMode.Default)
-				accessMode = UserData.DefaultAccessMode;
+				accessMode = registry.DefaultAccessMode;
 
 			if (accessMode == InteropAccessMode.HideMembers)
 				throw new ArgumentException("Invalid accessMode");
@@ -109,13 +109,13 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns>
 		/// A new MethodMemberDescriptor or null.
 		/// </returns>
-		public static MethodMemberDescriptor TryCreateIfVisible(MethodBase methodBase, InteropAccessMode accessMode, bool forceVisibility = false)
+		public static MethodMemberDescriptor TryCreateIfVisible(UserDataRegistries.TypeDescriptorRegistry registry, MethodBase methodBase, InteropAccessMode accessMode, bool forceVisibility = false)
 		{
 			if (!CheckMethodIsCompatible(methodBase, false))
 				return null;
 
 			if (forceVisibility || (methodBase.GetVisibilityFromAttributes() ?? methodBase.IsPublic))
-				return new MethodMemberDescriptor(methodBase, accessMode);
+				return new MethodMemberDescriptor(registry, methodBase, accessMode);
 
 			return null;
 		}

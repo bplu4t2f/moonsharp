@@ -114,7 +114,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns></returns>
 		public static DynValue CreateCallbackDynValue(Script script, MethodInfo mi, object obj = null)
 		{
-			var desc = new MethodMemberDescriptor(mi);
+			var desc = new MethodMemberDescriptor(script.TypeRegistry, mi);
 			return desc.GetCallbackAsDynValue(script, obj);
 		}
 

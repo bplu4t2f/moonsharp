@@ -90,9 +90,9 @@ namespace MoonSharp.Interpreter
 				accessMode = m_DefaultAccessMode;
 
 #if NETFX_CORE
-			MethodMemberDescriptor descr = new MethodMemberDescriptor(del.GetMethodInfo(), accessMode);
+			MethodMemberDescriptor descr = new MethodMemberDescriptor(script.TypeRegistry, del.GetMethodInfo(), accessMode);
 #else
-			MethodMemberDescriptor descr = new MethodMemberDescriptor(del.Method, accessMode);
+			MethodMemberDescriptor descr = new MethodMemberDescriptor(script.TypeRegistry, del.Method, accessMode);
 #endif
 			return descr.GetCallbackFunction(script, del.Target);
 		}
@@ -112,7 +112,7 @@ namespace MoonSharp.Interpreter
 			if (accessMode == InteropAccessMode.Default)
 				accessMode = m_DefaultAccessMode;
 
-			MethodMemberDescriptor descr = new MethodMemberDescriptor(mi, accessMode);
+			MethodMemberDescriptor descr = new MethodMemberDescriptor(script.TypeRegistry, mi, accessMode);
 			return descr.GetCallbackFunction(script, obj);
 		}
 

@@ -42,7 +42,8 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		static Script()
 		{
-			GlobalOptions = new ScriptGlobalOptions();
+#warning TODO
+            GlobalOptions = new ScriptGlobalOptions();
 
 			DefaultOptions = new ScriptOptions()
 			{
@@ -55,10 +56,10 @@ namespace MoonSharp.Interpreter
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Script"/> clas.s
+		/// Initializes a new instance of the <see cref="Script"/> class.
 		/// </summary>
-		public Script()
-			: this(CoreModules.Preset_Default)
+		public Script(Interop.UserDataRegistries.TypeDescriptorRegistry registry)
+			: this(CoreModules.Preset_Default, registry)
 		{
 		}
 
@@ -66,9 +67,11 @@ namespace MoonSharp.Interpreter
 		/// Initializes a new instance of the <see cref="Script"/> class.
 		/// </summary>
 		/// <param name="coreModules">The core modules to be pre-registered in the default global table.</param>
-		public Script(CoreModules coreModules)
+		public Script(CoreModules coreModules, Interop.UserDataRegistries.TypeDescriptorRegistry registry)
 		{
-			Options = new ScriptOptions(DefaultOptions);
+            this.TypeRegistry = registry ?? new Interop.UserDataRegistries.TypeDescriptorRegistry();
+
+            Options = new ScriptOptions(DefaultOptions);
 			PerformanceStats = new PerformanceStatistics();
 			Registry = new Table(this);
 
@@ -369,9 +372,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="filename">The filename.</param>
 		/// A DynValue containing the result of the processing of the executed script.
-		public static DynValue RunFile(string filename)
+		public static DynValue RunFile(string filename, Interop.UserDataRegistries.TypeDescriptorRegistry registry)
 		{
-			Script S = new Script();
+			Script S = new Script(registry);
 			return S.DoFile(filename);
 		}
 
@@ -380,9 +383,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="code">The Lua/MoonSharp code.</param>
 		/// A DynValue containing the result of the processing of the executed script.
-		public static DynValue RunString(string code)
+		public static DynValue RunString(string code, Interop.UserDataRegistries.TypeDescriptorRegistry registry)
 		{
-			Script S = new Script();
+			Script S = new Script(registry);
 			return S.DoString(code);
 		}
 
@@ -674,7 +677,7 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		public static void WarmUp()
 		{
-			Script s = new Script(CoreModules.Basic);
+			Script s = new Script(CoreModules.Basic, null);
 			s.LoadString("return 1;");
 		}
 
@@ -745,5 +748,7 @@ namespace MoonSharp.Interpreter
 		{
 			get { return this; }
 		}
-	}
+
+        public Interop.UserDataRegistries.TypeDescriptorRegistry TypeRegistry { get; }
+    }
 }

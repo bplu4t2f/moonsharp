@@ -195,7 +195,7 @@ namespace MoonSharp.Interpreter.Interop
 				if (!extMethodCacheNotExpired)
 				{
 					m_ExtensionMethodVersion = UserData.GetExtensionMethodsChangeVersion();
-					m_ExtOverloads = UserData.GetExtensionMethodsByNameAndType(this.Name, this.DeclaringType);
+					m_ExtOverloads = UserData.GetExtensionMethodsByNameAndType(script.TypeRegistry, this.Name, this.DeclaringType);
 				}
 
 				for (int i = 0; i < m_ExtOverloads.Count; i++)

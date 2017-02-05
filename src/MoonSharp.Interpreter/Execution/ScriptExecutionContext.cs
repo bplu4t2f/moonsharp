@@ -10,8 +10,8 @@ namespace MoonSharp.Interpreter
 	/// </summary>
 	public class ScriptExecutionContext : IScriptPrivateResource
 	{
-		Processor m_Processor;
-		CallbackFunction m_Callback;
+		private readonly Processor m_Processor;
+		private readonly CallbackFunction m_Callback;
 
 		internal ScriptExecutionContext(Processor p, CallbackFunction callBackFunction, SourceRef sourceRef, bool isDynamic = false)
 		{
@@ -256,6 +256,7 @@ namespace MoonSharp.Interpreter
 
 		/// <summary>
 		/// Gets the script owning this resource.
+        /// <para>Cannot be null.</para>
 		/// </summary>
 		/// <value>
 		/// The script owning this resource.
