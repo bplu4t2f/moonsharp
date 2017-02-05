@@ -14,7 +14,6 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 	/// </summary>
 	public abstract class DispatchingUserDataDescriptor : IUserDataDescriptor, IOptimizableDescriptor
 	{
-		private int m_ExtMethodsVersion = 0;
 		private Dictionary<string, IMemberDescriptor> m_MetaMembers = new Dictionary<string, IMemberDescriptor>();
 		private Dictionary<string, IMemberDescriptor> m_Members = new Dictionary<string, IMemberDescriptor>();
 
@@ -237,10 +236,13 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			if (v == null) v = TryIndex(script, obj, Camelify(index.String));
 			if (v == null) v = TryIndex(script, obj, UpperFirstLetter(Camelify(index.String)));
 
-			if (v == null && m_ExtMethodsVersion < UserData.GetExtensionMethodsChangeVersion())
+            // This may be an extension method which hasn't already been added.
+            // Note: If an extension method is found using TryIndexOnExtMethod, the extension methos is registered
+            // in m_Members forever, so the code path below is only taken the first time we look for a new extension.
+            // Note2: This only finds the extension methods that match the current type and name. Other extension methods
+            // for the type are not registered.
+			if (v == null)
 			{
-				m_ExtMethodsVersion = UserData.GetExtensionMethodsChangeVersion();
-
 				v = TryIndexOnExtMethod(script, obj, index.String);
 				if (v == null) v = TryIndexOnExtMethod(script, obj, UpperFirstLetter(index.String));
 				if (v == null) v = TryIndexOnExtMethod(script, obj, Camelify(index.String));
@@ -266,6 +268,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			if (methods != null && methods.Count > 0)
 			{
 				var ext = new OverloadedMethodMemberDescriptor(indexName, this.Type);
+                // TODO find out if this extension method change version caching optimization stuff really works
 				ext.SetExtensionMethodsSnapshot(UserData.GetExtensionMethodsChangeVersion(), methods);
 				m_Members.Add(indexName, ext);
 				return DynValue.NewCallback(ext.GetCallback(script, obj));

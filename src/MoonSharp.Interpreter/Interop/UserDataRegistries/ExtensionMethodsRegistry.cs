@@ -43,6 +43,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 			{
 				bool changesDone = false;
 
+                // TODO consider using bindingflags instead.
 				foreach (MethodInfo mi in Framework.Do.GetMethods(type).Where(_mi => _mi.IsStatic))
 				{
 					if (mi.GetCustomAttributes(typeof(ExtensionAttribute), false).Count() == 0)
@@ -55,6 +56,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 						continue;
 					}
 
+                    // TODO optimize this and the constructor into 1 call.
 					if (!MethodMemberDescriptor.CheckMethodIsCompatible(mi, false))
 						continue;
 
@@ -71,6 +73,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 
 		private static object FrameworkGetMethods()
 		{
+            // TODO ?
 			throw new NotImplementedException();
 		}
 
@@ -81,6 +84,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// <returns></returns>
 		public static IEnumerable<IOverloadableMemberDescriptor> GetExtensionMethodsByName(string name)
 		{
+            // TODO ?
 			lock (s_Lock)
 				return new List<IOverloadableMemberDescriptor>(s_Registry.Find(name));
 		}
