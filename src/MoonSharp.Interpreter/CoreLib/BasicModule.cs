@@ -205,7 +205,6 @@ namespace MoonSharp.Interpreter.CoreLib
 				double d;
 				if (double.TryParse(e.String, NumberStyles.Any, CultureInfo.InvariantCulture, out d))
 				{
-                    //!COMPAT: In case of an invalid char, standard Lua tonumber returns Nil.
                     return DynValue.NewNumber(d);
 				}
 				return DynValue.Nil;
@@ -217,81 +216,89 @@ namespace MoonSharp.Interpreter.CoreLib
                 //UPDATE: added radix 11-36
                 DynValue ee;
 
-                //!COMPAT: In standard Lua first tonumber arg MUST be string if base is specified
-				if (args[0].Type != DataType.Number)
-					ee = args.AsType(0, "tonumber", DataType.String, false);
-				else
-					ee = DynValue.NewString(args[0].Number.ToString(CultureInfo.InvariantCulture));
+                // In standard Lua, first tonumber arg MUST be a string if base is specified.
+                // Even number is invalid.
+                // 
+                if (args[0].Type != DataType.String)
+                {
+                    throw new ScriptRuntimeException("bad argument #1 to 'tonumber' (string expected, got number)");
+                }
+                ee = args[0];
 
-                // TODO what if base is not an integer?
-                int bb = (int)b.Number;
+                int bb;
+                {
+                    double base_tmp = b.Number;
+                    bb = (int)base_tmp;
+                    if (bb != base_tmp)
+                    {
+                        throw new ScriptRuntimeException("bad argument #2 to 'tonumber' (number has no integer representation)");
+                    }
+                }
 
                 // Lua supports negative integers here, and well as integers larger than 32 bit.
-                // FFFFffffFFFFffff parses as -1 in the reference implementation, through, so long will probably do.
-			    long uiv = 0;
-                if (bb == 2 || bb == 8 || bb == 10 || bb == 16)
-			    {
-                    //!COMPAT: In case of an invalid char, standard Lua tonumber returns Nil.
-                    // TODO Consider using the code path below. It handles all cases and doesn't throw on invalid char.
-                    uiv = Convert.ToInt64(ee.String.Trim(), bb);
+                // FFFFffffFFFFffff parses as -1 in the 5.3 reference implementation, through, so long will probably do.
+                long uiv = 0;
+                // Even though Convert.ToInt64 may (or may not) be a a highly optimized compiler intrinsic, using it is problematic
+                // because it throws on error, and passing an invalid string to this function cannot be considered exceptional.
+                // Also it can only handle bases 2, 8, 10, 16.
+                // So we're always using our own implementation below.
+                
+                // Support for bases 2 .. 36.
+                if (!(bb <= 36 && bb >= 2))
+                {
+                    throw new ScriptRuntimeException("bad argument #2 to 'tonumber' (base out of range)");
                 }
-			    else if (bb <= 36 && bb >= 2) // Support for bases 2 .. 36.
-			    {
-                    var trimmedString = ee.String.Trim();
-                    if (trimmedString.Length == 0)
+
+                var trimmedString = ee.String.Trim();
+                if (trimmedString.Length == 0)
+                {
+                    return DynValue.Nil;
+                }
+                bool isNegative = false;
+                int currentCharIndex = 0;
+                if (trimmedString[currentCharIndex] == '-')
+                {
+                    // This is a negative number.
+                    isNegative = true;
+                    currentCharIndex += 1;
+                    if (trimmedString.Length <= 1)
                     {
+                        // This is nothing but an unary minus. Lua returns null in this case.
                         return DynValue.Nil;
                     }
-                    bool isNegative = false;
-                    int currentCharIndex = 0;
-                    if (trimmedString[currentCharIndex] == '-')
-                    {
-                        // This is a negative number.
-                        isNegative = true;
-                        currentCharIndex += 1;
-                        if (trimmedString.Length <= 1)
-                        {
-                            // This is nothing but an unary minus. Lua returns null in this case.
-                            return DynValue.Nil;
-                        }
-                    }
-			        for (; currentCharIndex < trimmedString.Length; ++currentCharIndex)
-			        {
-                        char digit = trimmedString[currentCharIndex];
-                        int value = Int32.MaxValue;
-                        if (digit >= '0' && digit <= '9')
-                        {
-                            value = digit - '0';
-                        }
-                        else if (digit >= 'A' && digit <= 'Z')
-                        {
-                            value = digit - 'A' + 10;
-                        }
-                        else if (digit >= 'a' && digit <= 'z')
-                        {
-                            value = digit - 'a' + 10;
-                        }
-			            
-                        // Handles invalid character (i.e. none of the ifs above hit) as well as digit greater than base.
-                        if (value >= bb)
-			            {
-                            //!COMPAT: In case of an invalid char, standard Lua tonumber returns Nil.
-                            // TODO REMOVE IF DECISION WAS MADE
-                            //throw new ScriptRuntimeException("bad argument #1 to 'tonumber' (invalid character)");
-                            return DynValue.Nil;
-                        }
-
-                        uiv = (uiv * bb) + value;
-			        }
-
-                    if (isNegative)
-                    {
-                        uiv = -uiv;
-                    }
                 }
-			    else
+			    for (; currentCharIndex < trimmedString.Length; ++currentCharIndex)
 			    {
-                    throw new ScriptRuntimeException("bad argument #2 to 'tonumber' (base out of range)");
+                    char digit = trimmedString[currentCharIndex];
+                    // Initialize to MaxValue so that the if handles an invalid character as well.
+                    int value = Int32.MaxValue;
+                    if (digit >= '0' && digit <= '9')
+                    {
+                        value = digit - '0';
+                    }
+                    else if (digit >= 'A' && digit <= 'Z')
+                    {
+                        value = digit - 'A' + 10;
+                    }
+                    else if (digit >= 'a' && digit <= 'z')
+                    {
+                        value = digit - 'a' + 10;
+                    }
+			            
+                    // Handles invalid character (i.e. none of the ifs above hit) as well as digit greater than base.
+                    if (value >= bb)
+			        {
+                        // In case of an invalid char, standard Lua tonumber returns Nil.
+                        // This is reasonable because this is pretty much the only way for the user to check if a string is a number.
+                        return DynValue.Nil;
+                    }
+
+                    uiv = (uiv * bb) + value;
+			    }
+
+                if (isNegative)
+                {
+                    uiv = -uiv;
                 }
 
 				return DynValue.NewNumber(uiv);

@@ -307,7 +307,6 @@ is(tonumber('12text'), nil)
 is(tonumber(3.14), 3.14)
 is(tonumber('3.14'), 3.14)
 is(tonumber('  3.14  '), 3.14)
-is(tonumber(111, 2), 7)
 is(tonumber('111', 2), 7)
 is(tonumber('  111  ', 2), 7)
 is(tonumber('78', 9), 71)
@@ -335,10 +334,9 @@ error_like(function () tonumber('111', 200) end,
            "^[^:]+:%d+: bad argument #2 to 'tonumber' %(base out of range%)",
            "function tonumber (bad base)")
 
--- TBD - the reference implementation returns nil (case covered above)
---error_like(function () tonumber('17', 6) end,
---          "^[^:]+:%d+: bad argument #1 to 'tonumber' %(invalid character%)",
---           "function tonumber (bad base)")
+error_like(function () tonumber(111, 2) end,
+			"^[^:]+:%d+: bad argument #1 to 'tonumber' %(string expected, got number%)",
+			"function tonumber (number with base)")
 
 is(tostring('text'), 'text', "function tostring")
 is(tostring(3.14), '3.14')
