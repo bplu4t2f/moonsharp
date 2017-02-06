@@ -343,8 +343,7 @@ namespace MoonSharp.Interpreter
         /// <param name="mode">The InteropAccessMode.</param>
         public static void RegisterExtensionType(UserDataRegistry registry, Type type, InteropAccessMode mode = InteropAccessMode.Default)
 		{
-#warning TODO
-			ExtensionMethodsRegistry.RegisterExtensionType(registry, type, mode);
+			registry.NotNull(nameof(registry)).ExtensionMethodsRegistry.RegisterExtensionType(registry, type, mode);
 		}
 
 		/// <summary>
@@ -355,8 +354,7 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static List<IOverloadableMemberDescriptor> GetExtensionMethodsByNameAndType(UserDataRegistry registry, string name, Type extendedType)
 		{
-#warning TODO
-			return ExtensionMethodsRegistry.GetExtensionMethodsByNameAndType(registry, name, extendedType);
+			return registry.NotNull(nameof(registry)).ExtensionMethodsRegistry.GetExtensionMethodsByNameAndType(registry, name, extendedType);
 		}
 
 		/// <summary>
@@ -364,9 +362,9 @@ namespace MoonSharp.Interpreter
 		/// Use this to invalidate caches based on extension methods
 		/// </summary>
 		/// <returns></returns>
-		public static int GetExtensionMethodsChangeVersion()
+		public static int GetExtensionMethodsChangeVersion(UserDataRegistry registry)
 		{
-			return ExtensionMethodsRegistry.GetExtensionMethodsChangeVersion();
+			return registry.NotNull(nameof(registry)).ExtensionMethodsRegistry.GetExtensionMethodsChangeVersion();
 		}
 
 		/// <summary>

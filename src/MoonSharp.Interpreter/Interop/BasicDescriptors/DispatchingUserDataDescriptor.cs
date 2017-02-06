@@ -269,7 +269,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			{
 				var ext = new OverloadedMethodMemberDescriptor(indexName, this.Type);
                 // TODO find out if this extension method change version caching optimization stuff really works
-				ext.SetExtensionMethodsSnapshot(UserData.GetExtensionMethodsChangeVersion(), methods);
+				ext.SetExtensionMethodsSnapshot(UserData.GetExtensionMethodsChangeVersion(script.TypeRegistry), methods);
 				m_Members.Add(indexName, ext);
 				return DynValue.NewCallback(ext.GetCallback(script, obj));
 			}

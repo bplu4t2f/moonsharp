@@ -14,10 +14,10 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 	/// </summary>
 	internal class ExtensionMethodsRegistry
 	{
-		private static object s_Lock = new object();
-		private static MultiDictionary<string, IOverloadableMemberDescriptor> s_Registry = new MultiDictionary<string, IOverloadableMemberDescriptor>();
-		private static MultiDictionary<string, UnresolvedGenericMethod> s_UnresolvedGenericsRegistry = new MultiDictionary<string, UnresolvedGenericMethod>();
-		private static int s_ExtensionMethodChangeVersion = 0;
+		private object s_Lock = new object();
+		private MultiDictionary<string, IOverloadableMemberDescriptor> s_Registry = new MultiDictionary<string, IOverloadableMemberDescriptor>();
+		private MultiDictionary<string, UnresolvedGenericMethod> s_UnresolvedGenericsRegistry = new MultiDictionary<string, UnresolvedGenericMethod>();
+		private int s_ExtensionMethodChangeVersion = 0;
 
 		private class UnresolvedGenericMethod
 		{
@@ -37,7 +37,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// </summary>
 		/// <param name="type">The type.</param>
 		/// <param name="mode">The InteropAccessMode.</param>
-		public static void RegisterExtensionType(UserDataRegistry registry, Type type, InteropAccessMode mode = InteropAccessMode.Default)
+		public void RegisterExtensionType(UserDataRegistry registry, Type type, InteropAccessMode mode = InteropAccessMode.Default)
 		{
 			lock (s_Lock)
 			{
@@ -82,7 +82,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <returns></returns>
-		public static IEnumerable<IOverloadableMemberDescriptor> GetExtensionMethodsByName(string name)
+		public IEnumerable<IOverloadableMemberDescriptor> GetExtensionMethodsByName(string name)
 		{
             // TODO ?
 			lock (s_Lock)
@@ -94,7 +94,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// Use this to invalidate caches based on extension methods
 		/// </summary>
 		/// <returns></returns>
-		public static int GetExtensionMethodsChangeVersion()
+		public int GetExtensionMethodsChangeVersion()
 		{
 			return s_ExtensionMethodChangeVersion;
 		}
@@ -106,7 +106,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// <param name="name">The name.</param>
 		/// <param name="extendedType">The extended type.</param>
 		/// <returns></returns>
-		public static List<IOverloadableMemberDescriptor> GetExtensionMethodsByNameAndType(UserDataRegistry registry, string name, Type extendedType)
+		public List<IOverloadableMemberDescriptor> GetExtensionMethodsByNameAndType(UserDataRegistry registry, string name, Type extendedType)
 		{
 			List<UnresolvedGenericMethod> unresolvedGenerics = null;
 
