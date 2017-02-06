@@ -25,7 +25,7 @@ namespace MoonSharp.Interpreter.CoreLib
 
 		private static void SetRandom(Script s, Random random)
 		{
-			DynValue rr = UserData.Create(s.TypeRegistry, new AnonWrapper<Random>(random));
+			DynValue rr = UserData.Create(new AnonWrapper<Random>(random));
 			s.Registry.Set("F61E3AA7247D4D1EB7A45430B0C8C9BB_MATH_RANDOM", rr);
 		}
 

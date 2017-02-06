@@ -67,7 +67,7 @@ namespace MoonSharp.Interpreter.CoreLib
 			else
 				udb = StandardIOFileUserDataBase.CreateOutputStream(optionsStream);
 
-			R.Set("853BEAAF298648839E2C99D005E1DF94_STD_" + file.ToString(), UserData.Create(S.TypeRegistry, udb));
+			R.Set("853BEAAF298648839E2C99D005E1DF94_STD_" + file.ToString(), UserData.Create(udb));
 		}
 
 
@@ -94,7 +94,7 @@ namespace MoonSharp.Interpreter.CoreLib
 		internal static void SetDefaultFile(Script script, StandardFileType file, FileUserDataBase fileHandle)
 		{
 			Table R = script.Registry;
-			R.Set("853BEAAF298648839E2C99D005E1DF94_" + file.ToString(), UserData.Create(script.TypeRegistry, fileHandle));
+			R.Set("853BEAAF298648839E2C99D005E1DF94_" + file.ToString(), UserData.Create(fileHandle));
 		}
 
 		public static void SetDefaultFile(Script script, StandardFileType file, Stream stream)
@@ -141,7 +141,7 @@ namespace MoonSharp.Interpreter.CoreLib
 			if (args.Count == 0 || args[0].IsNil())
 			{
 				var file = GetDefaultFile(executionContext, defaultFiles);
-				return UserData.Create(script.TypeRegistry, file);
+				return UserData.Create(file);
 			}
 
 			FileUserDataBase inp = null;
@@ -158,7 +158,7 @@ namespace MoonSharp.Interpreter.CoreLib
 
 			SetDefaultFile(executionContext, defaultFiles, inp);
 
-			return UserData.Create(script.TypeRegistry, inp);
+			return UserData.Create(inp);
 		}
 
 		private static Encoding GetUTF8Encoding()
@@ -244,7 +244,7 @@ namespace MoonSharp.Interpreter.CoreLib
 					e = Encoding.GetEncoding(encoding);
 				}
 
-				return UserData.Create(executionContext.OwnerScript.TypeRegistry, Open(executionContext, filename, e, mode));
+				return UserData.Create(Open(executionContext, filename, e, mode));
 			}
 			catch (Exception ex)
 			{
@@ -297,7 +297,7 @@ namespace MoonSharp.Interpreter.CoreLib
 		{
 			string tmpfilename = Script.GlobalOptions.Platform.IO_OS_GetTempFilename();
 			FileUserDataBase file = Open(executionContext, tmpfilename, GetUTF8Encoding(), "w");
-			return UserData.Create(executionContext.OwnerScript.TypeRegistry, file);
+			return UserData.Create(file);
 		}
 
 		private static FileUserDataBase Open(ScriptExecutionContext executionContext, string filename, Encoding encoding, string mode)

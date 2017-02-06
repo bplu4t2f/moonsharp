@@ -52,7 +52,7 @@ namespace MoonSharp.Interpreter.Interop
 		internal static DynValue ConvertIterator(Script script, IEnumerator enumerator)
 		{
 			EnumerableWrapper ei = new EnumerableWrapper(script, enumerator);
-			return DynValue.NewTuple(UserData.Create(script.TypeRegistry, ei), DynValue.Nil, DynValue.Nil);
+			return DynValue.NewTuple(UserData.Create(ei), DynValue.Nil, DynValue.Nil);
 		}
 
 		internal static DynValue ConvertTable(Table table)

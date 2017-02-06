@@ -21,10 +21,10 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		}
 
 		[MoonSharpHidden]
-		public static DynValue Create(Interop.UserDataRegistry registry)
+		public static DynValue Create()
 		{
 #warning TODO remove registry
-			return UserData.CreateStatic<JsonNull>(registry);
+			return UserData.CreateStatic<JsonNull>();
 		}
 	}
 }

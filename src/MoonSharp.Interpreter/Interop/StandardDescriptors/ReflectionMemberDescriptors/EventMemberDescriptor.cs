@@ -166,7 +166,7 @@ namespace MoonSharp.Interpreter.Interop
 			if (IsStatic) 
 				obj = this;
 
-			return UserData.Create(script.TypeRegistry, new EventFacade(this, obj));
+			return UserData.Create(new EventFacade(this, obj));
 		}
 
 

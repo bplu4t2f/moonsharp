@@ -15,7 +15,7 @@ namespace MoonSharp.Interpreter.CoreLib
 			try
 			{
 				DynValue vs = args.AsType(0, "parse", DataType.String, false);
-				Table t = JsonTableConverter.JsonToTable(executionContext.OwnerScript.TypeRegistry, vs.String, executionContext.GetScript());
+				Table t = JsonTableConverter.JsonToTable(vs.String, executionContext.GetScript());
 				return DynValue.NewTable(t);
 			}
 			catch (SyntaxErrorException ex)
@@ -49,7 +49,7 @@ namespace MoonSharp.Interpreter.CoreLib
 		[MoonSharpModuleMethod]
 		public static DynValue @null(ScriptExecutionContext executionContext, CallbackArguments args)
 		{
-			return JsonNull.Create(executionContext.OwnerScript.TypeRegistry);
+			return JsonNull.Create();
 		}
 	}
 }

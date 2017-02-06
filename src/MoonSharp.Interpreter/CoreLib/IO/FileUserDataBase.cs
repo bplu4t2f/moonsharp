@@ -118,7 +118,7 @@ namespace MoonSharp.Interpreter.CoreLib.IO
 					Write(str);
 				}
 
-				return UserData.Create(executionContext.OwnerScript.TypeRegistry, this);
+				return UserData.Create(this);
 			}
 			catch (ScriptRuntimeException)
 			{

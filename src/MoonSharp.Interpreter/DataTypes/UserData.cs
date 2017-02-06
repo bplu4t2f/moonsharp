@@ -36,8 +36,8 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Gets the type descriptor of this userdata
 		/// </summary>
-		public IUserDataDescriptor Descriptor { get; private set; }
-
+		//public IUserDataDescriptor Descriptor { get; private set; }
+#warning TODO step 1: look up each time, step 2: use BoundUserData, should have almost the same performance
 
 
 		static UserData()
@@ -235,13 +235,17 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="o">The object</param>
 		/// <returns></returns>
-		public static DynValue Create(UserDataRegistry registry, object o)
+		public static DynValue Create(object o)
 		{
+			UserDataRegistry registry = null;
+			#warning TODO this is the interesting part
+			// we have to create an instance of UserData without an actual IUserDataDescriptor.
+			// The IUserDataDescritor will be acquired when the user data is being assigned to a script.
 			var descr = GetDescriptorForObject(registry, o);
 			if (descr == null)
 			{
 				if (o is Type)
-					return CreateStatic(registry, (Type)o);
+					return CreateStatic((Type)o);
 
 				return null;
 			}
@@ -270,8 +274,12 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="t">The type</param>
 		/// <returns></returns>
-		public static DynValue CreateStatic(UserDataRegistry registry, Type t)
+		public static DynValue CreateStatic(Type t)
 		{
+			UserDataRegistry registry = null;
+#warning TODO this is the interesting part
+			// we have to create an instance of UserData without an actual IUserDataDescriptor.
+			// The IUserDataDescritor will be acquired when the user data is being assigned to a script.
 			return CreateStatic(GetDescriptorForType(registry, t, false));
 		}
 
@@ -280,9 +288,9 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <typeparam name="T">The Type</typeparam>
 		/// <returns></returns>
-		public static DynValue CreateStatic<T>(UserDataRegistry registry)
+		public static DynValue CreateStatic<T>()
 		{
-			return CreateStatic(GetDescriptorForType(registry, typeof(T), false));
+			return CreateStatic(typeof(T));
 		}
 
         /// <summary>
