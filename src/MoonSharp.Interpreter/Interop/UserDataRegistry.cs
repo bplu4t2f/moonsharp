@@ -43,10 +43,48 @@ namespace MoonSharp.Interpreter.Interop
 			return this.TypeDescriptorRegistry.RegisterProxyType_Impl(this, proxyFactory, accessMode, friendlyName);
 		}
 
-		private void RegisterAssembly(Assembly asm, bool includeExtensionTypes)
+		/// <summary>
+		/// Registers all types marked with a MoonSharpUserDataAttribute that ar contained in an assembly.
+		/// </summary>
+		/// <param name="asm">The assembly.</param>
+		/// <param name="includeExtensionTypes">if set to <c>true</c> extension types are registered to the appropriate registry.</param>
+		public void RegisterAssembly(Assembly asm, bool includeExtensionTypes)
 		{
-#warning TODO remove
-			this.TypeDescriptorRegistry.RegisterAssembly(asm, includeExtensionTypes);
+			if (asm == null)
+			{
+#if NETFX_CORE || DOTNET_CORE
+					throw new NotSupportedException("Assembly.GetCallingAssembly is not supported on target framework.");
+#else
+				asm = Assembly.GetCallingAssembly();
+#endif
+			}
+
+			if (includeExtensionTypes)
+			{
+				var extensionTypes = from t in asm.SafeGetTypes()
+									 let attributes = Compatibility.Framework.Do.GetCustomAttributes(t, typeof(System.Runtime.CompilerServices.ExtensionAttribute), true)
+									 where attributes != null && attributes.Length > 0
+									 select new { Attributes = attributes, DataType = t };
+
+				foreach (var extType in extensionTypes)
+				{
+					UserData.RegisterExtensionType(this, extType.DataType);
+				}
+			}
+
+
+			var userDataTypes = from t in asm.SafeGetTypes()
+								let attributes = Compatibility.Framework.Do.GetCustomAttributes(t, typeof(MoonSharpUserDataAttribute), true)
+								where attributes != null && attributes.Length > 0
+								select new { Attributes = attributes, DataType = t };
+
+			foreach (var userDataType in userDataTypes)
+			{
+				UserData.RegisterType(this, userDataType.DataType, userDataType.Attributes
+					.OfType<MoonSharpUserDataAttribute>()
+					.First()
+					.AccessMode);
+			}
 		}
 
 		public bool IsTypeRegistered(Type type)

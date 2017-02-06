@@ -137,52 +137,7 @@ namespace MoonSharp.Interpreter
 		/// <param name="includeExtensionTypes">if set to <c>true</c> extension types are registered to the appropriate registry.</param>
 		public static void RegisterAssembly(UserDataRegistry registry, Assembly asm = null, bool includeExtensionTypes = false)
 		{
-			if (asm == null)
-			{
-				#if NETFX_CORE || DOTNET_CORE
-					throw new NotSupportedException("Assembly.GetCallingAssembly is not supported on target framework.");
-				#else
-					asm = Assembly.GetCallingAssembly();
-				#endif
-			}
-
-			//registry.NotNull(nameof(registry)).RegisterAssembly(asm, includeExtensionTypes);
-
-			if (asm == null)
-			{
-#if NETFX_CORE || DOTNET_CORE
-					throw new NotSupportedException("Assembly.GetCallingAssembly is not supported on target framework.");
-#else
-				asm = Assembly.GetCallingAssembly();
-#endif
-			}
-
-			if (includeExtensionTypes)
-			{
-				var extensionTypes = from t in asm.SafeGetTypes()
-									 let attributes = Compatibility.Framework.Do.GetCustomAttributes(t, typeof(System.Runtime.CompilerServices.ExtensionAttribute), true)
-									 where attributes != null && attributes.Length > 0
-									 select new { Attributes = attributes, DataType = t };
-
-				foreach (var extType in extensionTypes)
-				{
-					UserData.RegisterExtensionType(registry, extType.DataType);
-				}
-			}
-
-
-			var userDataTypes = from t in asm.SafeGetTypes()
-								let attributes = Compatibility.Framework.Do.GetCustomAttributes(t, typeof(MoonSharpUserDataAttribute), true)
-								where attributes != null && attributes.Length > 0
-								select new { Attributes = attributes, DataType = t };
-
-			foreach (var userDataType in userDataTypes)
-			{
-				UserData.RegisterType(registry, userDataType.DataType, userDataType.Attributes
-					.OfType<MoonSharpUserDataAttribute>()
-					.First()
-					.AccessMode);
-			}
+			registry.NotNull(nameof(registry)).RegisterAssembly(asm, includeExtensionTypes);
 		}
 
 		/// <summary>
