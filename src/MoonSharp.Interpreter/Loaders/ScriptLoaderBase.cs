@@ -57,7 +57,7 @@ namespace MoonSharp.Interpreter.Loaders
 		/// Resolves the name of a module to a filename (which will later be passed to OpenScriptFile).
 		/// The resolution happens first on paths included in the LUA_PATH global variable (if and only if
 		/// the IgnoreLuaPathGlobal is false), and - if the variable does not exist - by consulting the
-		/// ScriptOptions.ModulesPaths array. Override to provide a different behaviour.
+		/// <see cref="ScriptOptions.ModulesPaths"/> array. Override to provide a different behaviour.
 		/// </summary>
 		/// <param name="modname">The modname.</param>
 		/// <param name="globalContext">The global context.</param>
