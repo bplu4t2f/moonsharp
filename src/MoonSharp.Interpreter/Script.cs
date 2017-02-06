@@ -55,6 +55,18 @@ namespace MoonSharp.Interpreter
 			};
 		}
 
+#if RCOMPAT
+		public Script()
+			: this(null)
+		{
+		}
+
+		public Script(CoreModules coreModules)
+			: this(coreModules, null)
+		{
+		}
+#endif
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Script"/> class.
 		/// </summary>
@@ -69,9 +81,14 @@ namespace MoonSharp.Interpreter
 		/// <param name="coreModules">The core modules to be pre-registered in the default global table.</param>
 		public Script(CoreModules coreModules, Interop.UserDataRegistry registry)
 		{
-            this.TypeRegistry = registry ?? new Interop.UserDataRegistry();
+			this.TypeRegistry =
+#if RCOMPAT
+				registry ?? Interop.UserDataRegistry.DefaultRegistry;
+#else
+				registry.NotNull(nameof(registry));
+#endif
 
-            Options = new ScriptOptions(DefaultOptions);
+			Options = new ScriptOptions(DefaultOptions);
 			PerformanceStats = new PerformanceStatistics();
 			Registry = new Table(this);
 
@@ -388,6 +405,13 @@ namespace MoonSharp.Interpreter
 			Script S = new Script(registry);
 			return S.DoString(code);
 		}
+
+#if RCOMPAT
+		public static DynValue RunString(string code)
+		{
+			return RunString(code, null);
+		}
+#endif
 
 		/// <summary>
 		/// Creates a closure from a bytecode address.

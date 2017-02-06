@@ -56,6 +56,33 @@ namespace MoonSharp.Interpreter
 			return registry.NotNull(nameof(registry)).RegisterType(typeof(T), accessMode, friendlyName, null);
 		}
 
+#if RCOMPAT
+		public static IUserDataDescriptor RegisterType<T>(InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
+		{
+			return RegisterType<T>(UserDataRegistry.DefaultRegistry, accessMode, friendlyName);
+		}
+
+		public static IUserDataDescriptor RegisterType(Type type, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
+		{
+			return RegisterType(UserDataRegistry.DefaultRegistry, type, accessMode, friendlyName);
+		}
+
+		public static void RegisterExtensionType(Type type, InteropAccessMode accessMode = InteropAccessMode.Default)
+		{
+			RegisterExtensionType(UserDataRegistry.DefaultRegistry, type, accessMode);
+		}
+
+		public static void UnregisterType<T>()
+		{
+			UnregisterType<T>(UserDataRegistry.DefaultRegistry);
+		}
+
+		public static void UnregisterType(Type type)
+		{
+			UnregisterType(UserDataRegistry.DefaultRegistry, type);
+		}
+#endif
+
 		/// <summary>
 		/// Registers a type for userdata interop
 		/// </summary>

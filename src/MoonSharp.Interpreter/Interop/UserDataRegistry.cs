@@ -21,6 +21,15 @@ namespace MoonSharp.Interpreter.Interop
 		internal TypeDescriptorRegistry TypeDescriptorRegistry { get; } = new TypeDescriptorRegistry();
 		internal ExtensionMethodsRegistry ExtensionMethodsRegistry { get; } = new ExtensionMethodsRegistry();
 
+#if RCOMPAT
+		/// <summary>
+		/// This is "THE" default registry that is used if null is passed to any of the UserData methods involving interop
+		/// that would usually take a <see cref="UserDataRegistry"/> instance.
+		/// <para>Exists mainly for compatibility with existing code.</para>
+		/// </summary>
+		public static UserDataRegistry DefaultRegistry { get; } = new UserDataRegistry();
+#endif
+
 		private void RegisterType<T>(InteropAccessMode accessMode)
 		{
 			this.RegisterType(typeof(T), accessMode, null, null);
