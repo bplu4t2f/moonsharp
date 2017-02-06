@@ -107,7 +107,7 @@ namespace MoonSharp.Interpreter
 		{
 			return registry.NotNull(nameof(registry)).RegisterType(typeof(T), InteropAccessMode.Default, null, customDescriptor);
 		}
-#warning TODO try to remove this
+#warning TODO try to remove this - why can we register a IUserDataDescriptor with a possible incompatible type?
 
 		/// <summary>
 		/// Registers a type with a custom userdata descriptor
@@ -118,6 +118,7 @@ namespace MoonSharp.Interpreter
 		{
 			return registry.NotNull(nameof(registry)).RegisterType(type, InteropAccessMode.Default, null, customDescriptor);
 		}
+#warning TODO try to remove this - why can we register a IUserDataDescriptor with a possible incompatible type?
 
 		/// <summary>
 		/// Registers a type with a custom userdata descriptor
@@ -435,7 +436,8 @@ namespace MoonSharp.Interpreter
 		{
 			var registeredTypesPairs = registry.NotNull(nameof(registry)).GetRegisteredTypeDescriptors(useHistoricalData);
 #warning TODO shouldn't this be p => p.Key?
-			return registeredTypesPairs.Select(p => p.Value.Type);
+			//return registeredTypesPairs.Select(p => p.Value.Type);
+			return registeredTypesPairs.Select(p => p.Key);
 		}
 
 		

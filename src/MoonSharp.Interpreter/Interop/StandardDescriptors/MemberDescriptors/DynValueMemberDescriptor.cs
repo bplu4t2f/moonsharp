@@ -111,6 +111,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="t">The table to be filled</param>
 		public void PrepareForWiring(Table t)
 		{
+#warning TODO nameof? typeof? or is this possibly inherited?
 			t.Set("class", DynValue.NewString(this.GetType().FullName));
 			t.Set("name", DynValue.NewString(this.Name));
 

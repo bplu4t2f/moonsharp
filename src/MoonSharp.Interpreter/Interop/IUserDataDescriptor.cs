@@ -15,7 +15,6 @@ namespace MoonSharp.Interpreter.Interop
 		/// Gets the type this descriptor refers to
 		/// </summary>
 		Type Type { get; }
-#warning TODO try to remove this
         /// <summary>
         /// Performs an "index" "get" operation.
         /// </summary>
