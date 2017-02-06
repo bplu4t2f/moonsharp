@@ -12,10 +12,19 @@ namespace MoonSharp.Interpreter.Interop
 	{
 		public UserDataRegistry()
 		{
+			this.RegisterType<StandardDescriptors.EventFacade>(InteropAccessMode.NoReflectionAllowed);
+			this.RegisterType<AnonWrapper>(InteropAccessMode.HideMembers);
+			this.RegisterType<EnumerableWrapper>(InteropAccessMode.NoReflectionAllowed);
+			this.RegisterType<Serialization.Json.JsonNull>(InteropAccessMode.Reflection);
 		}
 
 		internal TypeDescriptorRegistry TypeDescriptorRegistry { get; } = new TypeDescriptorRegistry();
 		internal ExtensionMethodsRegistry ExtensionMethodsRegistry { get; } = new ExtensionMethodsRegistry();
+
+		private void RegisterType<T>(InteropAccessMode accessMode)
+		{
+			this.RegisterType(typeof(T), accessMode, null, null);
+		}
 
 		public IRegistrationPolicy RegistrationPolicy
 		{
@@ -25,13 +34,13 @@ namespace MoonSharp.Interpreter.Interop
 
 		public IUserDataDescriptor RegisterType(Type type, InteropAccessMode accessMode, string friendlyName, IUserDataDescriptor descriptor)
 		{
-			return this.TypeDescriptorRegistry.RegisterType_Impl(type, accessMode, friendlyName, descriptor);
+			return this.TypeDescriptorRegistry.RegisterType_Impl(this, type, accessMode, friendlyName, descriptor);
 		}
 
 #warning TODO find out what a proxy type is
 		public IUserDataDescriptor RegisterProxyType(IProxyFactory proxyFactory, InteropAccessMode accessMode, string friendlyName)
 		{
-			return this.TypeDescriptorRegistry.RegisterProxyType_Impl(proxyFactory, accessMode, friendlyName);
+			return this.TypeDescriptorRegistry.RegisterProxyType_Impl(this, proxyFactory, accessMode, friendlyName);
 		}
 
 		private void RegisterAssembly(Assembly asm, bool includeExtensionTypes)
@@ -52,7 +61,7 @@ namespace MoonSharp.Interpreter.Interop
 
 		public IUserDataDescriptor GetDescriptorForType(Type type, bool searchInterfaces)
 		{
-			return this.TypeDescriptorRegistry.GetDescriptorForType(type, searchInterfaces);
+			return this.TypeDescriptorRegistry.GetDescriptorForType(this, type, searchInterfaces);
 		}
 
 		public IEnumerable<KeyValuePair<Type, IUserDataDescriptor>> GetRegisteredTypeDescriptors(bool useHistoricalData)

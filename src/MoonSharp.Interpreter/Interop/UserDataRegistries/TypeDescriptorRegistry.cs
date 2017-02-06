@@ -17,14 +17,8 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 	{
         public TypeDescriptorRegistry()
         {
-            RegistrationPolicy = InteropRegistrationPolicy.Default;
-
-            RegisterType<StandardDescriptors.EventFacade>(InteropAccessMode.NoReflectionAllowed);
-            RegisterType<AnonWrapper>(InteropAccessMode.HideMembers);
-            RegisterType<EnumerableWrapper>(InteropAccessMode.NoReflectionAllowed);
-            RegisterType<Serialization.Json.JsonNull>(InteropAccessMode.Reflection);
-
-            DefaultAccessMode = InteropAccessMode.LazyOptimized;
+            this.RegistrationPolicy = InteropRegistrationPolicy.Default;
+            this.DefaultAccessMode = InteropAccessMode.LazyOptimized;
         }
 
 		private object s_Lock = new object();
@@ -35,11 +29,6 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
         /// </summary>
 		private Dictionary<Type, IUserDataDescriptor> s_TypeRegistryHistory = new Dictionary<Type, IUserDataDescriptor>();
 		private InteropAccessMode s_DefaultAccessMode;
-
-        private void RegisterType<T>(InteropAccessMode accessMode)
-        {
-            this.RegisterType_Impl(typeof(T), accessMode, null, null);
-        }
 
 		/// <summary>
 		/// Registers all types marked with a MoonSharpUserDataAttribute that ar contained in an assembly.
@@ -110,10 +99,10 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// <param name="accessMode">The access mode.</param>
 		/// <param name="friendlyName">Name of the friendly.</param>
 		/// <returns></returns>
-		internal IUserDataDescriptor RegisterProxyType_Impl(IProxyFactory proxyFactory, InteropAccessMode accessMode, string friendlyName)
+		internal IUserDataDescriptor RegisterProxyType_Impl(UserDataRegistry registry, IProxyFactory proxyFactory, InteropAccessMode accessMode, string friendlyName)
 		{
-			IUserDataDescriptor proxyDescriptor = RegisterType_Impl(proxyFactory.ProxyType, accessMode, friendlyName, null);
-			return RegisterType_Impl(proxyFactory.TargetType, accessMode, friendlyName, new ProxyUserDataDescriptor(proxyFactory, proxyDescriptor, friendlyName));
+			IUserDataDescriptor proxyDescriptor = RegisterType_Impl(registry, proxyFactory.ProxyType, accessMode, friendlyName, null);
+			return RegisterType_Impl(registry, proxyFactory.TargetType, accessMode, friendlyName, new ProxyUserDataDescriptor(proxyFactory, proxyDescriptor, friendlyName));
 		}
 
 
@@ -125,7 +114,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// <param name="friendlyName">Friendly name of the descriptor.</param>
 		/// <param name="descriptor">The descriptor, or null to use a default one.</param>
 		/// <returns></returns>
-		internal IUserDataDescriptor RegisterType_Impl(Type type, InteropAccessMode accessMode, string friendlyName, IUserDataDescriptor descriptor)
+		internal IUserDataDescriptor RegisterType_Impl(UserDataRegistry registry, Type type, InteropAccessMode accessMode, string friendlyName, IUserDataDescriptor descriptor)
 		{
 			accessMode = ResolveDefaultAccessModeForType(accessMode, type);
 
@@ -146,7 +135,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 					}
 					else if (Framework.Do.IsGenericTypeDefinition(type))
 					{
-						StandardGenericsUserDataDescriptor typeGen = new StandardGenericsUserDataDescriptor(this, type, accessMode);
+						StandardGenericsUserDataDescriptor typeGen = new StandardGenericsUserDataDescriptor(registry, type, accessMode);
 						return PerformRegistration(type, typeGen, oldDescriptor);
 					}
 					else if (Framework.Do.IsEnum(type))
@@ -156,7 +145,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 					}
 					else
 					{
-						StandardUserDataDescriptor udd = new StandardUserDataDescriptor(this, type, accessMode, friendlyName);
+						StandardUserDataDescriptor udd = new StandardUserDataDescriptor(registry, type, accessMode, friendlyName);
 
 						if (accessMode == InteropAccessMode.BackgroundOptimized)
 						{
@@ -230,7 +219,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 		/// <param name="type">The CLR type for which the descriptor is desired.</param>
 		/// <param name="searchInterfaces">if set to <c>true</c> interfaces are used in the search.</param>
 		/// <returns></returns>
-		internal IUserDataDescriptor GetDescriptorForType(Type type, bool searchInterfaces)
+		internal IUserDataDescriptor GetDescriptorForType(UserDataRegistry registry, Type type, bool searchInterfaces)
 		{
 			lock (s_Lock)
 			{
@@ -245,7 +234,7 @@ namespace MoonSharp.Interpreter.Interop.UserDataRegistries
 					// no autoreg of delegates
 					if (!Framework.Do.IsAssignableFrom((typeof(Delegate)), type))
 					{
-						return RegisterType_Impl(type, DefaultAccessMode, type.FullName, null);
+						return RegisterType_Impl(registry, type, DefaultAccessMode, type.FullName, null);
 					}
 				}
 

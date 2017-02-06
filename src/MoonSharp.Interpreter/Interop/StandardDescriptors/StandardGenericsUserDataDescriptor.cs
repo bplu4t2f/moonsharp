@@ -13,7 +13,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// </summary>
 		public InteropAccessMode AccessMode { get; private set; }
 
-        private readonly UserDataRegistries.TypeDescriptorRegistry registry;
+        private readonly UserDataRegistry registry;
 
 
 		/// <summary>
@@ -22,13 +22,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="type">The type this descriptor refers to.</param>
 		/// <param name="accessMode">The interop access mode this descriptor uses for members access</param>
 		public StandardGenericsUserDataDescriptor(UserDataRegistry registry, Type type, InteropAccessMode accessMode)
-			: this(registry.NotNull(nameof(registry)).TypeDescriptorRegistry, type, accessMode)
 		{
-		}
-		
-		internal StandardGenericsUserDataDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, Type type, InteropAccessMode accessMode)
-		{
-#warning TODO actually only need type descriptor registry
 			if (accessMode == InteropAccessMode.NoReflectionAllowed)
 				throw new ArgumentException("Can't create a StandardGenericsUserDataDescriptor under a NoReflectionAllowed access mode");
 
@@ -78,18 +72,13 @@ namespace MoonSharp.Interpreter.Interop
 		/// <inheritdoc/>
 		public IUserDataDescriptor Generate(Type type)
 		{
-			if (this.registry.IsTypeRegistered(type))
-			{
+			if (UserData.IsTypeRegistered(this.registry, type))
 				return null;
-			}
-#warning TODO
-			//if (UserData.IsTypeRegistered(this.registry, type))
-			//	return null;
 
 			if (Framework.Do.IsGenericTypeDefinition(type))
 				return null;
 
-			return this.registry.RegisterType_Impl(type, AccessMode, null, null);
+			return UserData.RegisterType(this.registry, type, this.AccessMode);
 		}
 	}
 }

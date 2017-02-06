@@ -24,11 +24,6 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="accessMode">The interop access mode this descriptor uses for members access</param>
 		/// <param name="friendlyName">A human readable friendly name of the descriptor.</param>
 		public StandardUserDataDescriptor(UserDataRegistry registry, Type type, InteropAccessMode accessMode, string friendlyName = null)
-			: this(registry.NotNull(nameof(registry)).TypeDescriptorRegistry, type, accessMode, friendlyName)
-		{
-		}
-
-		internal StandardUserDataDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, Type type, InteropAccessMode accessMode, string friendlyName)
 			: base(type, friendlyName)
 		{
 			if (accessMode == InteropAccessMode.NoReflectionAllowed)
@@ -38,7 +33,7 @@ namespace MoonSharp.Interpreter.Interop
 				accessMode = InteropAccessMode.Reflection;
 
 			if (accessMode == InteropAccessMode.Default)
-				accessMode = registry.NotNull(nameof(registry)).DefaultAccessMode;
+				accessMode = registry.NotNull(nameof(registry)).TypeDescriptorRegistry.DefaultAccessMode;
 
 			AccessMode = accessMode;
 
@@ -48,7 +43,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Fills the member list.
 		/// </summary>
-		private void FillMemberList(UserDataRegistries.TypeDescriptorRegistry registry)
+		private void FillMemberList(UserDataRegistry registry)
 		{
 			HashSet<string> membersToIgnore = new HashSet<string>(
 				Framework.Do.GetCustomAttributes(this.Type, typeof(MoonSharpHideMemberAttribute), true)
@@ -143,15 +138,12 @@ namespace MoonSharp.Interpreter.Interop
 				{
 					if (Framework.Do.IsNestedPublic(nestedType) || Framework.Do.GetCustomAttributes(nestedType, typeof(MoonSharpUserDataAttribute), true).Length > 0)
 					{
-						var descr = registry.RegisterType_Impl(nestedType, this.AccessMode, null, null);
-#warning TODO remove
-						//var descr = UserData.RegisterType(registry, nestedType, this.AccessMode);
+						var descr = UserData.RegisterType(registry, nestedType, this.AccessMode);
 
 						if (descr != null)
 						{
 #warning TODO why was this so convoluted?
 							//AddDynValue(nestedType.Name, UserData.CreateStatic(registry, nestedType));
-#warning TODO remove
 							var userData = UserData.CreateStatic(descr);
 							AddDynValue(nestedType.Name, userData);
 						}
