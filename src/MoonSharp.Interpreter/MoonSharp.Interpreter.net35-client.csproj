@@ -196,6 +196,7 @@
     <Compile Include="Interop\StandardDescriptors\StandardGenericsUserDataDescriptor.cs" />
     <Compile Include="Interop\UserDataRegistries\ExtensionMethodsRegistry.cs" />
     <Compile Include="Interop\UserDataRegistries\TypeDescriptorRegistry.cs" />
+    <Compile Include="Interop\UserDataRegistry.cs" />
     <Compile Include="IO\BinDumpBinaryReader.cs" />
     <Compile Include="IO\BinDumpBinaryWriter.cs">
       <SubType>Code</SubType>
@@ -301,6 +302,7 @@
     <Compile Include="Loaders\EmbeddedResourcesScriptLoader.cs" />
     <Compile Include="Loaders\FileSystemScriptLoader.cs" />
     <Compile Include="Loaders\InvalidScriptLoader.cs" />
+    <Compile Include="NotNullHelper.cs" />
     <Compile Include="Options\ColonOperatorBehaviour.cs" />
     <Compile Include="Platforms\DotNetCorePlatformAccessor.cs" />
     <Compile Include="REPL\ReplHistoryNavigator.cs" />

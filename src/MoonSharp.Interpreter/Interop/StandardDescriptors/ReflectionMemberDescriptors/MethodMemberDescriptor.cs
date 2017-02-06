@@ -41,7 +41,12 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="methodBase">The MethodBase (MethodInfo or ConstructorInfo) got through reflection.</param>
 		/// <param name="accessMode">The interop access mode.</param>
 		/// <exception cref="System.ArgumentException">Invalid accessMode</exception>
-		public MethodMemberDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, MethodBase methodBase, InteropAccessMode accessMode = InteropAccessMode.Default)
+		public MethodMemberDescriptor(UserDataRegistry registry, MethodBase methodBase, InteropAccessMode accessMode = InteropAccessMode.Default)
+			: this(registry.NotNull(nameof(registry)).TypeDescriptorRegistry, methodBase, accessMode)
+		{
+		}
+
+		internal MethodMemberDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, MethodBase methodBase, InteropAccessMode accessMode)
 		{
 			CheckMethodIsCompatible(methodBase, true);
 
@@ -84,7 +89,7 @@ namespace MoonSharp.Interpreter.Interop
 				accessMode = InteropAccessMode.Reflection;
 
 			if (accessMode == InteropAccessMode.Default)
-				accessMode = registry.DefaultAccessMode;
+				accessMode = registry.NotNull(nameof(registry)).DefaultAccessMode;
 
 			if (accessMode == InteropAccessMode.HideMembers)
 				throw new ArgumentException("Invalid accessMode");
@@ -109,7 +114,12 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns>
 		/// A new MethodMemberDescriptor or null.
 		/// </returns>
-		public static MethodMemberDescriptor TryCreateIfVisible(UserDataRegistries.TypeDescriptorRegistry registry, MethodBase methodBase, InteropAccessMode accessMode, bool forceVisibility = false)
+		public static MethodMemberDescriptor TryCreateIfVisible(UserDataRegistry registry, MethodBase methodBase, InteropAccessMode accessMode, bool forceVisibility = false)
+		{
+			return TryCreateIfVisible(registry.NotNull(nameof(registry)).TypeDescriptorRegistry, methodBase, accessMode, forceVisibility);
+		}
+
+		internal static MethodMemberDescriptor TryCreateIfVisible(UserDataRegistries.TypeDescriptorRegistry registry, MethodBase methodBase, InteropAccessMode accessMode, bool forceVisibility)
 		{
 			if (!CheckMethodIsCompatible(methodBase, false))
 				return null;

@@ -83,8 +83,9 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		/// <summary>
 		/// Converts a generic object to JSON
 		/// </summary>
-		public static string ObjectToJson(Interop.UserDataRegistries.TypeDescriptorRegistry registry, object obj, JsonSerializationOptions options = null)
+		public static string ObjectToJson(Interop.UserDataRegistry registry, object obj, JsonSerializationOptions options = null)
 		{
+#warning TODO remove registry
 			DynValue v = ObjectValueConverter.SerializeObjectToDynValue(null, obj, JsonNull.Create(registry));
 			return JsonTableConverter.TableToJson(v.Table, options);
 		}
@@ -146,8 +147,11 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		/// <param name="json">The json.</param>
 		/// <param name="script">The script to which the table is assigned (null for prime tables).</param>
 		/// <returns>A table containing the representation of the given json.</returns>
-		public static Table JsonToTable(Interop.UserDataRegistries.TypeDescriptorRegistry registry, string json, Script script = null)
+		public static Table JsonToTable(Interop.UserDataRegistry registry, string json, Script script = null)
 		{
+			registry.NotNull(nameof(registry));
+
+#warning TODO remove registry
 			Lexer L = new Lexer(0, json, false, true);
 
 			if (L.Current.Type == TokenType.Brk_Open_Curly)
@@ -163,7 +167,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 			if (L.Current.Type != type)
 				throw new SyntaxErrorException(L.Current, "Unexpected token : '{0}'", L.Current.Text);
 		}
-		private static Table ParseJsonArray(Interop.UserDataRegistries.TypeDescriptorRegistry registry, Lexer L, Script script)
+		private static Table ParseJsonArray(Interop.UserDataRegistry registry, Lexer L, Script script)
 		{
 			Table t = new Table(script);
 
@@ -182,7 +186,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 			return t;
 		}
 
-		private static Table ParseJsonObject(Interop.UserDataRegistries.TypeDescriptorRegistry registry, Lexer L, Script script)
+		private static Table ParseJsonObject(Interop.UserDataRegistry registry, Lexer L, Script script)
 		{
 			Table t = new Table(script);
 
@@ -206,7 +210,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 			return t;
 		}
 
-		private static DynValue ParseJsonValue(Interop.UserDataRegistries.TypeDescriptorRegistry registry, Lexer L, Script script)
+		private static DynValue ParseJsonValue(Interop.UserDataRegistry registry, Lexer L, Script script)
 		{
 			if (L.Current.Type == TokenType.Brk_Open_Curly)
 			{

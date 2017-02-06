@@ -58,7 +58,7 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Script"/> class.
 		/// </summary>
-		public Script(Interop.UserDataRegistries.TypeDescriptorRegistry registry)
+		public Script(Interop.UserDataRegistry registry)
 			: this(CoreModules.Preset_Default, registry)
 		{
 		}
@@ -67,9 +67,9 @@ namespace MoonSharp.Interpreter
 		/// Initializes a new instance of the <see cref="Script"/> class.
 		/// </summary>
 		/// <param name="coreModules">The core modules to be pre-registered in the default global table.</param>
-		public Script(CoreModules coreModules, Interop.UserDataRegistries.TypeDescriptorRegistry registry)
+		public Script(CoreModules coreModules, Interop.UserDataRegistry registry)
 		{
-            this.TypeRegistry = registry ?? new Interop.UserDataRegistries.TypeDescriptorRegistry();
+            this.TypeRegistry = registry ?? new Interop.UserDataRegistry();
 
             Options = new ScriptOptions(DefaultOptions);
 			PerformanceStats = new PerformanceStatistics();
@@ -372,7 +372,7 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="filename">The filename.</param>
 		/// A DynValue containing the result of the processing of the executed script.
-		public static DynValue RunFile(string filename, Interop.UserDataRegistries.TypeDescriptorRegistry registry)
+		public static DynValue RunFile(string filename, Interop.UserDataRegistry registry)
 		{
 			Script S = new Script(registry);
 			return S.DoFile(filename);
@@ -383,7 +383,7 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="code">The Lua/MoonSharp code.</param>
 		/// A DynValue containing the result of the processing of the executed script.
-		public static DynValue RunString(string code, Interop.UserDataRegistries.TypeDescriptorRegistry registry)
+		public static DynValue RunString(string code, Interop.UserDataRegistry registry)
 		{
 			Script S = new Script(registry);
 			return S.DoString(code);
@@ -749,6 +749,7 @@ namespace MoonSharp.Interpreter
 			get { return this; }
 		}
 
-        public Interop.UserDataRegistries.TypeDescriptorRegistry TypeRegistry { get; }
-    }
+        public Interop.UserDataRegistry TypeRegistry { get; }
+#warning TODO rename to UserDataRegistry
+	}
 }

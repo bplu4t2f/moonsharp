@@ -16,18 +16,24 @@ namespace MoonSharp.Interpreter.Interop
         private readonly UserDataRegistries.TypeDescriptorRegistry registry;
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StandardUserDataDescriptor"/> class.
-        /// </summary>
-        /// <param name="type">The type this descriptor refers to.</param>
-        /// <param name="accessMode">The interop access mode this descriptor uses for members access</param>
-        public StandardGenericsUserDataDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, Type type, InteropAccessMode accessMode)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="StandardUserDataDescriptor"/> class.
+		/// </summary>
+		/// <param name="type">The type this descriptor refers to.</param>
+		/// <param name="accessMode">The interop access mode this descriptor uses for members access</param>
+		public StandardGenericsUserDataDescriptor(UserDataRegistry registry, Type type, InteropAccessMode accessMode)
+			: this(registry.NotNull(nameof(registry)).TypeDescriptorRegistry, type, accessMode)
 		{
+		}
+		
+		internal StandardGenericsUserDataDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, Type type, InteropAccessMode accessMode)
+		{
+#warning TODO actually only need type descriptor registry
 			if (accessMode == InteropAccessMode.NoReflectionAllowed)
 				throw new ArgumentException("Can't create a StandardGenericsUserDataDescriptor under a NoReflectionAllowed access mode");
 
 			AccessMode = accessMode;
-            this.registry = registry;
+            this.registry = registry.NotNull(nameof(registry));
 			this.Type = type;
 			this.Name = "@@" + type.FullName;
 		}
@@ -72,13 +78,18 @@ namespace MoonSharp.Interpreter.Interop
 		/// <inheritdoc/>
 		public IUserDataDescriptor Generate(Type type)
 		{
-			if (UserData.IsTypeRegistered(this.registry, type))
+			if (this.registry.IsTypeRegistered(type))
+			{
 				return null;
+			}
+#warning TODO
+			//if (UserData.IsTypeRegistered(this.registry, type))
+			//	return null;
 
 			if (Framework.Do.IsGenericTypeDefinition(type))
 				return null;
 
-			return UserData.RegisterType(this.registry, type, AccessMode);
+			return this.registry.RegisterType_Impl(type, AccessMode, null, null);
 		}
 	}
 }

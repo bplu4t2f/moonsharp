@@ -23,7 +23,12 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="type">The type this descriptor refers to.</param>
 		/// <param name="accessMode">The interop access mode this descriptor uses for members access</param>
 		/// <param name="friendlyName">A human readable friendly name of the descriptor.</param>
-		public StandardUserDataDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, Type type, InteropAccessMode accessMode, string friendlyName = null)
+		public StandardUserDataDescriptor(UserDataRegistry registry, Type type, InteropAccessMode accessMode, string friendlyName = null)
+			: this(registry.NotNull(nameof(registry)).TypeDescriptorRegistry, type, accessMode, friendlyName)
+		{
+		}
+
+		internal StandardUserDataDescriptor(UserDataRegistries.TypeDescriptorRegistry registry, Type type, InteropAccessMode accessMode, string friendlyName)
 			: base(type, friendlyName)
 		{
 			if (accessMode == InteropAccessMode.NoReflectionAllowed)
@@ -33,7 +38,7 @@ namespace MoonSharp.Interpreter.Interop
 				accessMode = InteropAccessMode.Reflection;
 
 			if (accessMode == InteropAccessMode.Default)
-				accessMode = registry.DefaultAccessMode;
+				accessMode = registry.NotNull(nameof(registry)).DefaultAccessMode;
 
 			AccessMode = accessMode;
 
@@ -64,7 +69,7 @@ namespace MoonSharp.Interpreter.Interop
 					if (membersToIgnore.Contains("__new"))
 						continue;
 
-					AddMember("__new", MethodMemberDescriptor.TryCreateIfVisible(registry, ci, this.AccessMode));
+					AddMember("__new", MethodMemberDescriptor.TryCreateIfVisible(registry, ci, this.AccessMode, false));
 				}
 
 				// valuetypes don't reflect their empty ctor.. actually empty ctors are a perversion, we don't care and implement ours
@@ -78,7 +83,7 @@ namespace MoonSharp.Interpreter.Interop
 			{
 				if (membersToIgnore.Contains(mi.Name)) continue;
 
-				MethodMemberDescriptor md = MethodMemberDescriptor.TryCreateIfVisible(registry, mi, this.AccessMode);
+				MethodMemberDescriptor md = MethodMemberDescriptor.TryCreateIfVisible(registry, mi, this.AccessMode, false);
 
 				if (md != null)
 				{
@@ -138,10 +143,18 @@ namespace MoonSharp.Interpreter.Interop
 				{
 					if (Framework.Do.IsNestedPublic(nestedType) || Framework.Do.GetCustomAttributes(nestedType, typeof(MoonSharpUserDataAttribute), true).Length > 0)
 					{
-						var descr = UserData.RegisterType(registry, nestedType, this.AccessMode);
+						var descr = registry.RegisterType_Impl(nestedType, this.AccessMode, null, null);
+#warning TODO remove
+						//var descr = UserData.RegisterType(registry, nestedType, this.AccessMode);
 
 						if (descr != null)
-							AddDynValue(nestedType.Name, UserData.CreateStatic(registry, nestedType));
+						{
+#warning TODO why was this so convoluted?
+							//AddDynValue(nestedType.Name, UserData.CreateStatic(registry, nestedType));
+#warning TODO remove
+							var userData = UserData.CreateStatic(descr);
+							AddDynValue(nestedType.Name, userData);
+						}
 					}
 				}
 			}
