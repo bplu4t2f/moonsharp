@@ -17,9 +17,12 @@ namespace MoonSharp.Interpreter
 	/// </summary>
 	public class UserData : RefIdObject
 	{
-		private UserData()
+		private UserData(object @object, IUserDataDescriptor descriptor)
 		{
+			if (descriptor == null) throw new ArgumentNullException(nameof(descriptor));
 			// This type can only be instantiated using one of the Create methods
+			this.Object = @object;
+			this.Descriptor = descriptor;
 		}
 
 		/// <summary>
@@ -31,12 +34,12 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Gets the object associated to this userdata (null for statics)
 		/// </summary>
-		public object Object { get; private set; }
+		public object Object { get; }
 
 		/// <summary>
 		/// Gets the type descriptor of this userdata
 		/// </summary>
-		public IUserDataDescriptor Descriptor { get; private set; }
+		public IUserDataDescriptor Descriptor { get; }
 
 
 
@@ -210,11 +213,7 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static DynValue Create(object o, IUserDataDescriptor descr)
 		{
-			return DynValue.NewUserData(new UserData()
-			{
-				Descriptor = descr,
-				Object = o
-			});
+			return DynValue.NewUserData(new UserData(o, descr));
 		}
 
 		/// <summary>
@@ -245,11 +244,7 @@ namespace MoonSharp.Interpreter
 		{
 			if (descr == null) return null;
 
-			return DynValue.NewUserData(new UserData()
-			{
-				Descriptor = descr,
-				Object = null
-			});
+			return DynValue.NewUserData(new UserData(null, descr));
 		}
 
 		/// <summary>
@@ -395,7 +390,7 @@ namespace MoonSharp.Interpreter
 			return registeredTypesPairs.Select(p => p.Value.Type);
 		}
 
-		
+
 
 	}
 }
