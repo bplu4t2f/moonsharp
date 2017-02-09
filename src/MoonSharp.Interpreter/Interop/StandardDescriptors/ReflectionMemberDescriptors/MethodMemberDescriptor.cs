@@ -169,12 +169,11 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// The internal callback which actually executes the method
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>
 		/// <returns></returns>
-		public override DynValue Execute(Script script, object obj, ScriptExecutionContext context, CallbackArguments args)
+		public override DynValue Execute(object obj, ScriptExecutionContext context, CallbackArguments args)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanExecute, obj);
 
@@ -183,7 +182,7 @@ namespace MoonSharp.Interpreter.Interop
 				((IOptimizableDescriptor)this).Optimize();
 
 			List<int> outParams = null;
-			object[] pars = base.BuildArgumentList(script, obj, context, args, out outParams);
+			object[] pars = base.BuildArgumentList(obj, context, args, out outParams);
 			object retv = null;
 
 			if (m_OptimizedFunc != null)
@@ -208,7 +207,7 @@ namespace MoonSharp.Interpreter.Interop
 					retv = MethodInfo.Invoke(obj, pars);
 			}
 
-			return BuildReturnValue(script, outParams, pars, retv);
+			return BuildReturnValue(context.OwnerScript, outParams, pars, retv);
 		}
 
 		/// <summary>

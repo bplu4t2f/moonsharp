@@ -5,15 +5,15 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors.HardwiredDescriptors
 {
 	public abstract class HardwiredMethodMemberDescriptor : FunctionMemberDescriptorBase
 	{
-		public override DynValue Execute(Script script, object obj, ScriptExecutionContext context, CallbackArguments args)
+		public override DynValue Execute(object obj, ScriptExecutionContext context, CallbackArguments args)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanExecute, obj);
 
 			List<int> outParams = null;
-			object[] pars = base.BuildArgumentList(script, obj, context, args, out outParams);
-			object retv = Invoke(script, obj, pars, CalcArgsCount(pars));
+			object[] pars = base.BuildArgumentList(obj, context, args, out outParams);
+			object retv = Invoke(context.OwnerScript, obj, pars, CalcArgsCount(pars));
 
-			return DynValue.FromObject(script, retv);
+			return DynValue.FromObject(context.OwnerScript, retv);
 		}
 
 		private int CalcArgsCount(object[] pars)
@@ -29,6 +29,7 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors.HardwiredDescriptors
 			return count;
 		}
 
+		// TODO do we need Script argument? Considering that it's already in pars[0] anyway if needed.
 		protected abstract object Invoke(Script script, object obj, object[] pars, int argscount);
 	}
 }

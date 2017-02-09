@@ -75,60 +75,55 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Gets a callback function as a delegate
 		/// </summary>
-		/// <param name="script">The script for which the callback must be generated.</param>
 		/// <param name="obj">The object (null for static).</param>
 		/// <returns></returns>
-		public Func<ScriptExecutionContext, CallbackArguments, DynValue> GetCallback(Script script, object obj = null)
+		public Func<ScriptExecutionContext, CallbackArguments, DynValue> GetCallback(object obj = null)
 		{
-			return (c, a) => Execute(script, obj, c, a);
+			return (c, a) => Execute(obj, c, a);
 		}
 
 		/// <summary>
 		/// Gets the callback function.
 		/// </summary>
-		/// <param name="script">The script for which the callback must be generated.</param>
 		/// <param name="obj">The object (null for static).</param>
 		/// <returns></returns>
-		public CallbackFunction GetCallbackFunction(Script script, object obj = null)
+		public CallbackFunction GetCallbackFunction(object obj = null)
 		{
-			return new CallbackFunction(GetCallback(script, obj), this.Name);
+			return new CallbackFunction(GetCallback(obj), this.Name);
 		}
 
 		/// <summary>
 		/// Gets the callback function as a DynValue.
 		/// </summary>
-		/// <param name="script">The script for which the callback must be generated.</param>
 		/// <param name="obj">The object (null for static).</param>
 		/// <returns></returns>
-		public DynValue GetCallbackAsDynValue(Script script, object obj = null)
+		public DynValue GetCallbackAsDynValue(object obj = null)
 		{
-			return DynValue.NewCallback(this.GetCallbackFunction(script, obj));
+			return DynValue.NewCallback(this.GetCallbackFunction(obj));
 		}
 
 		/// <summary>
 		/// Creates a callback DynValue starting from a MethodInfo.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="mi">The mi.</param>
 		/// <param name="obj">The object.</param>
 		/// <returns></returns>
-		public static DynValue CreateCallbackDynValue(Script script, MethodInfo mi, object obj = null)
+		public static DynValue CreateCallbackDynValue(MethodInfo mi, object obj = null)
 		{
 			var desc = new MethodMemberDescriptor(mi);
-			return desc.GetCallbackAsDynValue(script, obj);
+			return desc.GetCallbackAsDynValue(obj);
 		}
 
 
 		/// <summary>
 		/// Builds the argument list.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>
 		/// <param name="outParams">Output: A list containing the indices of all "out" parameters, or null if no out parameters are specified.</param>
 		/// <returns>The arguments, appropriately converted.</returns>
-		protected virtual object[] BuildArgumentList(Script script, object obj, ScriptExecutionContext context, CallbackArguments args,
+		protected virtual object[] BuildArgumentList(object obj, ScriptExecutionContext context, CallbackArguments args,
 			out List<int> outParams)
 		{
 			ParameterDescriptor[] parameters = Parameters;
@@ -157,7 +152,7 @@ namespace MoonSharp.Interpreter.Interop
 				// else, fill types with a supported type
 				else if (parameters[i].Type == typeof(Script))
 				{
-					pars[i] = script;
+					pars[i] = context.OwnerScript;
 				}
 				else if (parameters[i].Type == typeof(ScriptExecutionContext))
 				{
@@ -261,12 +256,11 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// The internal callback which actually executes the method
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>
 		/// <returns></returns>
-		public abstract DynValue Execute(Script script, object obj, ScriptExecutionContext context, CallbackArguments args);
+		public abstract DynValue Execute(object obj, ScriptExecutionContext context, CallbackArguments args);
 
 
 		/// <summary>
@@ -280,7 +274,6 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Gets the value of this member as a <see cref="DynValue" /> to be exposed to scripts.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object owning this member, or null if static.</param>
 		/// <returns>
 		/// The value of this member as a <see cref="DynValue" />.
@@ -288,7 +281,7 @@ namespace MoonSharp.Interpreter.Interop
 		public virtual DynValue GetValue(Script script, object obj)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
-			return this.GetCallbackAsDynValue(script, obj);
+			return this.GetCallbackAsDynValue(obj);
 		}
 
 		/// <summary>

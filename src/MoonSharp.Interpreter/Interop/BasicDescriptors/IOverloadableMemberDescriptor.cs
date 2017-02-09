@@ -17,7 +17,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>
 		/// <returns></returns>
-		DynValue Execute(Script script, object obj, ScriptExecutionContext context, CallbackArguments args);
+		DynValue Execute(object obj, ScriptExecutionContext context, CallbackArguments args);
 
 		/// <summary>
 		/// Gets the type which this extension method extends, null if this is not an extension method.

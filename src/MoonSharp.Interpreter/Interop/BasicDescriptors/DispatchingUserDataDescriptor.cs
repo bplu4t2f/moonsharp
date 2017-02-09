@@ -241,10 +241,10 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			{
 				m_ExtMethodsVersion = UserData.GetExtensionMethodsChangeVersion();
 
-				v = TryIndexOnExtMethod(script, obj, index.String);
-				if (v == null) v = TryIndexOnExtMethod(script, obj, UpperFirstLetter(index.String));
-				if (v == null) v = TryIndexOnExtMethod(script, obj, Camelify(index.String));
-				if (v == null) v = TryIndexOnExtMethod(script, obj, UpperFirstLetter(Camelify(index.String)));
+				v = TryIndexOnExtMethod(obj, index.String);
+				if (v == null) v = TryIndexOnExtMethod(obj, UpperFirstLetter(index.String));
+				if (v == null) v = TryIndexOnExtMethod(obj, Camelify(index.String));
+				if (v == null) v = TryIndexOnExtMethod(obj, UpperFirstLetter(Camelify(index.String)));
 			}
 
 			return v;
@@ -254,12 +254,11 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <summary>
 		/// Tries to perform an indexing operation by checking newly added extension methods for the given indexName.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="indexName">Member name to be indexed.</param>
 		/// <returns></returns>
 		/// <exception cref="System.NotImplementedException"></exception>
-		private DynValue TryIndexOnExtMethod(Script script, object obj, string indexName)
+		private DynValue TryIndexOnExtMethod(object obj, string indexName)
 		{
 			List<IOverloadableMemberDescriptor> methods = UserData.GetExtensionMethodsByNameAndType(indexName, this.Type);
 
@@ -268,7 +267,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 				var ext = new OverloadedMethodMemberDescriptor(indexName, this.Type);
 				ext.SetExtensionMethodsSnapshot(UserData.GetExtensionMethodsChangeVersion(), methods);
 				m_Members.Add(indexName, ext);
-				return DynValue.NewCallback(ext.GetCallback(script, obj));
+				return DynValue.NewCallback(ext.GetCallback(obj));
 			}
 
 			return null;

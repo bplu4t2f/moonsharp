@@ -81,17 +81,16 @@ namespace MoonSharp.Interpreter.Interop
 		/// Implementors should raise exceptions if the value cannot be executed or if access to an
 		/// instance member through a static userdata is attempted.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>
 		/// <returns></returns>
-		public DynValue Execute(Script script, object obj, ScriptExecutionContext context, CallbackArguments args)
+		public DynValue Execute(object obj, ScriptExecutionContext context, CallbackArguments args)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 
 			object vto = Activator.CreateInstance(ValueTypeDefaultCtor);
-			return ClrToScriptConversions.ObjectToDynValue(script, vto);
+			return ClrToScriptConversions.ObjectToDynValue(context.OwnerScript, vto);
 		}
 
 

@@ -120,7 +120,7 @@ namespace MoonSharp.Interpreter.Interop.Converters
 			if (v != null) return v;
 
 			if (obj is Delegate)
-				return DynValue.NewCallback(CallbackFunction.FromDelegate(script, (Delegate)obj));
+				return DynValue.NewCallback(CallbackFunction.FromDelegate((Delegate)obj));
 
 			if (obj is MethodInfo)
 			{
@@ -128,7 +128,7 @@ namespace MoonSharp.Interpreter.Interop.Converters
 
 				if (mi.IsStatic)
 				{
-					return DynValue.NewCallback(CallbackFunction.FromMethodInfo(script, mi));
+					return DynValue.NewCallback(CallbackFunction.FromMethodInfo(mi));
 				}
 			}
 

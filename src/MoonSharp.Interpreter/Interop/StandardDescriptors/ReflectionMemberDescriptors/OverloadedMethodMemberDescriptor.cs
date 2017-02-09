@@ -138,19 +138,18 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Performs the overloaded call.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>
 		/// <returns></returns>
 		/// <exception cref="ScriptRuntimeException">function call doesn't match any overload</exception>
-		private DynValue PerformOverloadedCall(Script script, object obj, ScriptExecutionContext context, CallbackArguments args)
+		private DynValue PerformOverloadedCall(object obj, ScriptExecutionContext context, CallbackArguments args)
 		{
 			bool extMethodCacheNotExpired = IgnoreExtensionMethods || (obj == null) || m_ExtensionMethodVersion == UserData.GetExtensionMethodsChangeVersion();
 
 			// common case, let's optimize for it
 			if (m_Overloads.Count == 1 && m_ExtOverloads.Count == 0 && extMethodCacheNotExpired)
-				return m_Overloads[0].Execute(script, obj, context, args);
+				return m_Overloads[0].Execute(obj, context, args);
 
 			if (m_Unsorted)
 			{
@@ -167,7 +166,7 @@ namespace MoonSharp.Interpreter.Interop
 #if DEBUG_OVERLOAD_RESOLVER
 						System.Diagnostics.Debug.WriteLine(string.Format("[OVERLOAD] : CACHED! slot {0}, hits: {1}", i, m_CacheHits));
 #endif
-						return m_Cache[i].Method.Execute(script, obj, context, args);
+						return m_Cache[i].Method.Execute(obj, context, args);
 					}
 				}
 			}
@@ -214,7 +213,7 @@ namespace MoonSharp.Interpreter.Interop
 			if (bestOverload != null)
 			{
 				Cache(obj != null, args, bestOverload);
-				return bestOverload.Execute(script, obj, context, args);
+				return bestOverload.Execute(obj, context, args);
 			}
 
 			throw new ScriptRuntimeException("function call doesn't match any overload");
@@ -417,12 +416,11 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Gets a callback function as a delegate
 		/// </summary>
-		/// <param name="script">The script for which the callback must be generated.</param>
 		/// <param name="obj">The object (null for static).</param>
 		/// <returns></returns>
-		public Func<ScriptExecutionContext, CallbackArguments, DynValue> GetCallback(Script script, object obj)
+		public Func<ScriptExecutionContext, CallbackArguments, DynValue> GetCallback(object obj)
 		{
-			return (context, args) => PerformOverloadedCall(script, obj, context, args);
+			return (context, args) => PerformOverloadedCall(obj, context, args);
 		}
 
 
@@ -435,12 +433,11 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Gets the callback function.
 		/// </summary>
-		/// <param name="script">The script for which the callback must be generated.</param>
 		/// <param name="obj">The object (null for static).</param>
 		/// <returns></returns>
-		public CallbackFunction GetCallbackFunction(Script script, object obj = null)
+		public CallbackFunction GetCallbackFunction(object obj = null)
 		{
-			return new CallbackFunction(GetCallback(script, obj), this.Name);
+			return new CallbackFunction(GetCallback(obj), this.Name);
 		}
 
 		/// <summary>
@@ -470,7 +467,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// </returns>
 		public DynValue GetValue(Script script, object obj)
 		{
-			return DynValue.NewCallback(this.GetCallbackFunction(script, obj));
+			return DynValue.NewCallback(this.GetCallbackFunction(obj));
 		}
 
 		/// <summary>

@@ -653,7 +653,7 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 
 			SomeClass obj = new SomeClass();
 
-			S.Globals["concat"] = CallbackFunction.FromDelegate(S, (Func<int, int, string>)obj.ConcatNums, opt);
+			S.Globals["concat"] = CallbackFunction.FromDelegate((Func<int, int, string>)obj.ConcatNums, opt);
 
 			DynValue res = S.DoString(script);
 
@@ -679,7 +679,7 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 
 			SomeClass_NoRegister obj = new SomeClass_NoRegister();
 
-			S.Globals["mklist"] = CallbackFunction.FromDelegate(S, (Func<int, int, List<int>>)obj.MkList, opt);
+			S.Globals["mklist"] = CallbackFunction.FromDelegate((Func<int, int, List<int>>)obj.MkList, opt);
 
 			DynValue res = S.DoString(script);
 

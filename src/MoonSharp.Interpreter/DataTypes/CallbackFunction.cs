@@ -80,11 +80,10 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Creates a CallbackFunction from a delegate.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="del">The delegate.</param>
 		/// <param name="accessMode">The access mode.</param>
 		/// <returns></returns>
-		public static CallbackFunction FromDelegate(Script script, Delegate del, InteropAccessMode accessMode = InteropAccessMode.Default)
+		public static CallbackFunction FromDelegate(Delegate del, InteropAccessMode accessMode = InteropAccessMode.Default)
 		{
 			if (accessMode == InteropAccessMode.Default)
 				accessMode = m_DefaultAccessMode;
@@ -94,26 +93,25 @@ namespace MoonSharp.Interpreter
 #else
 			MethodMemberDescriptor descr = new MethodMemberDescriptor(del.Method, accessMode);
 #endif
-			return descr.GetCallbackFunction(script, del.Target);
+			return descr.GetCallbackFunction(del.Target);
 		}
 
 
 		/// <summary>
 		/// Creates a CallbackFunction from a MethodInfo relative to a function.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="mi">The MethodInfo object.</param>
 		/// <param name="obj">The object to which the function applies, or null for static methods.</param>
 		/// <param name="accessMode">The access mode.</param>
 		/// <returns></returns>
 		/// <exception cref="System.ArgumentException">The method is not static.</exception>
-		public static CallbackFunction FromMethodInfo(Script script, System.Reflection.MethodInfo mi, object obj = null, InteropAccessMode accessMode = InteropAccessMode.Default)
+		public static CallbackFunction FromMethodInfo(System.Reflection.MethodInfo mi, object obj = null, InteropAccessMode accessMode = InteropAccessMode.Default)
 		{
 			if (accessMode == InteropAccessMode.Default)
 				accessMode = m_DefaultAccessMode;
 
 			MethodMemberDescriptor descr = new MethodMemberDescriptor(mi, accessMode);
-			return descr.GetCallbackFunction(script, obj);
+			return descr.GetCallbackFunction(obj);
 		}
 
 

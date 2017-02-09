@@ -51,17 +51,16 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// The internal callback which actually executes the method
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>
 		/// <returns></returns>
-		public override DynValue Execute(Script script, object obj, ScriptExecutionContext context, CallbackArguments args)
+		public override DynValue Execute(object obj, ScriptExecutionContext context, CallbackArguments args)
 		{
 			if (m_CallbackFunc != null)
 			{
 				object retv = m_CallbackFunc(obj, context, args);
-				return ClrToScriptConversions.ObjectToDynValue(script, retv);
+				return ClrToScriptConversions.ObjectToDynValue(context.OwnerScript, retv);
 			}
 			else
 			{

@@ -306,7 +306,7 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 			}
 
 			// Creates the callback over the 'this' object
-			DynValue callback = DynValue.NewCallback(ov.GetCallbackFunction(s, this)); 
+			DynValue callback = DynValue.NewCallback(ov.GetCallbackFunction(this)); 
 			s.Globals.Set("func", callback);
 
 			// Execute and check the results.
