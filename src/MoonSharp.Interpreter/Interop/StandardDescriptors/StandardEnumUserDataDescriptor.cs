@@ -107,7 +107,7 @@ namespace MoonSharp.Interpreter.Interop
 			if (dv.Type == DataType.Number)
 				return (long)dv.Number;
 
-			if ((dv.Type != DataType.UserData) || (dv.UserData.Descriptor != this) || (dv.UserData.Object == null))
+			if ((dv.Type != DataType.UserData) || (dv.UserData.Type != this.Type) || (dv.UserData.Object == null))
 				throw new ScriptRuntimeException("Enum userdata or number expected, or enum is not of the correct type.");
 
 			return m_EnumToLong(dv.UserData.Object);
@@ -123,7 +123,7 @@ namespace MoonSharp.Interpreter.Interop
 			if (dv.Type == DataType.Number)
 				return (ulong)dv.Number;
 
-			if ((dv.Type != DataType.UserData) || (dv.UserData.Descriptor != this) || (dv.UserData.Object == null))
+			if ((dv.Type != DataType.UserData) || (dv.UserData.Type != this.Type) || (dv.UserData.Object == null))
 				throw new ScriptRuntimeException("Enum userdata or number expected, or enum is not of the correct type.");
 
 			return m_EnumToULong(dv.UserData.Object);

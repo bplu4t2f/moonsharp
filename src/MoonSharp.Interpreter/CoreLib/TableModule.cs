@@ -234,7 +234,7 @@ namespace MoonSharp.Interpreter.CoreLib
 				if (v.Type != DataType.Number && v.Type != DataType.String)
 					throw new ScriptRuntimeException("invalid value ({1}) at index {0} in table for 'concat'", i, v.Type.ToLuaTypeString());
 
-				string s = v.ToPrintString();
+				string s = v.ToPrintString(executionContext.OwnerScript.TypeRegistry);
 
 				if (i != start)
 					sb.Append(sep);

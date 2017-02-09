@@ -337,7 +337,7 @@ namespace MoonSharp.Interpreter.Execution.VM
 					throw new ScriptRuntimeException("error handler not set to a function");
 				}
 
-				string newmsg = ret.ToPrintString();
+				string newmsg = ret.ToPrintString(this.m_Script.TypeRegistry);
 				if (newmsg != null)
 					return newmsg;
 			}
@@ -1244,9 +1244,9 @@ namespace MoonSharp.Interpreter.Execution.VM
 				{
 					UserData ud = obj.UserData;
 
-					if (!ud.Descriptor.SetIndex(this.GetScript(), ud.Object, originalIdx, value, isNameIndex))
+					if (!ud.GetDescriptor(this.m_Script.TypeRegistry).SetIndex(this.GetScript(), ud.Object, originalIdx, value, isNameIndex))
 					{
-						throw ScriptRuntimeException.UserDataMissingField(ud.Descriptor.Name, idx.String);
+						throw ScriptRuntimeException.UserDataMissingField(ud.GetDescriptor(this.m_Script.TypeRegistry).Name, idx.String);
 					}
 
 					return instructionPtr;
@@ -1326,11 +1326,11 @@ namespace MoonSharp.Interpreter.Execution.VM
 				{
 					UserData ud = obj.UserData;
 
-					var v = ud.Descriptor.Index(this.GetScript(), ud.Object, originalIdx, isNameIndex);
+					var v = ud.GetDescriptor(this.m_Script.TypeRegistry).Index(this.GetScript(), ud.Object, originalIdx, isNameIndex);
 
 					if (v == null)
 					{
-						throw ScriptRuntimeException.UserDataMissingField(ud.Descriptor.Name, idx.String);
+						throw ScriptRuntimeException.UserDataMissingField(ud.GetDescriptor(this.m_Script.TypeRegistry).Name, idx.String);
 					}
 
 					m_ValueStack.Push(v.AsReadOnly());

@@ -35,6 +35,13 @@ namespace MoonSharp.Interpreter.Interop
 		private bool m_IsAction = false;
 		private bool m_IsArrayCtor = false;
 
+#if RCOMPAT
+		public MethodMemberDescriptor(MethodBase methodBase, InteropAccessMode accessMode = InteropAccessMode.Default)
+			: this(UserDataRegistry.DefaultRegistry, methodBase, accessMode)
+		{
+		}
+#endif
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MethodMemberDescriptor"/> class.
 		/// </summary>

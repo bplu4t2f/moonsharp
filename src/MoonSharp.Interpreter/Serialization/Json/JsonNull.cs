@@ -16,14 +16,12 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		public static bool IsJsonNull(DynValue v)
 		{
 			return v.Type == DataType.UserData &&
-				v.UserData.Descriptor != null &&
-				v.UserData.Descriptor.Type == typeof(JsonNull);
+				v.UserData.Type == typeof(JsonNull);
 		}
 
 		[MoonSharpHidden]
 		public static DynValue Create()
 		{
-#warning TODO remove registry
 			return UserData.CreateStatic<JsonNull>();
 		}
 	}

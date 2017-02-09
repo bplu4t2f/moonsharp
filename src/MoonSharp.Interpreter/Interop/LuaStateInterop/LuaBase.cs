@@ -106,7 +106,7 @@ namespace MoonSharp.Interpreter.Interop.LuaStateInterop
 
 		protected static void LuaLAddValue(LuaLBuffer b)
 		{
-			b.StringBuilder.Append(b.LuaState.Pop().ToPrintString());
+			b.StringBuilder.Append(b.LuaState.Pop().ToPrintString(b.LuaState.ExecutionContext.OwnerScript.TypeRegistry));
 		}
 
 		protected static void LuaLAddLString(LuaLBuffer b, CharPtr s, uint p)

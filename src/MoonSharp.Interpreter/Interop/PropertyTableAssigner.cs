@@ -150,6 +150,7 @@ namespace MoonSharp.Interpreter.Interop
 
 		private bool TryAssignProperty(object obj, string name, DynValue value)
 		{
+#warning TODO trygetvalue
 			if (m_PropertyMap.ContainsKey(name))
 			{
 				PropertyInfo pi = m_PropertyMap[name];
@@ -200,7 +201,11 @@ namespace MoonSharp.Interpreter.Interop
 		public void AssignObject(object obj, Table data)
 		{
 			if (obj == null)
+#warning TODO wrong usage of argumentnullexception
 				throw new ArgumentNullException("Object is null");
+
+			if (data == null)
+				throw new ArgumentNullException(nameof(data));
 
 			if (!Framework.Do.IsInstanceOfType(m_Type, obj))
 				throw new ArgumentException(string.Format("Invalid type of object : got '{0}', expected {1}", obj.GetType().FullName, m_Type.FullName));

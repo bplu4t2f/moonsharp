@@ -17,7 +17,7 @@ namespace MoonSharp.Interpreter
 	/// </summary>
 	public class UserData : RefIdObject
 	{
-		private UserData()
+		private UserData(object @object, Type type)
 		{
 			// This type can only be instantiated using one of the Create methods
 		}
@@ -31,13 +31,20 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Gets the object associated to this userdata (null for statics)
 		/// </summary>
-		public object Object { get; private set; }
+		public object Object { get; }
+
+        public Type Type { get; }
 
 		/// <summary>
 		/// Gets the type descriptor of this userdata
 		/// </summary>
 		//public IUserDataDescriptor Descriptor { get; private set; }
 #warning TODO step 1: look up each time, step 2: use BoundUserData, should have almost the same performance
+
+        public IUserDataDescriptor GetDescriptor(UserDataRegistry registry)
+		{
+			return GetDescriptorForType(registry, this.Type, this.Object != null);
+		}
 
 
 		static UserData()
@@ -80,6 +87,28 @@ namespace MoonSharp.Interpreter
 		public static void UnregisterType(Type type)
 		{
 			UnregisterType(UserDataRegistry.DefaultRegistry, type);
+		}
+
+		public static IUserDataDescriptor RegisterType(IUserDataDescriptor descriptor)
+		{
+			return RegisterType(UserDataRegistry.DefaultRegistry, descriptor);
+		}
+
+		public static IUserDataDescriptor RegisterProxyType<TProxy, TTarget>(Func<TTarget, TProxy> wrapDelegate, InteropAccessMode accessMode = InteropAccessMode.Default, string friendlyName = null)
+			where TProxy : class
+			where TTarget : class
+		{
+			return RegisterProxyType<TProxy, TTarget>(UserDataRegistry.DefaultRegistry, wrapDelegate, accessMode, friendlyName);
+		}
+
+		public static IUserDataDescriptor RegisterType<T>(IUserDataDescriptor customDescriptor)
+		{
+			return RegisterType<T>(UserDataRegistry.DefaultRegistry, customDescriptor);
+		}
+
+		public static Table GetDescriptionOfRegisteredTypes(bool useHistoricalData = false)
+		{
+			return GetDescriptionOfRegisteredTypes(UserDataRegistry.DefaultRegistry, useHistoricalData);
 		}
 #endif
 
@@ -223,11 +252,11 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static DynValue Create(object o, IUserDataDescriptor descr)
 		{
-			return DynValue.NewUserData(new UserData()
-			{
-				Descriptor = descr,
-				Object = o
-			});
+			return DynValue.NewUserData(new UserData(o, o.GetType()));
+			//{
+			//	Descriptor = descr,
+			//	Object = o
+			//});
 		}
 
 		/// <summary>
@@ -237,20 +266,20 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static DynValue Create(object o)
 		{
-			UserDataRegistry registry = null;
+			//UserDataRegistry registry = null;
 			#warning TODO this is the interesting part
 			// we have to create an instance of UserData without an actual IUserDataDescriptor.
 			// The IUserDataDescritor will be acquired when the user data is being assigned to a script.
-			var descr = GetDescriptorForObject(registry, o);
-			if (descr == null)
-			{
-				if (o is Type)
-					return CreateStatic((Type)o);
+			//var descr = GetDescriptorForObject(registry, o);
+			//if (descr == null)
+			//{
+			//	if (o is Type)
+			//		return CreateStatic((Type)o);
 
-				return null;
-			}
+			//	return null;
+			//}
 
-			return Create(o, descr);
+			return Create(o, null);
 		}
 
 		/// <summary>
@@ -262,11 +291,7 @@ namespace MoonSharp.Interpreter
 		{
 			if (descr == null) return null;
 
-			return DynValue.NewUserData(new UserData()
-			{
-				Descriptor = descr,
-				Object = null
-			});
+			return CreateStatic(descr.Type);
 		}
 
 		/// <summary>
@@ -276,11 +301,12 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static DynValue CreateStatic(Type t)
 		{
-			UserDataRegistry registry = null;
+			//UserDataRegistry registry = null;
 #warning TODO this is the interesting part
 			// we have to create an instance of UserData without an actual IUserDataDescriptor.
 			// The IUserDataDescritor will be acquired when the user data is being assigned to a script.
-			return CreateStatic(GetDescriptorForType(registry, t, false));
+			//return CreateStatic(GetDescriptorForType(registry, t, false));
+			return DynValue.NewUserData(new UserData(null, t));
 		}
 
 		/// <summary>
@@ -293,17 +319,16 @@ namespace MoonSharp.Interpreter
 			return CreateStatic(typeof(T));
 		}
 
-        /// <summary>
-        /// Gets or sets the registration policy to be used in the whole application
-        /// </summary>
-        //public static IRegistrationPolicy RegistrationPolicy
-        //{
-        //	get { return TypeDescriptorRegistry.RegistrationPolicy; }
-        //	set { TypeDescriptorRegistry.RegistrationPolicy = value; }
-        //}
-#warning TODO
+		/// <summary>
+		/// Gets or sets the registration policy to be used in the whole application
+		/// </summary>
+		public static IRegistrationPolicy RegistrationPolicy
+		{
+			get { return UserDataRegistry.DefaultRegistry.TypeDescriptorRegistry.RegistrationPolicy; }
+			set { UserDataRegistry.DefaultRegistry.TypeDescriptorRegistry.RegistrationPolicy = value; }
+		}
 
-        public static IRegistrationPolicy GetRegistrationPolicy(UserDataRegistry registry)
+		public static IRegistrationPolicy GetRegistrationPolicy(UserDataRegistry registry)
         {
             return registry.NotNull(nameof(registry)).RegistrationPolicy;
         }
@@ -313,26 +338,25 @@ namespace MoonSharp.Interpreter
             registry.NotNull(nameof(registry)).RegistrationPolicy = value;
         }
 
-        /// <summary>
-        /// Gets or sets the default access mode to be used in the whole application
-        /// </summary>
-        /// <value>
-        /// The default access mode.
-        /// </value>
-        /// <exception cref="System.ArgumentException">InteropAccessMode is InteropAccessMode.Default</exception>
-        //public static InteropAccessMode DefaultAccessMode
-        //{
-        //	get { return TypeDescriptorRegistry.DefaultAccessMode; }
-        //	set { TypeDescriptorRegistry.DefaultAccessMode = value; }
-        //}
-#warning TODO
+		/// <summary>
+		/// Gets or sets the default access mode to be used in the whole application
+		/// </summary>
+		/// <value>
+		/// The default access mode.
+		/// </value>
+		/// <exception cref="System.ArgumentException">InteropAccessMode is InteropAccessMode.Default</exception>
+		public static InteropAccessMode DefaultAccessMode
+		{
+			get { return UserDataRegistry.DefaultRegistry.TypeDescriptorRegistry.DefaultAccessMode; }
+			set { UserDataRegistry.DefaultRegistry.TypeDescriptorRegistry.DefaultAccessMode = value; }
+		}
 
-        /// <summary>
-        /// Registers an extension Type (that is a type containing extension methods)
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <param name="mode">The InteropAccessMode.</param>
-        public static void RegisterExtensionType(UserDataRegistry registry, Type type, InteropAccessMode mode = InteropAccessMode.Default)
+		/// <summary>
+		/// Registers an extension Type (that is a type containing extension methods)
+		/// </summary>
+		/// <param name="type">The type.</param>
+		/// <param name="mode">The InteropAccessMode.</param>
+		public static void RegisterExtensionType(UserDataRegistry registry, Type type, InteropAccessMode mode = InteropAccessMode.Default)
 		{
 			registry.NotNull(nameof(registry)).ExtensionMethodsRegistry.RegisterExtensionType(registry, type, mode);
 		}

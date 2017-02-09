@@ -44,7 +44,7 @@ namespace MoonSharp.Interpreter.CoreLib
 				if (message.IsNil())
 					throw new ScriptRuntimeException("assertion failed!"); // { DoNotDecorateMessage = true };
 				else
-					throw new ScriptRuntimeException(message.ToPrintString()); // { DoNotDecorateMessage = true };
+					throw new ScriptRuntimeException(message.ToPrintString(executionContext.OwnerScript.TypeRegistry)); // { DoNotDecorateMessage = true };
 			}
 
 			return DynValue.NewTupleNested(args.GetArray());
@@ -104,7 +104,7 @@ namespace MoonSharp.Interpreter.CoreLib
 			DynValue tail = executionContext.GetMetamethodTailCall(v, "__tostring", v);
 			
 			if (tail == null || tail.IsNil())
-				return DynValue.NewString(v.ToPrintString());
+				return DynValue.NewString(v.ToPrintString(executionContext.OwnerScript.TypeRegistry));
 
 			tail.TailCallData.Continuation = new CallbackFunction(__tostring_continuation, "__tostring");
 

@@ -140,8 +140,8 @@ namespace MoonSharp.Interpreter.Interop
 					if (Value.UserData.Object == null)
 					{
 						t.Set("type", DynValue.NewString("userdata"));
-						t.Set("staticType", DynValue.NewString(Value.UserData.Descriptor.Type.FullName));
-						t.Set("visibility", DynValue.NewString(Value.UserData.Descriptor.Type.GetClrVisibility()));
+						t.Set("staticType", DynValue.NewString(Value.UserData.Type.FullName));
+						t.Set("visibility", DynValue.NewString(Value.UserData.Type.GetClrVisibility()));
 					}
 					else
 					{

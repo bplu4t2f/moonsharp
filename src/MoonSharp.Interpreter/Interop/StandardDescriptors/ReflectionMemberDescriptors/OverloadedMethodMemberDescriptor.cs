@@ -259,7 +259,7 @@ namespace MoonSharp.Interpreter.Interop
 
 				if (args[i].Type == DataType.UserData)
 				{
-					found.ArgsUserDataType.Add(args[i].UserData.Descriptor.Type);
+					found.ArgsUserDataType.Add(args[i].UserData.Type);
 				}
 				else
 				{
@@ -283,7 +283,7 @@ namespace MoonSharp.Interpreter.Interop
 
 				if (args[i].Type == DataType.UserData)
 				{
-					if (args[i].UserData.Descriptor.Type != overloadCacheItem.ArgsUserDataType[i])
+					if (args[i].UserData.Type != overloadCacheItem.ArgsUserDataType[i])
 						return false;
 				}
 			}

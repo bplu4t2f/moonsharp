@@ -199,11 +199,11 @@ namespace MoonSharp.Interpreter
 				if (v.Type != DataType.String)
 					throw new ScriptRuntimeException("'tostring' must return a string to '{0}'", funcName);
 
-				return v.ToPrintString();
+				return v.ToPrintString(executionContext.OwnerScript.TypeRegistry);
 			}
 			else
 			{
-				return (this[argNum].ToPrintString());
+				return (this[argNum].ToPrintString(executionContext.OwnerScript.TypeRegistry));
 			}
 		}
 

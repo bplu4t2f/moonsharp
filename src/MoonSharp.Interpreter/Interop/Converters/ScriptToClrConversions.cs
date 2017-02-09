@@ -61,8 +61,8 @@ namespace MoonSharp.Interpreter.Interop.Converters
 				case DataType.UserData:
 					if (value.UserData.Object != null)
 						return value.UserData.Object;
-					else if (value.UserData.Descriptor != null)
-						return value.UserData.Descriptor.Type;
+					else if (value.UserData.Type != null)
+						return value.UserData.Type;
 					else
 						return null;
 				case DataType.ClrFunction:
@@ -161,13 +161,20 @@ namespace MoonSharp.Interpreter.Interop.Converters
 					if (value.UserData.Object != null)
 					{
 						var udObj = value.UserData.Object;
-						var udDesc = value.UserData.Descriptor;
+						//var udDesc = value.UserData.GetDescriptor(registry);
+						var udType = value.UserData.Type;
 
-						if (udDesc.IsTypeCompatible(desiredType, udObj))
+						if (udType.IsInstanceOfType(udObj))
 							return udObj;
 
+						//if (udDesc.IsTypeCompatible(desiredType, udObj))
+						//	return udObj;
+
 						if (stringSubType != StringConversions.StringSubtype.None)
-							str = udDesc.AsString(udObj);
+							str = udObj?.ToString();
+
+						//if (stringSubType != StringConversions.StringSubtype.None)
+						//	str = udDesc.AsString(udObj);
 					}
 					break;
 				case DataType.Table:
@@ -279,10 +286,14 @@ namespace MoonSharp.Interpreter.Interop.Converters
 					if (value.UserData.Object != null)
 					{
 						var udObj = value.UserData.Object;
-						var udDesc = value.UserData.Descriptor;
+						//var udDesc = value.UserData.GetDescriptor(registry);
+						var udType = value.UserData.Type;
 
-						if (udDesc.IsTypeCompatible(desiredType, udObj))
+						if (udType.IsInstanceOfType(udObj))
 							return WEIGHT_EXACT_MATCH;
+
+						//if (udDesc.IsTypeCompatible(desiredType, udObj))
+						//	return WEIGHT_EXACT_MATCH;
 
 						if (stringSubType != StringConversions.StringSubtype.None)
 							return WEIGHT_USERDATA_TO_STRING;

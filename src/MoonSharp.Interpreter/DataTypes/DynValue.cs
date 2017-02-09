@@ -451,7 +451,7 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Returns a string which is what it's expected to be output by the print function applied to this value.
 		/// </summary>
-		public string ToPrintString()
+		public string ToPrintString(Interop.UserDataRegistry registry)
 		{
 			if (this.m_Object != null && this.m_Object is RefIdObject)
 			{
@@ -462,7 +462,7 @@ namespace MoonSharp.Interpreter
 				if (m_Object is UserData)
 				{
 					UserData ud = (UserData)m_Object;
-					string str = ud.Descriptor.AsString(ud.Object);
+					string str = ud.GetDescriptor(registry).AsString(ud.Object);
 					if (str != null)
 						return str;
 				}
@@ -475,7 +475,7 @@ namespace MoonSharp.Interpreter
 				case DataType.String:
 					return String;
 				case DataType.Tuple:
-					return string.Join("\t", Tuple.Select(t => t.ToPrintString()).ToArray());
+					return string.Join("\t", Tuple.Select(t => t.ToPrintString(registry)).ToArray());
 				case DataType.TailCallRequest:
 					return "(TailCallRequest -- INTERNAL!)";
 				case DataType.YieldRequest:
@@ -488,7 +488,7 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Returns a string which is what it's expected to be output by debuggers.
 		/// </summary>
-		public string ToDebugPrintString()
+		public string ToDebugPrintString(Interop.UserDataRegistry registry)
 		{
 			if (this.m_Object != null && this.m_Object is RefIdObject)
 			{
@@ -499,7 +499,7 @@ namespace MoonSharp.Interpreter
 				if (m_Object is UserData)
 				{
 					UserData ud = (UserData)m_Object;
-					string str = ud.Descriptor.AsString(ud.Object);
+					string str = ud.GetDescriptor(registry).AsString(ud.Object);
 					if (str != null)
 						return str;
 				}
@@ -510,7 +510,7 @@ namespace MoonSharp.Interpreter
 			switch (Type)
 			{
 				case DataType.Tuple:
-					return string.Join("\t", Tuple.Select(t => t.ToPrintString()).ToArray());
+					return string.Join("\t", Tuple.Select(t => t.ToPrintString(registry)).ToArray());
 				case DataType.TailCallRequest:
 					return "(TailCallRequest)";
 				case DataType.YieldRequest:
@@ -661,7 +661,7 @@ namespace MoonSharp.Interpreter
 						if (ud1 == null || ud2 == null)
 							return false;
 
-						if (ud1.Descriptor != ud2.Descriptor)
+						if (ud1.Type != ud2.Type)
 							return false;
 
 						if (ud1.Object == null && ud2.Object == null)
