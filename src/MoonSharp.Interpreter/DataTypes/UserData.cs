@@ -20,6 +20,8 @@ namespace MoonSharp.Interpreter
 		private UserData(object @object, Type type)
 		{
 			// This type can only be instantiated using one of the Create methods
+			this.Object = @object;
+			this.Type = type.NotNull(nameof(type));
 		}
 
 		/// <summary>

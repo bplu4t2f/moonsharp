@@ -849,6 +849,7 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static DynValue FromObject(Script script, object obj)
 		{
+#warning THIS IS A HUGE PROBLEM
 			return MoonSharp.Interpreter.Interop.Converters.ClrToScriptConversions.ObjectToDynValue(script, obj);
 		}
 

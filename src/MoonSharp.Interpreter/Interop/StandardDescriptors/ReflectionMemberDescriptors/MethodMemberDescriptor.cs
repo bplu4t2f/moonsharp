@@ -183,6 +183,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns></returns>
 		public override DynValue Execute(Script script, object obj, ScriptExecutionContext context, CallbackArguments args)
 		{
+#warning TODO isn't script redundant?
 			this.CheckAccess(MemberDescriptorAccess.CanExecute, obj);
 
 			if (AccessMode == InteropAccessMode.LazyOptimized &&

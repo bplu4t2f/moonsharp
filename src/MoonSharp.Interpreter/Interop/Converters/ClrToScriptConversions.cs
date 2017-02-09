@@ -107,9 +107,11 @@ namespace MoonSharp.Interpreter.Interop.Converters
 
 			if (v != null) return v;
 
+#warning TODO HUGE PROBLEM
 			v = UserData.Create(obj);
 			if (v != null) return v;
 
+#warning TODO HUGE PROBLEM
 			if (obj is Type)
 				v = UserData.CreateStatic(obj as Type);
 
