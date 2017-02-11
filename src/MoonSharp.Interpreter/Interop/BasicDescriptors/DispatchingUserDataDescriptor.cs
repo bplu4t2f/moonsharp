@@ -582,10 +582,10 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			if (obj == null) return null;
 
 			var lenprop = m_Members.GetOrDefault("Length");
-			if (lenprop != null && lenprop.CanRead() && !lenprop.CanExecute()) return lenprop.GetGetterCallbackAsDynValue(script, obj);
+			if (lenprop != null && lenprop.CanRead() && !lenprop.CanExecute()) return lenprop.GetGetterCallbackAsDynValue(obj);
 
 			var countprop = m_Members.GetOrDefault("Count");
-			if (countprop != null && countprop.CanRead() && !countprop.CanExecute()) return countprop.GetGetterCallbackAsDynValue(script, obj);
+			if (countprop != null && countprop.CanRead() && !countprop.CanExecute()) return countprop.GetGetterCallbackAsDynValue(obj);
 
 			return null;
 		}

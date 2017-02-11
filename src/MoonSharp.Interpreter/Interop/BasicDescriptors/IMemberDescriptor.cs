@@ -92,9 +92,8 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <returns></returns>
-		public static DynValue GetGetterCallbackAsDynValue(this IMemberDescriptor desc, Script script, object obj)
+		public static DynValue GetGetterCallbackAsDynValue(this IMemberDescriptor desc, object obj)
 		{
-#warning TODO remove script
 			return DynValue.NewCallback((p1, p2) => desc.GetValue(obj));
 		}
 
