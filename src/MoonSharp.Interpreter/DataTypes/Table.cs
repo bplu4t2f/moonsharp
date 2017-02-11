@@ -31,17 +31,18 @@ namespace MoonSharp.Interpreter
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Table"/> class.
+		/// Initializes a new array-like instance of the <see cref="Table"/> class.
 		/// </summary>
 		/// <param name="owner">The owner.</param>
 		/// <param name="arrayValues">The values for the "array-like" part of the table.</param>
-		public Table(DynValue[] arrayValues)
-			: this()
+		public static Table FromArray(DynValue[] arrayValues)
 		{
+			var table = new Table();
 			for (int i = 0; i < arrayValues.Length; i++)
 			{
-				this.Set(DynValue.NewNumber(i + 1), arrayValues[i]);
+				table.Set(DynValue.NewNumber(i + 1), arrayValues[i]);
 			}
+			return table;
 		}
 
 		/// <summary>

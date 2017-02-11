@@ -228,9 +228,9 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Creates a new writable value initialized to with array contents.
 		/// </summary>
-		public static DynValue NewTable(params DynValue[] arrayValues)
+		public static DynValue NewTableFromArray(params DynValue[] arrayValues)
 		{
-			return NewTable(new Table(arrayValues));
+			return NewTable(Table.FromArray(arrayValues));
 		}
 
 		/// <summary>
