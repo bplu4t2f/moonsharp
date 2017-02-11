@@ -54,11 +54,10 @@ namespace MoonSharp.Interpreter.Interop
 		/// __index, __newindex, __tostring
 		/// 
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="metaname">The name of the metamember.</param>
 		/// <returns></returns>
-		DynValue MetaIndex(Script script, object obj, string metaname);
+		DynValue MetaIndex(object obj, string metaname);
 		/// <summary>
 		/// Determines whether the specified object is compatible with the specified type.
 		/// Unless a very specific behaviour is needed, the correct implementation is a 

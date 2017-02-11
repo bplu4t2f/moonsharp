@@ -43,7 +43,7 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors
 			throw new ScriptRuntimeException("Events do not have settable fields");
 		}
 
-		public DynValue MetaIndex(Script script, string metaname)
+		public DynValue MetaIndex(string metaname)
 		{
 			return null;
 		}

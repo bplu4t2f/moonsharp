@@ -100,13 +100,12 @@ namespace MoonSharp.Interpreter.Interop
 		/// These standard metamethods are supported through other calls for efficiency:
 		/// __index, __newindex, __tostring
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="metaname">The name of the metamember.</param>
 		/// <returns></returns>
-		public DynValue MetaIndex(Script script, object obj, string metaname)
+		public DynValue MetaIndex(object obj, string metaname)
 		{
-			return m_ProxyDescriptor.MetaIndex(script, Proxy(obj), metaname);
+			return m_ProxyDescriptor.MetaIndex(Proxy(obj), metaname);
 		}
 
 		/// <summary>

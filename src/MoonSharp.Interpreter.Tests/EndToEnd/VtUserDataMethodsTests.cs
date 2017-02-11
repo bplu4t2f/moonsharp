@@ -305,7 +305,7 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 				return null;
 			}
 
-			public DynValue MetaIndex(Script script, object obj, string metaname)
+			public DynValue MetaIndex(object obj, string metaname)
 			{
 				return null;
 			}

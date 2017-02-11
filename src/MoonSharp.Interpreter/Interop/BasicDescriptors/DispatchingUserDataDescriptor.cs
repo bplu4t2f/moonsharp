@@ -490,7 +490,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <param name="metaname">The name of the metamember.</param>
 		/// </summary>
 		/// <returns></returns>
-		public virtual DynValue MetaIndex(Script _unused, object obj, string metaname)
+		public virtual DynValue MetaIndex(object obj, string metaname)
 		{
 			IMemberDescriptor desc = m_MetaMembers.GetOrDefault(metaname);
 

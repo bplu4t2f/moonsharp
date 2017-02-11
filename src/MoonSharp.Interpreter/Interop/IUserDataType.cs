@@ -39,9 +39,8 @@ namespace MoonSharp.Interpreter.Interop
 		/// __index, __newindex, __tostring
 		/// 
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
 		/// <param name="metaname">The name of the metamember.</param>
 		/// <returns></returns>
-		DynValue MetaIndex(Script script, string metaname);
+		DynValue MetaIndex(string metaname);
 	}
 }
