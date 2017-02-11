@@ -15,7 +15,7 @@ namespace MoonSharp.Interpreter.CoreLib
 			public DynamicExpression Expr;
 		}
 
-		public static void MoonSharpInit(Table globalTable, Table stringTable)
+		public static void MoonSharpInit(Script ownerScript, Table globalTable, Table stringTable)
 		{
 			UserData.RegisterType<DynamicExprWrapper>(InteropAccessMode.HideMembers);
 		}

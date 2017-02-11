@@ -7,13 +7,12 @@ namespace MoonSharp.Interpreter
 	/// <summary>
 	/// A class representing a Lua table.
 	/// </summary>
-	public class Table : RefIdObject, IScriptPrivateResource
+	public class Table : RefIdObject
 	{
 		readonly LinkedList<TablePair> m_Values;
 		readonly LinkedListIndex<DynValue, TablePair> m_ValueMap;
 		readonly LinkedListIndex<string, TablePair> m_StringMap;
 		readonly LinkedListIndex<int, TablePair> m_ArrayMap;
-		readonly Script m_Owner;
 
 		int m_InitArray = 0;
 		int m_CachedLength = -1;
@@ -23,13 +22,12 @@ namespace MoonSharp.Interpreter
 		/// Initializes a new instance of the <see cref="Table"/> class.
 		/// </summary>
 		/// <param name="owner">The owner script.</param>
-		public Table(Script owner)
+		public Table()
 		{
 			m_Values = new LinkedList<TablePair>();
 			m_StringMap = new LinkedListIndex<string, TablePair>(m_Values);
 			m_ArrayMap = new LinkedListIndex<int, TablePair>(m_Values);
 			m_ValueMap = new LinkedListIndex<DynValue, TablePair>(m_Values);
-			m_Owner = owner;
 		}
 
 		/// <summary>
@@ -37,21 +35,13 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		/// <param name="owner">The owner.</param>
 		/// <param name="arrayValues">The values for the "array-like" part of the table.</param>
-		public Table(Script owner, params DynValue[] arrayValues)
-			: this(owner)
+		public Table(DynValue[] arrayValues)
+			: this()
 		{
 			for (int i = 0; i < arrayValues.Length; i++)
 			{
 				this.Set(DynValue.NewNumber(i + 1), arrayValues[i]);
 			}
-		}
-
-		/// <summary>
-		/// Gets the script owning this resource.
-		/// </summary>
-		public Script OwnerScript
-		{
-			get { return m_Owner; }
 		}
 
 		/// <summary>
@@ -97,7 +87,7 @@ namespace MoonSharp.Interpreter
 			}
 			set
 			{
-				Set(keys, DynValue.FromObject(OwnerScript, value));
+				Set(keys, DynValue.FromObject(null, value));
 			}
 		}
 
@@ -118,7 +108,7 @@ namespace MoonSharp.Interpreter
 			}
 			set
 			{
-				Set(key, DynValue.FromObject(OwnerScript, value));
+				Set(key, DynValue.FromObject(null, value));
 			}
 		}
 
@@ -153,7 +143,8 @@ namespace MoonSharp.Interpreter
 		/// <param name="value">The value.</param>
 		public void Append(DynValue value)
 		{
-			this.CheckScriptOwnership(value);
+			//this.CheckScriptOwnership(value);
+#warning TODO remove
 			PerformTableSet(m_ArrayMap, Length + 1, DynValue.NewNumber(Length + 1), value, true, Length + 1);
 		}
 
@@ -212,7 +203,8 @@ namespace MoonSharp.Interpreter
 			if (key == null)
 				throw ScriptRuntimeException.TableIndexIsNil();
 
-			this.CheckScriptOwnership(value);
+#warning TODO remove
+			//this.CheckScriptOwnership(value);
 			PerformTableSet(m_StringMap, key, DynValue.NewString(key), value, false, -1);
 		}
 
@@ -223,7 +215,8 @@ namespace MoonSharp.Interpreter
 		/// <param name="value">The value.</param>
 		public void Set(int key, DynValue value)
 		{
-			this.CheckScriptOwnership(value);
+#warning TODO remove
+			//this.CheckScriptOwnership(value);
 			PerformTableSet(m_ArrayMap, key, DynValue.NewNumber(key), value, true, -1);
 		}
 
@@ -259,8 +252,9 @@ namespace MoonSharp.Interpreter
 				}
 			}
 
-			this.CheckScriptOwnership(key);
-			this.CheckScriptOwnership(value);
+#warning TODO remove
+			//this.CheckScriptOwnership(key);
+			//this.CheckScriptOwnership(value);
 
 			PerformTableSet(m_ValueMap, key, key, value, false, -1);
 		}
@@ -280,7 +274,7 @@ namespace MoonSharp.Interpreter
 			else if (key is int)
 				Set((int)key, value);
 			else
-				Set(DynValue.FromObject(OwnerScript, key), value);
+				Set(DynValue.FromObject(null, key), value);
 		}
 
 		/// <summary>
@@ -421,7 +415,7 @@ namespace MoonSharp.Interpreter
 			if (key is int)
 				return RawGet((int)key);
 
-			return RawGet(DynValue.FromObject(OwnerScript, key));
+			return RawGet(DynValue.FromObject(null, key));
 		}
 
 		/// <summary>
@@ -509,7 +503,7 @@ namespace MoonSharp.Interpreter
 			if (key is int)
 				return Remove((int)key);
 
-			return Remove(DynValue.FromObject(OwnerScript, key));
+			return Remove(DynValue.FromObject(null, key));
 		}
 
 		/// <summary>
@@ -643,7 +637,8 @@ namespace MoonSharp.Interpreter
 		public Table MetaTable
 		{
 			get { return m_MetaTable; }
-			set { this.CheckScriptOwnership(m_MetaTable); m_MetaTable = value; }
+#warning TODO remove
+			set { /*this.CheckScriptOwnership(m_MetaTable);*/ m_MetaTable = value; }
 		}
 		private Table m_MetaTable;
 

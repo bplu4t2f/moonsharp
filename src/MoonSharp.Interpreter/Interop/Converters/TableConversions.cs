@@ -9,9 +9,9 @@ namespace MoonSharp.Interpreter.Interop.Converters
 		/// <summary>
 		/// Converts an IList to a Lua table.
 		/// </summary>
-		internal static Table ConvertIListToTable(Script script, System.Collections.IList list)
+		internal static Table ConvertIListToTable(System.Collections.IList list)
 		{
-			Table t = new Table(script);
+			Table t = new Table();
 			for (int i = 0; i < list.Count; i++)
 			{
 				t[i + 1] = ClrToScriptConversions.ObjectToDynValue(list[i]);
@@ -22,9 +22,9 @@ namespace MoonSharp.Interpreter.Interop.Converters
 		/// <summary>
 		/// Converts an IDictionary to a Lua table.
 		/// </summary>
-		internal static Table ConvertIDictionaryToTable(Script script, System.Collections.IDictionary dict)
+		internal static Table ConvertIDictionaryToTable(System.Collections.IDictionary dict)
 		{
-			Table t = new Table(script);
+			Table t = new Table();
 
 			foreach (System.Collections.DictionaryEntry kvp in dict)
 			{

@@ -30,9 +30,9 @@ namespace MoonSharp.Interpreter.CoreLib
 		}
 
 
-		public static void MoonSharpInit(Table globalTable, Table ioTable)
+		public static void MoonSharpInit(Script ownerScript, Table globalTable, Table ioTable)
 		{
-			SetRandom(globalTable.OwnerScript, new Random());
+			SetRandom(ownerScript, new Random());
 		}
 
 

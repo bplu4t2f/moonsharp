@@ -64,7 +64,7 @@ namespace MoonSharp.Interpreter.Tests
 	#endif
 #endif
 
-			S.Globals.Set("arg", DynValue.NewTable(S));
+			S.Globals.Set("arg", DynValue.NewTable());
 
 			((ScriptLoaderBase)S.Options.ScriptLoader).ModulePaths = new string[] { "TestMore/Modules/?", "TestMore/Modules/?.lua" };
 

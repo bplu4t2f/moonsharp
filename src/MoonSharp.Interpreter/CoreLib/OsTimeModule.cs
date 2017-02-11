@@ -137,7 +137,7 @@ namespace MoonSharp.Interpreter.CoreLib
 
 			if (format == "*t")
 			{
-				Table t = new Table(executionContext.GetScript());
+				Table t = new Table();
 
 				t.Set("year", DynValue.NewNumber(reference.Year));
 				t.Set("month", DynValue.NewNumber(reference.Month));

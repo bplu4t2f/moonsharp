@@ -80,7 +80,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		/// </summary>
 		public static string ObjectToJson(object obj)
 		{
-			DynValue v = ObjectValueConverter.SerializeObjectToDynValue(null, obj, JsonNull.Create());
+			DynValue v = ObjectValueConverter.SerializeObjectToDynValue(obj, JsonNull.Create());
 			return JsonTableConverter.TableToJson(v.Table);
 		}
 
@@ -136,16 +136,15 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		/// Converts a json string to a table
 		/// </summary>
 		/// <param name="json">The json.</param>
-		/// <param name="script">The script to which the table is assigned (null for prime tables).</param>
 		/// <returns>A table containing the representation of the given json.</returns>
-		public static Table JsonToTable(string json, Script script = null)
+		public static Table JsonToTable(string json)
 		{
 			Lexer L = new Lexer(0, json, false);
 
 			if (L.Current.Type == TokenType.Brk_Open_Curly)
-				return ParseJsonObject(L, script);
+				return ParseJsonObject(L);
 			else if (L.Current.Type == TokenType.Brk_Open_Square)
-				return ParseJsonArray(L, script);
+				return ParseJsonArray(L);
 			else
 				throw new SyntaxErrorException(L.Current, "Unexpected token : '{0}'", L.Current.Text);
 		}
@@ -155,15 +154,15 @@ namespace MoonSharp.Interpreter.Serialization.Json
 			if (L.Current.Type != type)
 				throw new SyntaxErrorException(L.Current, "Unexpected token : '{0}'", L.Current.Text);
 		}
-		private static Table ParseJsonArray(Lexer L, Script script)
+		private static Table ParseJsonArray(Lexer L)
 		{
-			Table t = new Table(script);
+			Table t = new Table();
 
 			L.Next();
 
 			while (L.Current.Type != TokenType.Brk_Close_Square)
 			{
-				DynValue v = ParseJsonValue(L, script);
+				DynValue v = ParseJsonValue(L);
 				t.Append(v);
 				L.Next();
 
@@ -174,9 +173,9 @@ namespace MoonSharp.Interpreter.Serialization.Json
 			return t;
 		}
 
-		private static Table ParseJsonObject(Lexer L, Script script)
+		private static Table ParseJsonObject(Lexer L)
 		{
-			Table t = new Table(script);
+			Table t = new Table();
 
 			L.Next();
 
@@ -187,7 +186,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 				L.Next();
 				AssertToken(L, TokenType.Colon);
 				L.Next();
-				DynValue v = ParseJsonValue(L, script);
+				DynValue v = ParseJsonValue(L);
 				t.Set(key, v);
 				L.Next();
 
@@ -198,16 +197,16 @@ namespace MoonSharp.Interpreter.Serialization.Json
 			return t;
 		}
 
-		private static DynValue ParseJsonValue(Lexer L, Script script)
+		private static DynValue ParseJsonValue(Lexer L)
 		{
 			if (L.Current.Type == TokenType.Brk_Open_Curly)
 			{
-				Table t = ParseJsonObject(L, script);
+				Table t = ParseJsonObject(L);
 				return DynValue.NewTable(t);
 			}
 			else if (L.Current.Type == TokenType.Brk_Open_Square)
 			{
-				Table t = ParseJsonArray(L, script);
+				Table t = ParseJsonArray(L);
 				return DynValue.NewTable(t);
 			}
 			else if (L.Current.Type == TokenType.String)

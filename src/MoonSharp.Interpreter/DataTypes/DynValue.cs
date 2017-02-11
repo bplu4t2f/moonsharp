@@ -224,23 +224,23 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		public static DynValue NewPrimeTable()
 		{
-			return NewTable(new Table(null));
+			return NewTable(new Table());
 		}
 
 		/// <summary>
 		/// Creates a new writable value initialized to an empty table.
 		/// </summary>
-		public static DynValue NewTable(Script script)
+		public static DynValue NewTable()
 		{
-			return NewTable(new Table(script));
+			return NewTable(new Table());
 		}
 
 		/// <summary>
 		/// Creates a new writable value initialized to with array contents.
 		/// </summary>
-		public static DynValue NewTable(Script script, params DynValue[] arrayValues)
+		public static DynValue NewTable(params DynValue[] arrayValues)
 		{
-			return NewTable(new Table(script, arrayValues));
+			return NewTable(new Table(arrayValues));
 		}
 
 		/// <summary>

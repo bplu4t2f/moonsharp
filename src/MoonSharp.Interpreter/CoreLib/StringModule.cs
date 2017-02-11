@@ -16,11 +16,11 @@ namespace MoonSharp.Interpreter.CoreLib
 	{
 		public const string BASE64_DUMP_HEADER = "MoonSharp_dump_b64::";
 
-		public static void MoonSharpInit(Table globalTable, Table stringTable)
+		public static void MoonSharpInit(Script ownerScript, Table globalTable, Table stringTable)
 		{
-			Table stringMetatable = new Table(globalTable.OwnerScript);
+			Table stringMetatable = new Table();
 			stringMetatable.Set("__index", DynValue.NewTable(stringTable));
-			globalTable.OwnerScript.SetTypeMetatable(DataType.String, stringMetatable);
+			ownerScript.SetTypeMetatable(DataType.String, stringMetatable);
 		}
 
 

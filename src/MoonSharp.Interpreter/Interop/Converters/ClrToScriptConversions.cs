@@ -12,7 +12,7 @@ namespace MoonSharp.Interpreter.Interop.Converters
 		/// Skips on custom conversions, etc.
 		/// Does NOT throw on failure.
 		/// </summary>
-		internal static DynValue TryObjectToTrivialDynValue(Script script, object obj)
+		internal static DynValue TryObjectToTrivialDynValue(object obj)
 		{
 			if (obj == null)
 				return DynValue.Nil;
@@ -137,14 +137,14 @@ namespace MoonSharp.Interpreter.Interop.Converters
 			if (obj is System.Collections.IList)
 			{
 #warning unfortunately this needs a script argument because Table has an owner script (why?)
-				Table t = TableConversions.ConvertIListToTable(null, (System.Collections.IList)obj);
+				Table t = TableConversions.ConvertIListToTable((System.Collections.IList)obj);
 				return DynValue.NewTable(t);
 			}
 
 			if (obj is System.Collections.IDictionary)
 			{
 #warning unfortunately this needs a script argument because Table has an owner script (why?)
-				Table t = TableConversions.ConvertIDictionaryToTable(null, (System.Collections.IDictionary)obj);
+				Table t = TableConversions.ConvertIDictionaryToTable((System.Collections.IDictionary)obj);
 				return DynValue.NewTable(t);
 			}
 

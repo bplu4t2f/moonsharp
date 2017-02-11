@@ -37,7 +37,7 @@ namespace MoonSharp.Interpreter.CoreLib
 		[MoonSharpModuleMethod]
 		public static DynValue pack(ScriptExecutionContext executionContext, CallbackArguments args)
 		{
-			Table t = new Table(executionContext.GetScript());
+			Table t = new Table();
 			DynValue v = DynValue.NewTable(t);
 
 			for (int i = 0; i < args.Count; i++)

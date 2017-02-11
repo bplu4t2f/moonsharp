@@ -18,18 +18,18 @@ namespace MoonSharp.Interpreter.CoreLib
 	[MoonSharpModule(Namespace = "io")]
 	public class IoModule
 	{
-		public static void MoonSharpInit(Table globalTable, Table ioTable)
+		public static void MoonSharpInit(Script ownerScript, Table globalTable, Table ioTable)
 		{
 			UserData.RegisterType<FileUserDataBase>(InteropAccessMode.Default, "file");
 
-			Table meta = new Table(ioTable.OwnerScript);
+			Table meta = new Table();
 			DynValue __index = DynValue.NewCallback(new CallbackFunction(__index_callback, "__index_callback"));
 			meta.Set("__index", __index);
 			ioTable.MetaTable = meta;
 
-			SetStandardFile(globalTable.OwnerScript, StandardFileType.StdIn, globalTable.OwnerScript.Options.Stdin);
-			SetStandardFile(globalTable.OwnerScript, StandardFileType.StdOut, globalTable.OwnerScript.Options.Stdout);
-			SetStandardFile(globalTable.OwnerScript, StandardFileType.StdErr, globalTable.OwnerScript.Options.Stderr);
+			SetStandardFile(ownerScript, StandardFileType.StdIn, ownerScript.Options.Stdin);
+			SetStandardFile(ownerScript, StandardFileType.StdOut, ownerScript.Options.Stdout);
+			SetStandardFile(ownerScript, StandardFileType.StdErr, ownerScript.Options.Stderr);
 		}
 
 		private static DynValue __index_callback(ScriptExecutionContext executionContext, CallbackArguments args)

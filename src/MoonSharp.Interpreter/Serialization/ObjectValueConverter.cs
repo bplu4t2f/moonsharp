@@ -10,12 +10,12 @@ namespace MoonSharp.Interpreter.Serialization
 {
 	public static class ObjectValueConverter
 	{
-		public static DynValue SerializeObjectToDynValue(Script script, object o, DynValue valueForNulls = null)
+		public static DynValue SerializeObjectToDynValue(object o, DynValue valueForNulls = null)
 		{
 			if (o == null)
 				return valueForNulls ?? DynValue.Nil;
 
-			DynValue v = ClrToScriptConversions.TryObjectToTrivialDynValue(script, o);
+			DynValue v = ClrToScriptConversions.TryObjectToTrivialDynValue(o);
 
 			if (v != null)
 				return v;
@@ -23,7 +23,7 @@ namespace MoonSharp.Interpreter.Serialization
 			if (o is Enum)
 				return DynValue.NewNumber(NumericConversions.TypeToDouble(Enum.GetUnderlyingType(o.GetType()), o));
 
-			Table t = new Table(script);
+			Table t = new Table();
 
 			System.Collections.IEnumerable ienum = o as System.Collections.IEnumerable;
 
@@ -31,7 +31,7 @@ namespace MoonSharp.Interpreter.Serialization
 			{
 				foreach (object obj in ienum)
 				{
-					t.Append(SerializeObjectToDynValue(script, obj, valueForNulls));
+					t.Append(SerializeObjectToDynValue(obj, valueForNulls));
 				}
 			}
 			else
@@ -44,7 +44,7 @@ namespace MoonSharp.Interpreter.Serialization
 					var isStatic = getter.IsStatic;
 					var obj = getter.Invoke(isStatic ? null : o, null); // convoluted workaround for --full-aot Mono execution
 
-					t.Set(pi.Name, SerializeObjectToDynValue(script, obj, valueForNulls));
+					t.Set(pi.Name, SerializeObjectToDynValue(obj, valueForNulls));
 				}
 			}
 

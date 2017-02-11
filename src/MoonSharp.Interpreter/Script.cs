@@ -70,11 +70,11 @@ namespace MoonSharp.Interpreter
 		{
 			Options = new ScriptOptions(DefaultOptions);
 			PerformanceStats = new PerformanceStatistics();
-			Registry = new Table(this);
+			Registry = new Table();
 
 			m_ByteCode = new ByteCode(this);
 			m_MainProcessor = new Processor(this, m_GlobalTable, m_ByteCode);
-			m_GlobalTable = new Table(this).RegisterCoreModules(coreModules);
+			m_GlobalTable = new Table().RegisterCoreModules(this, coreModules);
 		}
 
 
@@ -119,7 +119,7 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadFunction(string code, Table globalTable = null, string funcFriendlyName = null)
 		{
-			this.CheckScriptOwnership(globalTable);
+			//this.CheckScriptOwnership(globalTable);
 
 			string chunkName = string.Format("libfunc_{0}", funcFriendlyName ?? m_Sources.Count.ToString());
 
@@ -163,7 +163,7 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadString(string code, Table globalTable = null, string codeFriendlyName = null)
 		{
-			this.CheckScriptOwnership(globalTable);
+			//this.CheckScriptOwnership(globalTable);
 
 			if (code.StartsWith(StringModule.BASE64_DUMP_HEADER))
 			{
@@ -200,7 +200,7 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadStream(Stream stream, Table globalTable = null, string codeFriendlyName = null)
 		{
-			this.CheckScriptOwnership(globalTable);
+			//this.CheckScriptOwnership(globalTable);
 
 			Stream codeStream = new UndisposableStream(stream);
 
@@ -278,7 +278,7 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadFile(string filename, Table globalContext = null, string friendlyFilename = null)
 		{
-			this.CheckScriptOwnership(globalContext);
+			//this.CheckScriptOwnership(globalContext);
 
 #pragma warning disable 618
 			filename = Options.ScriptLoader.ResolveFileName(filename, globalContext ?? m_GlobalTable);
@@ -394,7 +394,7 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		private DynValue MakeClosure(int address, Table envTable = null)
 		{
-			this.CheckScriptOwnership(envTable);
+			//this.CheckScriptOwnership(envTable);
 			Closure c;
 
 			if (envTable == null)
@@ -621,7 +621,7 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="ScriptRuntimeException">Raised if module is not found</exception>
 		public DynValue RequireModule(string modname, Table globalContext = null)
 		{
-			this.CheckScriptOwnership(globalContext);
+			//this.CheckScriptOwnership(globalContext);
 
 			Table globals = globalContext ?? m_GlobalTable;
 			string filename = Options.ScriptLoader.ResolveModuleName(modname, globals);
@@ -658,7 +658,7 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="System.ArgumentException">Specified type not supported :  + type.ToString()</exception>
 		public void SetTypeMetatable(DataType type, Table metatable)
 		{
-			this.CheckScriptOwnership(metatable);
+			//this.CheckScriptOwnership(metatable);
 
 			int t = (int)type;
 

@@ -18,28 +18,28 @@ namespace MoonSharp.Interpreter
 		/// <param name="table">The table.</param>
 		/// <param name="modules">The modules.</param>
 		/// <returns></returns>
-		public static Table RegisterCoreModules(this Table table, CoreModules modules)
+		public static Table RegisterCoreModules(this Table table, Script ownerScript, CoreModules modules)
 		{
 			modules = Script.GlobalOptions.Platform.FilterSupportedCoreModules(modules);
 
 			if (modules.Has(CoreModules.GlobalConsts)) RegisterConstants(table);
-			if (modules.Has(CoreModules.TableIterators)) RegisterModuleType<TableIteratorsModule>(table);
-			if (modules.Has(CoreModules.Basic)) RegisterModuleType<BasicModule>(table);
-			if (modules.Has(CoreModules.Metatables)) RegisterModuleType<MetaTableModule>(table);
-			if (modules.Has(CoreModules.String)) RegisterModuleType<StringModule>(table);
-			if (modules.Has(CoreModules.LoadMethods)) RegisterModuleType<LoadModule>(table);
-			if (modules.Has(CoreModules.Table)) RegisterModuleType<TableModule>(table);
-			if (modules.Has(CoreModules.Table)) RegisterModuleType<TableModule_Globals>(table);
-			if (modules.Has(CoreModules.ErrorHandling)) RegisterModuleType<ErrorHandlingModule>(table);
-			if (modules.Has(CoreModules.Math)) RegisterModuleType<MathModule>(table);
-			if (modules.Has(CoreModules.Coroutine)) RegisterModuleType<CoroutineModule>(table);
-			if (modules.Has(CoreModules.Bit32)) RegisterModuleType<Bit32Module>(table);
-			if (modules.Has(CoreModules.Dynamic)) RegisterModuleType<DynamicModule>(table);
-			if (modules.Has(CoreModules.OS_System)) RegisterModuleType<OsSystemModule>(table);
-			if (modules.Has(CoreModules.OS_Time)) RegisterModuleType<OsTimeModule>(table);
-			if (modules.Has(CoreModules.IO)) RegisterModuleType<IoModule>(table);
-			if (modules.Has(CoreModules.Debug)) RegisterModuleType<DebugModule>(table);
-			if (modules.Has(CoreModules.Json)) RegisterModuleType<JsonModule>(table);
+			if (modules.Has(CoreModules.TableIterators)) RegisterModuleType<TableIteratorsModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Basic)) RegisterModuleType<BasicModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Metatables)) RegisterModuleType<MetaTableModule>(table, ownerScript);
+			if (modules.Has(CoreModules.String)) RegisterModuleType<StringModule>(table, ownerScript);
+			if (modules.Has(CoreModules.LoadMethods)) RegisterModuleType<LoadModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Table)) RegisterModuleType<TableModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Table)) RegisterModuleType<TableModule_Globals>(table, ownerScript);
+			if (modules.Has(CoreModules.ErrorHandling)) RegisterModuleType<ErrorHandlingModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Math)) RegisterModuleType<MathModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Coroutine)) RegisterModuleType<CoroutineModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Bit32)) RegisterModuleType<Bit32Module>(table, ownerScript);
+			if (modules.Has(CoreModules.Dynamic)) RegisterModuleType<DynamicModule>(table, ownerScript);
+			if (modules.Has(CoreModules.OS_System)) RegisterModuleType<OsSystemModule>(table, ownerScript);
+			if (modules.Has(CoreModules.OS_Time)) RegisterModuleType<OsTimeModule>(table, ownerScript);
+			if (modules.Has(CoreModules.IO)) RegisterModuleType<IoModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Debug)) RegisterModuleType<DebugModule>(table, ownerScript);
+			if (modules.Has(CoreModules.Json)) RegisterModuleType<JsonModule>(table, ownerScript);
 
 			return table;
 		}
@@ -53,7 +53,7 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static Table RegisterConstants(this Table table)
 		{
-			DynValue moonsharp_table = DynValue.NewTable(table.OwnerScript);
+			DynValue moonsharp_table = DynValue.NewTable();
 			Table m = moonsharp_table.Table;
 
 			table.Set("_G", DynValue.NewTable(table));
@@ -82,7 +82,7 @@ namespace MoonSharp.Interpreter
 		/// <param name="t">The type</param>
 		/// <returns></returns>
 		/// <exception cref="System.ArgumentException">If the module contains some incompatibility</exception>
-		public static Table RegisterModuleType(this Table gtable, Type t)
+		public static Table RegisterModuleType(Script ownerScript, Table gtable, Type t)
 		{
 			Table table = CreateModuleNamespace(gtable, t);
 
@@ -111,7 +111,7 @@ namespace MoonSharp.Interpreter
 				}
 				else if (mi.Name == "MoonSharpInit")
 				{
-					object[] args = new object[2] { gtable, table };
+					object[] args = new object[3] { ownerScript, gtable, table };
 					mi.Invoke(null, args);
 				}
 			}
@@ -121,7 +121,7 @@ namespace MoonSharp.Interpreter
 				MoonSharpModuleMethodAttribute attr = (MoonSharpModuleMethodAttribute)fi.GetCustomAttributes(typeof(MoonSharpModuleMethodAttribute), false).First();
 				string name = (!string.IsNullOrEmpty(attr.Name)) ? attr.Name : fi.Name;
 
-				RegisterScriptField(fi, null, table, t, name);
+				RegisterScriptField(ownerScript, fi, null, table, t, name);
 			}
 
 			foreach (FieldInfo fi in Framework.Do.GetFields(t).Where(_mi => _mi.IsStatic && _mi.GetCustomAttributes(typeof(MoonSharpModuleConstantAttribute), false).ToArray().Length > 0))
@@ -153,7 +153,7 @@ namespace MoonSharp.Interpreter
 			}
 		}
 
-		private static void RegisterScriptField(FieldInfo fi, object o, Table table, Type t, string name)
+		private static void RegisterScriptField(Script ownerScript, FieldInfo fi, object o, Table table, Type t, string name)
 		{
 			if (fi.FieldType != typeof(string))
 			{
@@ -162,7 +162,7 @@ namespace MoonSharp.Interpreter
 
 			string val = fi.GetValue(o) as string;
 
-			DynValue fn = table.OwnerScript.LoadFunction(val, table, name);
+			DynValue fn = ownerScript.LoadFunction(val, table, name);
 
 			table.Set(name, fn);
 		}
@@ -188,7 +188,7 @@ namespace MoonSharp.Interpreter
 				}
 				else
 				{
-					table = new Table(gtable.OwnerScript);
+					table = new Table();
 					gtable.Set(attr.Namespace, DynValue.NewTable(table));
 				}
 
@@ -197,7 +197,7 @@ namespace MoonSharp.Interpreter
 
 				if (package == null || package.Type != DataType.Table)
 				{
-					gtable.Set("package", package = DynValue.NewTable(gtable.OwnerScript));
+					gtable.Set("package", package = DynValue.NewTable());
 				}
 
 
@@ -205,7 +205,7 @@ namespace MoonSharp.Interpreter
 
 				if (loaded == null || loaded.Type != DataType.Table)
 				{
-					package.Table.Set("loaded", loaded = DynValue.NewTable(gtable.OwnerScript));
+					package.Table.Set("loaded", loaded = DynValue.NewTable());
 				}
 
 				loaded.Table.Set(attr.Namespace, DynValue.NewTable(table));
@@ -221,9 +221,9 @@ namespace MoonSharp.Interpreter
 		/// <param name="table">The table.</param>
 		/// <returns></returns>
 		/// <exception cref="System.ArgumentException">If the module contains some incompatibility</exception>
-		public static Table RegisterModuleType<T>(this Table table)
+		public static Table RegisterModuleType<T>(this Table table, Script ownerScript)
 		{
-			return RegisterModuleType(table, typeof(T));
+			return RegisterModuleType(ownerScript, table, typeof(T));
 		}
 
 

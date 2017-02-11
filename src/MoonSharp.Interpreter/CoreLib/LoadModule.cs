@@ -10,13 +10,13 @@ namespace MoonSharp.Interpreter.CoreLib
 	[MoonSharpModule]
 	public class LoadModule
 	{
-		public static void MoonSharpInit(Table globalTable, Table ioTable)
+		public static void MoonSharpInit(Script ownerScript, Table globalTable, Table ioTable)
 		{
 			DynValue package = globalTable.Get("package");
 
 			if (package.IsNil())
 			{
-				package = DynValue.NewTable(globalTable.OwnerScript);
+				package = DynValue.NewTable();
 				globalTable["package"] = package;
 			}
 			else if (package.Type != DataType.Table)
