@@ -25,19 +25,17 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// Implementors should raise exceptions if the value cannot be read or if access to an
 		/// instance member through a static userdata is attempted.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object owning this member, or null if static.</param>
 		/// <returns>The value of this member as a <see cref="DynValue"/>.</returns>
-		DynValue GetValue(Script script, object obj);
+		DynValue GetValue(object obj);
 		/// <summary>
 		/// Sets the value of this member from a <see cref="DynValue"/>.
 		/// Implementors should raise exceptions if the value cannot be read or if access to an
 		/// instance member through a static userdata is attempted.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object owning this member, or null if static.</param>
 		/// <param name="value">The value to be set.</param>
-		void SetValue(Script script, object obj, DynValue value);
+		void SetValue(object obj, DynValue value);
 	}
 
 
@@ -96,7 +94,8 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <returns></returns>
 		public static DynValue GetGetterCallbackAsDynValue(this IMemberDescriptor desc, Script script, object obj)
 		{
-			return DynValue.NewCallback((p1, p2) => desc.GetValue(script, obj));
+#warning TODO remove script
+			return DynValue.NewCallback((p1, p2) => desc.GetValue(obj));
 		}
 
 		/// <summary>

@@ -117,14 +117,12 @@ namespace MoonSharp.Interpreter.Interop
 		/// Implementors should raise exceptions if the value cannot be read or if access to an
 		/// instance member through a static userdata is attempted.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object owning this member, or null if static.</param>
 		/// <returns>
 		/// The value of this member as a <see cref="DynValue" />.
 		/// </returns>
-		public DynValue GetValue(Script script, object obj)
+		public DynValue GetValue(object obj)
 		{
-#warning TODO script argument can probably be removed
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 
 			object vto = Activator.CreateInstance(ValueTypeDefaultCtor);
@@ -140,7 +138,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="script">The script.</param>
 		/// <param name="obj">The object owning this member, or null if static.</param>
 		/// <param name="value">The value to be set.</param>
-		public void SetValue(Script script, object obj, DynValue value)
+		public void SetValue(object obj, DynValue value)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanWrite, obj);
 		}

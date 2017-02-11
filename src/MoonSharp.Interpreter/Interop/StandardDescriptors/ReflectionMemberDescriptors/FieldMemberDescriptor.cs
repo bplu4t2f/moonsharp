@@ -99,9 +99,8 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <returns></returns>
-		public DynValue GetValue(Script script, object obj)
+		public DynValue GetValue(object obj)
 		{
-#warning TODO script argument can probably be removed
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 
 			// optimization+workaround of Unity bug.. 
@@ -154,7 +153,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="v">The value to set.</param>
-		public void SetValue(Script script, object obj, DynValue v)
+		public void SetValue(object obj, DynValue v)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanWrite, obj);
 

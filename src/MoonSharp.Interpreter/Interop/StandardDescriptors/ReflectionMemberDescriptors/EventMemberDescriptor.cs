@@ -156,10 +156,9 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Gets a dynvalue which is a facade supporting add/remove methods which is callable from scripts
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object for which the facade should be written.</param>
 		/// <returns></returns>
-		public DynValue GetValue(Script script, object obj)
+		public DynValue GetValue(object obj)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 
@@ -327,7 +326,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="v">The v.</param>
-		public void SetValue(Script script, object obj, DynValue v)
+		public void SetValue(object obj, DynValue v)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanWrite, obj);
 		}

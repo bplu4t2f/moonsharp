@@ -303,11 +303,12 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <returns></returns>
 		protected virtual DynValue TryIndex(Script script, object obj, string indexName)
 		{
+#warning TODO remove script
 			IMemberDescriptor desc;
 
 			if (m_Members.TryGetValue(indexName, out desc))
 			{
-				return desc.GetValue(script, obj);
+				return desc.GetValue(obj);
 			}
 
 			return null;
@@ -360,11 +361,12 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <returns></returns>
 		protected virtual bool TrySetIndex(Script script, object obj, string indexName, DynValue value)
 		{
+#warning TODO remove script
 			IMemberDescriptor descr = m_Members.GetOrDefault(indexName);
 
 			if (descr != null)
 			{
-				descr.SetValue(script, obj, value);
+				descr.SetValue(obj, value);
 				return true;
 			}
 			else
@@ -457,7 +459,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			CallbackArguments args = new CallbackArguments(values, false);
 			ScriptExecutionContext execCtx = script.CreateDynamicExecutionContext();
 
-			DynValue v = mdesc.GetValue(script, obj);
+			DynValue v = mdesc.GetValue(obj);
 
 			if (v.Type != DataType.ClrFunction)
 				throw new ScriptRuntimeException("a clr callback was expected in member {0}, while a {1} was found", mdesc.Name, v.Type);
@@ -484,7 +486,6 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// __tonumber is dispatched to implicit or explicit conversion operators to standard numeric types.
 		/// __tobool is dispatched to an implicit or explicit conversion operator to bool. If that fails, operator true is used.
 		/// 
-		/// <param name="script">The script originating the request</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="metaname">The name of the metamember.</param>
 		/// </summary>
@@ -495,7 +496,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 
 			if (desc != null)
 			{
-				return desc.GetValue(script, obj);
+				return desc.GetValue(obj);
 			}
 
 			switch (metaname)
@@ -614,11 +615,12 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 
 		private DynValue DispatchMetaOnMethod(Script script, object obj, string methodName)
 		{
+#warning TODO remove script
 			IMemberDescriptor desc = m_Members.GetOrDefault(methodName);
 
 			if (desc != null)
 			{
-				return desc.GetValue(script, obj);
+				return desc.GetValue(obj);
 			}
 			else
 				return null;

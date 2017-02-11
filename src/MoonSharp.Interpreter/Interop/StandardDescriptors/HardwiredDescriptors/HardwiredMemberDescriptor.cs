@@ -23,28 +23,27 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors.HardwiredDescriptors
 		public MemberDescriptorAccess MemberAccess { get; private set; }
 
 
-		public DynValue GetValue(Script script, object obj)
+		public DynValue GetValue(object obj)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
-			object result = GetValueImpl(script, obj);
-#warning TODO maybe script argument isn't needed anymore
+			object result = GetValueImpl(obj);
 			return ClrToScriptConversions.ObjectToDynValue(result);
 		}
 
-		public void SetValue(Script script, object obj, DynValue value)
+		public void SetValue(object obj, DynValue value)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanWrite, obj);
 			object v = ScriptToClrConversions.DynValueToObjectOfType(value, MemberType, null, false);
-			SetValueImpl(script, obj, v);
+			SetValueImpl(obj, v);
 		}
 
 
-		protected virtual object GetValueImpl(Script script, object obj)
+		protected virtual object GetValueImpl(object obj)
 		{
 			throw new InvalidOperationException("GetValue on write-only hardwired descriptor " + Name);
 		}
 
-		protected virtual void SetValueImpl(Script script, object obj, object value)
+		protected virtual void SetValueImpl(object obj, object value)
 		{
 			throw new InvalidOperationException("SetValue on read-only hardwired descriptor " + Name);
 		}

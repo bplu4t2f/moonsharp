@@ -279,7 +279,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns>
 		/// The value of this member as a <see cref="DynValue" />.
 		/// </returns>
-		public virtual DynValue GetValue(Script script, object obj)
+		public virtual DynValue GetValue(object obj)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 			return this.GetCallbackAsDynValue(obj);
@@ -288,11 +288,10 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Sets the value.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="v">The v.</param>
 		/// <exception cref="System.NotImplementedException"></exception>
-		public virtual void SetValue(Script script, object obj, DynValue v)
+		public virtual void SetValue(object obj, DynValue v)
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanWrite, obj);
 		}

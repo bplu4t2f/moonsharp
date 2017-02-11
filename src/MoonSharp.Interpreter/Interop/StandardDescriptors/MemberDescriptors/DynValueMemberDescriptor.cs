@@ -81,12 +81,11 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Gets the value of this member as a <see cref="DynValue" /> to be exposed to scripts.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object owning this member, or null if static.</param>
 		/// <returns>
 		/// The value of this member as a <see cref="DynValue" />.
 		/// </returns>
-		public DynValue GetValue(Script script, object obj)
+		public DynValue GetValue(object obj)
 		{
 			return Value;
 		}
@@ -94,11 +93,10 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Sets the value of this member from a <see cref="DynValue" />.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object owning this member, or null if static.</param>
 		/// <param name="value">The value to be set.</param>
 		/// <exception cref="ScriptRuntimeException">userdata '{0}' cannot be written to.</exception>
-		public void SetValue(Script script, object obj, DynValue value)
+		public void SetValue(object obj, DynValue value)
 		{
 			throw new ScriptRuntimeException("userdata '{0}' cannot be written to.", this.Name);
 		}
