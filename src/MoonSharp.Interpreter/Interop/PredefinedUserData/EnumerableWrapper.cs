@@ -9,13 +9,11 @@ namespace MoonSharp.Interpreter.Interop
 	internal class EnumerableWrapper : IUserDataType
 	{
 		IEnumerator m_Enumerator;
-		Script m_Script;
 		DynValue m_Prev = DynValue.Nil;
 		bool m_HasTurnOnce = false;
 
-		private EnumerableWrapper(Script script, IEnumerator enumerator)
+		private EnumerableWrapper(IEnumerator enumerator)
 		{
-			m_Script = script;
 			m_Enumerator = enumerator;
 		}
 
@@ -34,7 +32,7 @@ namespace MoonSharp.Interpreter.Interop
 
 			while (m_Enumerator.MoveNext())
 			{
-				DynValue v = ClrToScriptConversions.ObjectToDynValue(m_Script, m_Enumerator.Current);
+				DynValue v = ClrToScriptConversions.ObjectToDynValue(m_Enumerator.Current);
 
 				if (!v.IsNil())
 					return v;
@@ -49,15 +47,15 @@ namespace MoonSharp.Interpreter.Interop
 			return m_Prev;
 		}
 
-		internal static DynValue ConvertIterator(Script script, IEnumerator enumerator)
+		internal static DynValue ConvertIterator(IEnumerator enumerator)
 		{
-			EnumerableWrapper ei = new EnumerableWrapper(script, enumerator);
+			EnumerableWrapper ei = new EnumerableWrapper(enumerator);
 			return DynValue.NewTuple(UserData.Create(ei), DynValue.Nil, DynValue.Nil);
 		}
 
 		internal static DynValue ConvertTable(Table table)
 		{
-			return ConvertIterator(table.OwnerScript, table.Values.GetEnumerator());
+			return ConvertIterator(table.Values.GetEnumerator());
 		}
 
 

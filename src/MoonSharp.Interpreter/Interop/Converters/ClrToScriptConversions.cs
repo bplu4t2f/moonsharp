@@ -42,7 +42,7 @@ namespace MoonSharp.Interpreter.Interop.Converters
 		/// Tries to convert a CLR object to a MoonSharp value, using "simple" logic.
 		/// Does NOT throw on failure.
 		/// </summary>
-		internal static DynValue TryObjectToSimpleDynValue(Script script, object obj)
+		internal static DynValue TryObjectToSimpleDynValue(object obj)
 		{
 			if (obj == null)
 				return DynValue.Nil;
@@ -54,7 +54,9 @@ namespace MoonSharp.Interpreter.Interop.Converters
 			var converter = Script.GlobalOptions.CustomConverters.GetClrToScriptCustomConversion(obj.GetType());
 			if (converter != null)
 			{
-				var v = converter(script, obj);
+#warning TODO
+				//var v = converter(script, obj);
+				var v = converter(null, obj);
 				if (v != null)
 					return v;
 			}
@@ -101,9 +103,9 @@ namespace MoonSharp.Interpreter.Interop.Converters
 		/// <summary>
 		/// Tries to convert a CLR object to a MoonSharp value, using more in-depth analysis
 		/// </summary>
-		internal static DynValue ObjectToDynValue(Script script, object obj)
+		internal static DynValue ObjectToDynValue(object obj)
 		{
-			DynValue v = TryObjectToSimpleDynValue(script, obj);
+			DynValue v = TryObjectToSimpleDynValue(obj);
 
 			if (v != null) return v;
 
@@ -134,17 +136,19 @@ namespace MoonSharp.Interpreter.Interop.Converters
 
 			if (obj is System.Collections.IList)
 			{
-				Table t = TableConversions.ConvertIListToTable(script, (System.Collections.IList)obj);
+#warning unfortunately this needs a script argument because Table has an owner script (why?)
+				Table t = TableConversions.ConvertIListToTable(null, (System.Collections.IList)obj);
 				return DynValue.NewTable(t);
 			}
 
 			if (obj is System.Collections.IDictionary)
 			{
-				Table t = TableConversions.ConvertIDictionaryToTable(script, (System.Collections.IDictionary)obj);
+#warning unfortunately this needs a script argument because Table has an owner script (why?)
+				Table t = TableConversions.ConvertIDictionaryToTable(null, (System.Collections.IDictionary)obj);
 				return DynValue.NewTable(t);
 			}
 
-			var enumerator = EnumerationToDynValue(script, obj);
+			var enumerator = EnumerationToDynValue(obj);
 			if (enumerator != null) return enumerator;
 
 
@@ -157,18 +161,18 @@ namespace MoonSharp.Interpreter.Interop.Converters
 		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <returns></returns>
-		public static DynValue EnumerationToDynValue(Script script, object obj)
+		public static DynValue EnumerationToDynValue(object obj)
 		{
 			if (obj is System.Collections.IEnumerable)
 			{
 				var enumer = (System.Collections.IEnumerable)obj;
-				return EnumerableWrapper.ConvertIterator(script, enumer.GetEnumerator());
+				return EnumerableWrapper.ConvertIterator(enumer.GetEnumerator());
 			}
 
 			if (obj is System.Collections.IEnumerator)
 			{
 				var enumer = (System.Collections.IEnumerator)obj;
-				return EnumerableWrapper.ConvertIterator(script, enumer);
+				return EnumerableWrapper.ConvertIterator(enumer);
 			}
 
 			return null;

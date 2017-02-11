@@ -101,11 +101,12 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns></returns>
 		public DynValue GetValue(Script script, object obj)
 		{
+#warning TODO script argument can probably be removed
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 
 			// optimization+workaround of Unity bug.. 
 			if (IsConst)
-				return ClrToScriptConversions.ObjectToDynValue(script, m_ConstValue);
+				return ClrToScriptConversions.ObjectToDynValue(m_ConstValue);
 
 			if (AccessMode == InteropAccessMode.LazyOptimized && m_OptimizedGetter == null)
 				OptimizeGetter();
@@ -117,7 +118,7 @@ namespace MoonSharp.Interpreter.Interop
 			else
 				result = FieldInfo.GetValue(obj);
 
-			return ClrToScriptConversions.ObjectToDynValue(script, result);
+			return ClrToScriptConversions.ObjectToDynValue(result);
 		}
 
 		internal void OptimizeGetter()

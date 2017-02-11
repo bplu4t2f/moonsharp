@@ -27,7 +27,8 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors.HardwiredDescriptors
 		{
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 			object result = GetValueImpl(script, obj);
-			return ClrToScriptConversions.ObjectToDynValue(script, result);
+#warning TODO maybe script argument isn't needed anymore
+			return ClrToScriptConversions.ObjectToDynValue(result);
 		}
 
 		public void SetValue(Script script, object obj, DynValue value)

@@ -233,9 +233,10 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns>A DynValue to be returned to scripts</returns>
 		protected static DynValue BuildReturnValue(Script script, List<int> outParams, object[] pars, object retv)
 		{
+#warning TODO script argument can probably be removed
 			if (outParams == null)
 			{
-				return ClrToScriptConversions.ObjectToDynValue(script, retv);
+				return ClrToScriptConversions.ObjectToDynValue(retv);
 			}
 			else
 			{
@@ -244,10 +245,10 @@ namespace MoonSharp.Interpreter.Interop
 				if (retv is DynValue && ((DynValue)retv).IsVoid())
 					rets[0] = DynValue.Nil;
 				else
-					rets[0] = ClrToScriptConversions.ObjectToDynValue(script, retv);
+					rets[0] = ClrToScriptConversions.ObjectToDynValue(retv);
 
 				for (int i = 0; i < outParams.Count; i++)
-					rets[i + 1] = ClrToScriptConversions.ObjectToDynValue(script, pars[outParams[i]]);
+					rets[i + 1] = ClrToScriptConversions.ObjectToDynValue(pars[outParams[i]]);
 
 				return DynValue.NewTuple(rets);
 			}

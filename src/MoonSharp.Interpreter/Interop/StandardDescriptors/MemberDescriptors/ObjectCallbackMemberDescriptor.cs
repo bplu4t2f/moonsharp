@@ -60,7 +60,7 @@ namespace MoonSharp.Interpreter.Interop
 			if (m_CallbackFunc != null)
 			{
 				object retv = m_CallbackFunc(obj, context, args);
-				return ClrToScriptConversions.ObjectToDynValue(context.OwnerScript, retv);
+				return ClrToScriptConversions.ObjectToDynValue(retv);
 			}
 			else
 			{

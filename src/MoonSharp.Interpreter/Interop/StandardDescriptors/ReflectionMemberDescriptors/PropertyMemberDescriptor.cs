@@ -143,6 +143,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// <returns></returns>
 		public DynValue GetValue(Script script, object obj)
 		{
+#warning TODO script argument can probably be removed
 			this.CheckAccess(MemberDescriptorAccess.CanRead, obj);
 
 			if (m_Getter == null)
@@ -158,7 +159,7 @@ namespace MoonSharp.Interpreter.Interop
 			else
 				result = m_Getter.Invoke(IsStatic ? null : obj, null); // convoluted workaround for --full-aot Mono execution
 
-			return ClrToScriptConversions.ObjectToDynValue(script, result);
+			return ClrToScriptConversions.ObjectToDynValue(result);
 		}
 
 		internal void OptimizeGetter()

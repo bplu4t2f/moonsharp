@@ -14,7 +14,7 @@ namespace MoonSharp.Interpreter.Interop.Converters
 			Table t = new Table(script);
 			for (int i = 0; i < list.Count; i++)
 			{
-				t[i + 1] = ClrToScriptConversions.ObjectToDynValue(script, list[i]);
+				t[i + 1] = ClrToScriptConversions.ObjectToDynValue(list[i]);
 			}
 			return t;
 		}
@@ -28,8 +28,8 @@ namespace MoonSharp.Interpreter.Interop.Converters
 
 			foreach (System.Collections.DictionaryEntry kvp in dict)
 			{
-				DynValue key = ClrToScriptConversions.ObjectToDynValue(script, kvp.Key);
-				DynValue val = ClrToScriptConversions.ObjectToDynValue(script, kvp.Value);
+				DynValue key = ClrToScriptConversions.ObjectToDynValue(kvp.Key);
+				DynValue val = ClrToScriptConversions.ObjectToDynValue(kvp.Value);
 				t.Set(key, val);
 			}
 

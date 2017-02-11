@@ -525,7 +525,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 				case "__tobool":
 					return TryDispatchToBool(script, obj);
 				case "__iterator":
-					return ClrToScriptConversions.EnumerationToDynValue(script, obj);
+					return ClrToScriptConversions.EnumerationToDynValue(obj);
 				default:
 					return null;
 			}
