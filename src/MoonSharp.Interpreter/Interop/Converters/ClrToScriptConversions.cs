@@ -136,14 +136,12 @@ namespace MoonSharp.Interpreter.Interop.Converters
 
 			if (obj is System.Collections.IList)
 			{
-#warning unfortunately this needs a script argument because Table has an owner script (why?)
 				Table t = TableConversions.ConvertIListToTable((System.Collections.IList)obj);
 				return DynValue.NewTable(t);
 			}
 
 			if (obj is System.Collections.IDictionary)
 			{
-#warning unfortunately this needs a script argument because Table has an owner script (why?)
 				Table t = TableConversions.ConvertIDictionaryToTable((System.Collections.IDictionary)obj);
 				return DynValue.NewTable(t);
 			}

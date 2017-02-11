@@ -143,8 +143,6 @@ namespace MoonSharp.Interpreter
 		/// <param name="value">The value.</param>
 		public void Append(DynValue value)
 		{
-			//this.CheckScriptOwnership(value);
-#warning TODO remove
 			PerformTableSet(m_ArrayMap, Length + 1, DynValue.NewNumber(Length + 1), value, true, Length + 1);
 		}
 
@@ -202,9 +200,7 @@ namespace MoonSharp.Interpreter
 		{
 			if (key == null)
 				throw ScriptRuntimeException.TableIndexIsNil();
-
-#warning TODO remove
-			//this.CheckScriptOwnership(value);
+			
 			PerformTableSet(m_StringMap, key, DynValue.NewString(key), value, false, -1);
 		}
 
@@ -215,8 +211,6 @@ namespace MoonSharp.Interpreter
 		/// <param name="value">The value.</param>
 		public void Set(int key, DynValue value)
 		{
-#warning TODO remove
-			//this.CheckScriptOwnership(value);
 			PerformTableSet(m_ArrayMap, key, DynValue.NewNumber(key), value, true, -1);
 		}
 
@@ -251,10 +245,6 @@ namespace MoonSharp.Interpreter
 					return;
 				}
 			}
-
-#warning TODO remove
-			//this.CheckScriptOwnership(key);
-			//this.CheckScriptOwnership(value);
 
 			PerformTableSet(m_ValueMap, key, key, value, false, -1);
 		}
@@ -637,8 +627,7 @@ namespace MoonSharp.Interpreter
 		public Table MetaTable
 		{
 			get { return m_MetaTable; }
-#warning TODO remove
-			set { /*this.CheckScriptOwnership(m_MetaTable);*/ m_MetaTable = value; }
+			set { m_MetaTable = value; }
 		}
 		private Table m_MetaTable;
 

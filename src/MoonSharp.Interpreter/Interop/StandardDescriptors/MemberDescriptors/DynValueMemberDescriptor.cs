@@ -121,23 +121,8 @@ namespace MoonSharp.Interpreter.Interop
 				case DataType.Number:
 				case DataType.String:
 				case DataType.Tuple:
-					t.Set("value", Value);
-					break;
 				case DataType.Table:
-#warning TODO
-#if false
-					if (Value.Table.OwnerScript == null)
-					{
-						t.Set("value", Value);
-					}
-					else
-					{
-						t.Set("error", DynValue.NewString("Wiring of non-prime table value members not supported."));
-					}
-#else
 					t.Set("value", Value);
-#endif
-
 					break;
 				case DataType.UserData:
 					if (Value.UserData.Object == null)

@@ -181,11 +181,7 @@ namespace MoonSharp.Interpreter.Execution.VM
 							if (instructionPtr == YIELD_SPECIAL_TRAP) goto yield_to_calling_coroutine;
 							break;
 						case OpCode.NewTable:
-							if (i.NumVal == 0)
-								m_ValueStack.Push(DynValue.NewTable());
-							else
-#warning TODO?
-								m_ValueStack.Push(DynValue.NewTable());
+							m_ValueStack.Push(DynValue.NewTable());
 							break;
 						case OpCode.IterPrep:
 							ExecIterPrep(i);

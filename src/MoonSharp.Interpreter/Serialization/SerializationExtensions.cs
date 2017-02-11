@@ -17,10 +17,6 @@ namespace MoonSharp.Interpreter.Serialization
 
 		public static string Serialize(this Table table, bool prefixReturn = false, int tabs = 0)
 		{
-			//if (table.OwnerScript != null)
-			//	throw new ScriptRuntimeException("Table is not a prime table.");
-#warning TODO
-
 			string tabstr = new string('\t', tabs);
 			StringBuilder sb = new StringBuilder();
 
@@ -93,8 +89,7 @@ namespace MoonSharp.Interpreter.Serialization
 				return dynValue.Boolean ? "true" : "false";
 			else if (dynValue.Type == DataType.String)
 				return EscapeString(dynValue.String ?? "");
-#warning TODO
-			else if (dynValue.Type == DataType.Table /*&& dynValue.Table.OwnerScript == null*/)
+			else if (dynValue.Type == DataType.Table)
 				return Serialize(dynValue.Table, false, tabs);
 			else
 				throw new ScriptRuntimeException("Value is not a primitive value or a prime table.");
