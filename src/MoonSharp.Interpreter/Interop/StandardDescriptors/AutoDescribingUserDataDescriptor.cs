@@ -53,7 +53,7 @@ namespace MoonSharp.Interpreter
 			IUserDataType u = obj as IUserDataType;
 
 			if (u != null)
-				return u.Index(index, isDirectIndexing);
+				return u.Index(context.OwnerScript, index, isDirectIndexing);
 
 			return null;
 		}
@@ -73,7 +73,7 @@ namespace MoonSharp.Interpreter
 			IUserDataType u = obj as IUserDataType;
 
 			if (u != null)
-				return u.SetIndex(index, value, isDirectIndexing);
+				return u.SetIndex(context.OwnerScript, index, value, isDirectIndexing);
 
 			return false;
 		}

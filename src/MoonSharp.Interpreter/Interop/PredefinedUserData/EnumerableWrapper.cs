@@ -59,7 +59,7 @@ namespace MoonSharp.Interpreter.Interop
 		}
 
 
-		public DynValue Index(DynValue index, bool isDirectIndexing)
+		public DynValue Index(Script script, DynValue index, bool isDirectIndexing)
 		{
 			if (index.Type == DataType.String)
 			{
@@ -81,7 +81,7 @@ namespace MoonSharp.Interpreter.Interop
 			return null;
 		}
 
-		public bool SetIndex(DynValue index, DynValue value, bool isDirectIndexing)
+		public bool SetIndex(Script script, DynValue index, DynValue value, bool isDirectIndexing)
 		{
 			return false;
 		}

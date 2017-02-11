@@ -322,12 +322,12 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 
 		public class SelfDescribingClass : IUserDataType
 		{
-			public DynValue Index(DynValue index, bool isNameIndex)
+			public DynValue Index(Script script, DynValue index, bool isNameIndex)
 			{
 				return DynValue.NewNumber(index.Number * 3);
 			}
 
-			public bool SetIndex(DynValue index, DynValue value, bool isNameIndex)
+			public bool SetIndex(Script script, DynValue index, DynValue value, bool isNameIndex)
 			{
 				throw new NotImplementedException();
 			}
