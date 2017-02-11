@@ -10,7 +10,7 @@ namespace MoonSharp.Interpreter.Interop
 	public class CustomConvertersCollection 
 	{
 		private Dictionary<Type, Func<DynValue, object>>[] m_Script2Clr = new Dictionary<Type, Func<DynValue, object>>[(int)LuaTypeExtensions.MaxConvertibleTypes + 1];
-		private Dictionary<Type, Func<Script, object, DynValue>> m_Clr2Script = new Dictionary<Type, Func<Script, object, DynValue>>();
+		private Dictionary<Type, Func<object, DynValue>> m_Clr2Script = new Dictionary<Type, Func<object, DynValue>>();
 
 
 
@@ -89,8 +89,7 @@ namespace MoonSharp.Interpreter.Interop
 
 			if (converter == null)
 			{
-				if (map.ContainsKey(clrDataType))
-					map.Remove(clrDataType);
+				map.Remove(clrDataType);
 			}
 			else
 			{
@@ -118,12 +117,11 @@ namespace MoonSharp.Interpreter.Interop
 		/// </summary>
 		/// <param name="clrDataType">The CLR data type.</param>
 		/// <param name="converter">The converter, or null.</param>
-		public void SetClrToScriptCustomConversion(Type clrDataType, Func<Script, object, DynValue> converter = null)
+		public void SetClrToScriptCustomConversion(Type clrDataType, Func<object, DynValue> converter = null)
 		{
 			if (converter == null)
 			{
-				if (m_Clr2Script.ContainsKey(clrDataType))
-					m_Clr2Script.Remove(clrDataType);
+				m_Clr2Script.Remove(clrDataType);
 			}
 			else
 			{
@@ -136,9 +134,9 @@ namespace MoonSharp.Interpreter.Interop
 		/// </summary>
 		/// <typeparam name="T">The CLR data type.</typeparam>
 		/// <param name="converter">The converter, or null.</param>
-		public void SetClrToScriptCustomConversion<T>(Func<Script, T, DynValue> converter = null)
+		public void SetClrToScriptCustomConversion<T>(Func<T, DynValue> converter = null)
 		{
-			SetClrToScriptCustomConversion(typeof(T), (s, o) => converter(s, (T)o));
+			SetClrToScriptCustomConversion(typeof(T), (o) => converter((T)o));
 		}
 
 
@@ -147,30 +145,9 @@ namespace MoonSharp.Interpreter.Interop
 		/// </summary>
 		/// <param name="clrDataType">Type of the color data.</param>
 		/// <returns>The converter function, or null if not found</returns>
-		public Func<Script, object, DynValue> GetClrToScriptCustomConversion(Type clrDataType)
+		public Func<object, DynValue> GetClrToScriptCustomConversion(Type clrDataType)
 		{
 			return m_Clr2Script.GetOrDefault(clrDataType);
-		}
-
-		/// Sets a custom converter from a CLR data type. Set null to remove a previous custom converter.
-		/// </summary>
-		/// <param name="clrDataType">The CLR data type.</param>
-		/// <param name="converter">The converter, or null.</param>
-		[Obsolete("This method is deprecated. Use the overloads accepting functions with a Script argument.")]
-		public void SetClrToScriptCustomConversion(Type clrDataType, Func<object, DynValue> converter = null)
-		{
-			SetClrToScriptCustomConversion(clrDataType, (s, o) => converter(o));
-		}
-
-		/// <summary>
-		/// Sets a custom converter from a CLR data type. Set null to remove a previous custom converter.
-		/// </summary>
-		/// <typeparam name="T">The CLR data type.</typeparam>
-		/// <param name="converter">The converter, or null.</param>
-		[Obsolete("This method is deprecated. Use the overloads accepting functions with a Script argument.")]
-		public void SetClrToScriptCustomConversion<T>(Func<T, DynValue> converter = null)
-		{
-			SetClrToScriptCustomConversion(typeof(T), o => converter((T)o));
 		}
 
 
