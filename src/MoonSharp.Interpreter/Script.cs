@@ -119,8 +119,6 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadFunction(string code, Table globalTable = null, string funcFriendlyName = null)
 		{
-			//this.CheckScriptOwnership(globalTable);
-
 			string chunkName = string.Format("libfunc_{0}", funcFriendlyName ?? m_Sources.Count.ToString());
 
 			SourceCode source = new SourceCode(chunkName, code, m_Sources.Count, this);
@@ -163,8 +161,6 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadString(string code, Table globalTable = null, string codeFriendlyName = null)
 		{
-			//this.CheckScriptOwnership(globalTable);
-
 			if (code.StartsWith(StringModule.BASE64_DUMP_HEADER))
 			{
 				code = code.Substring(StringModule.BASE64_DUMP_HEADER.Length);
@@ -200,8 +196,6 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadStream(Stream stream, Table globalTable = null, string codeFriendlyName = null)
 		{
-			//this.CheckScriptOwnership(globalTable);
-
 			Stream codeStream = new UndisposableStream(stream);
 
 			if (!Processor.IsDumpStream(codeStream))
@@ -278,8 +272,6 @@ namespace MoonSharp.Interpreter
 		/// </returns>
 		public DynValue LoadFile(string filename, Table globalContext = null, string friendlyFilename = null)
 		{
-			//this.CheckScriptOwnership(globalContext);
-
 #pragma warning disable 618
 			filename = Options.ScriptLoader.ResolveFileName(filename, globalContext ?? m_GlobalTable);
 #pragma warning restore 618
@@ -394,7 +386,6 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		private DynValue MakeClosure(int address, Table envTable = null)
 		{
-			//this.CheckScriptOwnership(envTable);
 			Closure c;
 
 			if (envTable == null)
@@ -621,8 +612,6 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="ScriptRuntimeException">Raised if module is not found</exception>
 		public DynValue RequireModule(string modname, Table globalContext = null)
 		{
-			//this.CheckScriptOwnership(globalContext);
-
 			Table globals = globalContext ?? m_GlobalTable;
 			string filename = Options.ScriptLoader.ResolveModuleName(modname, globals);
 
@@ -658,8 +647,6 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="System.ArgumentException">Specified type not supported :  + type.ToString()</exception>
 		public void SetTypeMetatable(DataType type, Table metatable)
 		{
-			//this.CheckScriptOwnership(metatable);
-
 			int t = (int)type;
 
 			if (t >= 0 && t < m_TypeMetatables.Length)
