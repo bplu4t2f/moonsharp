@@ -17,9 +17,17 @@ namespace MoonSharp.Interpreter
 	/// </summary>
 	public class UserData : RefIdObject
 	{
-		private UserData()
+		/// <summary>
+		/// Initializes a new instance.
+		/// </summary>
+		/// <param name="obj">The CLR object instance associated with the user data. If this represents the static members of a type
+		/// (<see cref="CreateStatic(Type)"/>), <paramref name="obj"/> can be null.</param>
+		/// <param name="descriptor">The type descriptor. May not be null.</param>
+		private UserData(object obj, IUserDataDescriptor descriptor)
 		{
 			// This type can only be instantiated using one of the Create methods
+			this.m_object = obj;
+			this.m_descriptor = descriptor;
 		}
 
 		/// <summary>
@@ -28,15 +36,17 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		public DynValue UserValue { get; set; }
 
+		private readonly object m_object;
 		/// <summary>
-		/// Gets the object associated to this userdata (null for statics)
+		/// Gets the object associated to this userdata (null for statics).
 		/// </summary>
-		public object Object { get; private set; }
+		public object Object { get { return this.m_object; } }
 
+		private readonly IUserDataDescriptor m_descriptor;
 		/// <summary>
-		/// Gets the type descriptor of this userdata
+		/// Gets the type descriptor of this userdata. Cannot be null.
 		/// </summary>
-		public IUserDataDescriptor Descriptor { get; private set; }
+		public IUserDataDescriptor Descriptor { get { return this.m_descriptor; } }
 
 
 
@@ -144,11 +154,11 @@ namespace MoonSharp.Interpreter
 		{
 			if (asm == null)
 			{
-				#if NETFX_CORE || DOTNET_CORE
+#if NETFX_CORE || DOTNET_CORE
 					throw new NotSupportedException("Assembly.GetCallingAssembly is not supported on target framework.");
-				#else
-					asm = Assembly.GetCallingAssembly();
-				#endif
+#else
+				asm = Assembly.GetCallingAssembly();
+#endif
 			}
 
 			TypeDescriptorRegistry.RegisterAssembly(asm, includeExtensionTypes);
@@ -210,11 +220,7 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static DynValue Create(object o, IUserDataDescriptor descr)
 		{
-			return DynValue.NewUserData(new UserData()
-			{
-				Descriptor = descr,
-				Object = o
-			});
+			return DynValue.NewUserData(new UserData(o, descr));
 		}
 
 		/// <summary>
@@ -245,11 +251,7 @@ namespace MoonSharp.Interpreter
 		{
 			if (descr == null) return null;
 
-			return DynValue.NewUserData(new UserData()
-			{
-				Descriptor = descr,
-				Object = null
-			});
+			return DynValue.NewUserData(new UserData(null, descr));
 		}
 
 		/// <summary>
@@ -395,7 +397,7 @@ namespace MoonSharp.Interpreter
 			return registeredTypesPairs.Select(p => p.Value.Type);
 		}
 
-		
+
 
 	}
 }
