@@ -226,14 +226,12 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Builds the return value of a call
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="outParams">The out parameters indices, or null. See <see cref="BuildArgumentList" />.</param>
 		/// <param name="pars">The parameters passed to the function.</param>
 		/// <param name="retv">The return value from the function. Use DynValue.Void if the function returned no value.</param>
 		/// <returns>A DynValue to be returned to scripts</returns>
-		protected static DynValue BuildReturnValue(Script script, List<int> outParams, object[] pars, object retv)
+		protected static DynValue BuildReturnValue(List<int> outParams, object[] pars, object retv)
 		{
-#warning TODO script argument can probably be removed
 			if (outParams == null)
 			{
 				return ClrToScriptConversions.ObjectToDynValue(retv);

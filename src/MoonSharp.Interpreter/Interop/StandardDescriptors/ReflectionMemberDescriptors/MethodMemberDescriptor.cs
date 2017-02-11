@@ -207,7 +207,7 @@ namespace MoonSharp.Interpreter.Interop
 					retv = MethodInfo.Invoke(obj, pars);
 			}
 
-			return BuildReturnValue(context.OwnerScript, outParams, pars, retv);
+			return BuildReturnValue(outParams, pars, retv);
 		}
 
 		/// <summary>
