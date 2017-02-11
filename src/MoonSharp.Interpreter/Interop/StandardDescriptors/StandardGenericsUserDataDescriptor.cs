@@ -55,7 +55,7 @@ namespace MoonSharp.Interpreter.Interop
 		}
 
 		/// <inheritdoc/>
-		public DynValue MetaIndex(object obj, string metaname)
+		public DynValue MetaIndex(ScriptExecutionContext context, object obj, string metaname)
 		{
 			return null;
 		}

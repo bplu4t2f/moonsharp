@@ -50,7 +50,8 @@ namespace MoonSharp.Interpreter.Execution.VM
 
 			if (op1.Type == DataType.UserData)
 			{
-				m = op1.UserData.Descriptor.MetaIndex(op1.UserData.Object, eventName);
+				var context = new ScriptExecutionContext(this, null, this.GetCurrentSourceRef(instructionPtr));
+				m = op1.UserData.Descriptor.MetaIndex(context, op1.UserData.Object, eventName);
 			}
 
 			if (m == null)

@@ -305,7 +305,7 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 				return null;
 			}
 
-			public DynValue MetaIndex(object obj, string metaname)
+			public DynValue MetaIndex(ScriptExecutionContext context, object obj, string metaname)
 			{
 				return null;
 			}
@@ -331,7 +331,7 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 				throw new NotImplementedException();
 			}
 
-			public DynValue MetaIndex(string metaname)
+			public DynValue MetaIndex(Script script, string metaname)
 			{
 				throw new NotImplementedException();
 			}

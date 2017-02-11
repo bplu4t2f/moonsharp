@@ -86,7 +86,7 @@ namespace MoonSharp.Interpreter.Interop
 			return false;
 		}
 
-		public DynValue MetaIndex(string metaname)
+		public DynValue MetaIndex(Script script, string metaname)
 		{
 			if (metaname == "__call")
 				return DynValue.NewCallback(LuaIteratorCallback);

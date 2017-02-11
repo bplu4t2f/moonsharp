@@ -39,7 +39,8 @@ namespace MoonSharp.Interpreter.Execution.VM
 
 			if (op1.Type == DataType.UserData)
 			{
-				DynValue meta = op1.UserData.Descriptor.MetaIndex(
+				var context = new ScriptExecutionContext(this, null, this.GetCurrentSourceRef(this.m_SavedInstructionPtr));
+				DynValue meta = op1.UserData.Descriptor.MetaIndex(context,
 					op1.UserData.Object, eventName);
 
 				if (meta != null)
@@ -48,7 +49,8 @@ namespace MoonSharp.Interpreter.Execution.VM
 
 			if (op2.Type == DataType.UserData)
 			{
-				DynValue meta = op2.UserData.Descriptor.MetaIndex(
+				var context = new ScriptExecutionContext(this, null, this.GetCurrentSourceRef(this.m_SavedInstructionPtr));
+				DynValue meta = op2.UserData.Descriptor.MetaIndex(context,
 					op2.UserData.Object, eventName);
 
 				if (meta != null)
@@ -62,7 +64,8 @@ namespace MoonSharp.Interpreter.Execution.VM
 		{
 			if (value.Type == DataType.UserData)
 			{
-				DynValue v = value.UserData.Descriptor.MetaIndex(value.UserData.Object, metamethod);
+				var context = new ScriptExecutionContext(this, null, this.GetCurrentSourceRef(this.m_SavedInstructionPtr));
+				DynValue v = value.UserData.Descriptor.MetaIndex(context, value.UserData.Object, metamethod);
 				if (v != null)
 					return v;
 			}

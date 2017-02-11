@@ -326,10 +326,11 @@ namespace MoonSharp.Interpreter.Interop
 		/// In this specific case, only the concat operator is supported, only on flags enums and it implements the
 		/// 'or' operator.
 		/// </summary>
+		/// <param name="context">The <see cref="ScriptExecutionContext"/> that originated this indexing operation.</param>
 		/// <param name="obj"></param>
 		/// <param name="metaname"></param>
 		/// <returns></returns>
-		public override DynValue MetaIndex(object obj, string metaname)
+		public override DynValue MetaIndex(ScriptExecutionContext context, object obj, string metaname)
 		{
 			if (metaname == "__concat" && IsFlags)
 				return DynValue.NewCallback(Callback_Or);

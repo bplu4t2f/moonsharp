@@ -101,15 +101,16 @@ namespace MoonSharp.Interpreter
 		/// These standard metamethods are supported through other calls for efficiency:
 		/// __index, __newindex, __tostring
 		/// </summary>
+		/// <param name="context">The <see cref="ScriptExecutionContext"/> that originated this indexing operation.</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="metaname">The name of the metamember.</param>
 		/// <returns></returns>
-		public DynValue MetaIndex(object obj, string metaname)
+		public DynValue MetaIndex(ScriptExecutionContext context, object obj, string metaname)
 		{
 			IUserDataType u = obj as IUserDataType;
 
 			if (u != null)
-				return u.MetaIndex(metaname);
+				return u.MetaIndex(context.OwnerScript, metaname);
 
 			return null;
 		}

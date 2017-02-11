@@ -484,11 +484,12 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// __tonumber is dispatched to implicit or explicit conversion operators to standard numeric types.
 		/// __tobool is dispatched to an implicit or explicit conversion operator to bool. If that fails, operator true is used.
 		/// 
+		/// <param name="context">The <see cref="ScriptExecutionContext"/> that originated this indexing operation.</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="metaname">The name of the metamember.</param>
 		/// </summary>
 		/// <returns></returns>
-		public virtual DynValue MetaIndex(object obj, string metaname)
+		public virtual DynValue MetaIndex(ScriptExecutionContext context, object obj, string metaname)
 		{
 			IMemberDescriptor desc = m_MetaMembers.GetOrDefault(metaname);
 
