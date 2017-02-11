@@ -61,12 +61,11 @@ namespace MoonSharp.Interpreter.Platforms
 		/// Can have an invalid implementation if 'io' module is filtered out.
 		/// It should return a correctly initialized Stream for the given file and access
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="filename">The filename.</param>
 		/// <param name="encoding">The encoding.</param>
 		/// <param name="mode">The mode (as per Lua usage - e.g. 'w+', 'rb', etc.).</param>
 		/// <returns></returns>
-		Stream IO_OpenFile(Script script, string filename, Encoding encoding, string mode);
+		Stream IO_OpenFile(string filename, Encoding encoding, string mode);
 
 		/// <summary>
 		/// Gets a standard stream (stdin, stdout, stderr).

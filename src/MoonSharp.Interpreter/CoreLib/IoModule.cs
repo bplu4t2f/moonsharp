@@ -173,7 +173,7 @@ namespace MoonSharp.Interpreter.CoreLib
 			{
 				List<DynValue> readLines = new List<DynValue>();
 
-				using (var stream = Script.GlobalOptions.Platform.IO_OpenFile(executionContext.GetScript(), filename, null, "r"))
+				using (var stream = Script.GlobalOptions.Platform.IO_OpenFile(filename, null, "r"))
 				{
 					using (var reader = new System.IO.StreamReader(stream))
 					{
@@ -300,7 +300,7 @@ namespace MoonSharp.Interpreter.CoreLib
 
 		private static FileUserDataBase Open(ScriptExecutionContext executionContext, string filename, Encoding encoding, string mode)
 		{
-			return new FileUserData(executionContext.GetScript(), filename, encoding, mode);
+			return new FileUserData(filename, encoding, mode);
 		}
 
 

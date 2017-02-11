@@ -40,13 +40,12 @@ namespace MoonSharp.Interpreter.Platforms
 		/// LimitedPlatformAccessorBase does NOT offer a meaningful implementation of this method and
 		/// thus does not support 'io' and 'os' modules.
 		/// </summary>
-		/// <param name="script"></param>
 		/// <param name="filename">The filename.</param>
 		/// <param name="encoding">The encoding.</param>
 		/// <param name="mode">The mode (as per Lua usage - e.g. 'w+', 'rb', etc.).</param>
 		/// <returns></returns>
 		/// <exception cref="System.NotImplementedException">The current platform accessor does not support 'io' and 'os' operations. Provide your own implementation of platform to work around this limitation, if needed.</exception>
-		public override System.IO.Stream IO_OpenFile(Script script, string filename, Encoding encoding, string mode)
+		public override System.IO.Stream IO_OpenFile(string filename, Encoding encoding, string mode)
 		{
 			throw new NotImplementedException("The current platform accessor does not support 'io' and 'os' operations. Provide your own implementation of platform to work around this limitation, if needed.");
 		}
