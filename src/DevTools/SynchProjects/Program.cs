@@ -179,8 +179,7 @@ namespace SynchProjects
 					includeFiles.Table.Append(DynValue.NewString(file));
 				}
 
-                // TODO: Add an "escape forward slash" bool option to TableToJson.
-                var options = new JsonSerializationOptions() { EscapeForwardSlashes = false };
+                var options = new JsonSerializationOptions() { EscapeForwardSlashes = false, HumanReadable = true };
                 var resultJson = JsonTableConverter.TableToJson(jdst, options);
 				File.WriteAllText($"{dstCsProj}", resultJson);
 				

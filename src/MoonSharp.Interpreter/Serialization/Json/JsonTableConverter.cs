@@ -19,64 +19,130 @@ namespace MoonSharp.Interpreter.Serialization.Json
 		/// Converts a table to a json string
 		/// </summary>
 		/// <param name="table">The table.</param>
-		/// <returns></returns>
+		/// <param name="options">(optional) Serialization options to customize the output string. May be null, in which case
+		/// default options are used.</param>
 		public static string TableToJson(this Table table, JsonSerializationOptions options = null)
 		{
+			if (options == null)
+			{
+				options = new JsonSerializationOptions();
+			}
+
 			StringBuilder sb = new StringBuilder();
-			TableToJson(sb, table, options);
+			TableToJson(sb, table, options, 0);
 			return sb.ToString();
 		}
 
-        /// <summary>
-        /// Tables to json.
-        /// </summary>
-        /// <param name="sb">The sb.</param>
-        /// <param name="table">The table.</param>
-        /// <remarks>I LOVE GHOSTDOC</remarks>
-        private static void TableToJson(StringBuilder sb, Table table, JsonSerializationOptions options)
+		/// <summary>
+		/// The newline character that is inserted if <see cref="JsonSerializationOptions.HumanReadable"/> is true.
+		/// </summary>
+		public const string NewLine = "\n";
+		/// <summary>
+		/// The indentation character that is inserted if <see cref="JsonSerializationOptions.HumanReadable"/> is true.
+		/// </summary>
+		public const string Indentation = "\t";
+
+		/// <summary>
+		/// Inserts a <see cref="NewLine"/> character (only if applicable).
+		/// </summary>
+		private static void InsertNewLine(StringBuilder sb, JsonSerializationOptions options)
+		{
+			if (options.HumanReadable)
+			{
+				sb.Append(NewLine);
+			}
+		}
+		
+		/// <summary>
+		/// Inserts <paramref name="indentLevel"/> amount of <see cref="Indentation"/> characters (only if applicable).
+		/// </summary>
+		private static void InsertIndentation(StringBuilder sb, JsonSerializationOptions options, int indentLevel)
+		{	
+			for (int i = 0; i < indentLevel; ++i)
+			{
+				sb.Append(Indentation);
+			}
+		}
+
+		/// <summary>
+		/// Inserts a colon token. If <see cref="JsonSerializationOptions.HumanReadable"/> is true, inserts a space as well.
+		/// </summary>
+		private static void InsertColon(StringBuilder sb, JsonSerializationOptions options)
+		{
+			if (options.HumanReadable)
+			{
+				sb.Append(": ");
+			}
+			else
+			{
+				sb.Append(':');
+			}
+		}
+
+		/// <summary>
+		/// Tables to json.
+		/// </summary>
+		/// <param name="sb">The sb.</param>
+		/// <param name="table">The table.</param>
+		/// <param name="options">Serialization options to customize the output string. May not be null.</param>
+		/// <param name="indentLevel">The current indentation level (used for humanized output formatting).</param>
+		/// <remarks>I LOVE GHOSTDOC</remarks>
+		private static void TableToJson(StringBuilder sb, Table table, JsonSerializationOptions options, int indentLevel)
 		{
 			bool first = true;
-            if (options == null)
-            {
-                options = new JsonSerializationOptions();
-            }
             
 			if (table.Length == 0)
 			{
 				sb.Append("{");
+				InsertNewLine(sb, options);
+				InsertIndentation(sb, options, ++indentLevel);
 				foreach (TablePair pair in table.Pairs)
 				{
 					if (pair.Key.Type == DataType.String && IsValueJsonCompatible(pair.Value))
 					{
-                        if (!first)
-                            sb.Append(',');
+						if (!first)
+						{
+							sb.Append(',');
+							InsertNewLine(sb, options);
+							InsertIndentation(sb, options, indentLevel);
+						}
 
-						ValueToJson(sb, pair.Key, options);
-						sb.Append(':');
-						ValueToJson(sb, pair.Value, options);
+						ValueToJson(sb, pair.Key, options, indentLevel);
+						InsertColon(sb, options);
+						ValueToJson(sb, pair.Value, options, indentLevel);
 
 						first = false;
 					}
 				}
-                sb.Append("}");
+				InsertNewLine(sb, options);
+				InsertIndentation(sb, options, --indentLevel);
+				sb.Append("}");
 			}
 			else
 			{
 				sb.Append("[");
-                for (int i = 1; i <= table.Length; i++)
+				InsertNewLine(sb, options);
+				InsertIndentation(sb, options, ++indentLevel);
+				for (int i = 1; i <= table.Length; i++)
 				{
 					DynValue value = table.Get(i);
 					if (IsValueJsonCompatible(value))
 					{
-                        if (!first)
-                            sb.Append(',');
+						if (!first)
+						{
+							sb.Append(',');
+							InsertNewLine(sb, options);
+							InsertIndentation(sb, options, indentLevel);
+						}
 
-                        ValueToJson(sb, value, options);
+                        ValueToJson(sb, value, options, indentLevel);
 
 						first = false;
 					}
-                }
-                sb.Append("]");
+				}
+				InsertNewLine(sb, options);
+				InsertIndentation(sb, options, --indentLevel);
+				sb.Append("]");
 			}
 		}
 
@@ -91,7 +157,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 
 
 
-		private static void ValueToJson(StringBuilder sb, DynValue value, JsonSerializationOptions options)
+		private static void ValueToJson(StringBuilder sb, DynValue value, JsonSerializationOptions options, int indentLevel)
 		{
 			switch (value.Type)
 			{
@@ -105,7 +171,7 @@ namespace MoonSharp.Interpreter.Serialization.Json
 					sb.Append(EscapeString(value.String ?? "", options.EscapeForwardSlashes));
 					break;
 				case DataType.Table:
-					TableToJson(sb, value.Table, options);
+					TableToJson(sb, value.Table, options, indentLevel);
 					break;
 				case DataType.Nil:
 				case DataType.Void:
