@@ -6,7 +6,6 @@ using MoonSharp.Interpreter.Execution.VM;
 
 namespace MoonSharp.Interpreter
 {
-#warning TODO does this have to be IScriptPrivateResource?
 	/// <summary>
 	/// A class representing a script coroutine
 	/// </summary>
