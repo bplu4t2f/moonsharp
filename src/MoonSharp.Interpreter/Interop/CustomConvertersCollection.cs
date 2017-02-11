@@ -9,6 +9,7 @@ namespace MoonSharp.Interpreter.Interop
 	/// </summary>
 	public class CustomConvertersCollection 
 	{
+#warning wouldn't it make sense to have this class merely be a facade to the regular type registry, using AutoDescribingUserDataDescriptors?
 		private Dictionary<Type, Func<DynValue, object>>[] m_Script2Clr = new Dictionary<Type, Func<DynValue, object>>[(int)LuaTypeExtensions.MaxConvertibleTypes + 1];
 		private Dictionary<Type, Func<object, DynValue>> m_Clr2Script = new Dictionary<Type, Func<object, DynValue>>();
 
