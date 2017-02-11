@@ -301,7 +301,7 @@ namespace MoonSharp.Interpreter.Interop
 			t.Set("static", DynValue.NewBoolean(this.IsStatic));
 			t.Set("extension", DynValue.NewBoolean(this.ExtensionMethodType != null));
 
-			var pars = DynValue.NewPrimeTable();
+			var pars = DynValue.NewTable();
 
 			t.Set("params", pars);
 
@@ -309,7 +309,7 @@ namespace MoonSharp.Interpreter.Interop
 
 			foreach (var p in Parameters)
 			{
-				DynValue pt = DynValue.NewPrimeTable();
+				DynValue pt = DynValue.NewTable();
 				pars.Table.Set(++i, pt);
 				p.PrepareForWiring(pt.Table);
 			}

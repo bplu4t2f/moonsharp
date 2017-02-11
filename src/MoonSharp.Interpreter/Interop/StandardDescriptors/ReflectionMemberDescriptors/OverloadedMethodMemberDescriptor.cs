@@ -492,7 +492,7 @@ namespace MoonSharp.Interpreter.Interop
 			t.Set("class", DynValue.NewString(this.GetType().FullName));
 			t.Set("name", DynValue.NewString(this.Name));
 			t.Set("decltype", DynValue.NewString(this.DeclaringType.FullName));
-			DynValue mst = DynValue.NewPrimeTable();
+			DynValue mst = DynValue.NewTable();
 			t.Set("overloads", mst);
 
 			int i = 0;
@@ -503,7 +503,7 @@ namespace MoonSharp.Interpreter.Interop
 
 				if (sd != null)
 				{
-					DynValue mt = DynValue.NewPrimeTable();
+					DynValue mt = DynValue.NewTable();
 					mst.Table.Set(++i, mt);
 					sd.PrepareForWiring(mt.Table);
 				}

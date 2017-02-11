@@ -52,7 +52,7 @@ namespace MoonSharp.Interpreter.Interop
 
 			if (this.Parameters != null)
 			{
-				var pars = DynValue.NewPrimeTable();
+				var pars = DynValue.NewTable();
 
 				t.Set("params", pars);
 
@@ -60,7 +60,7 @@ namespace MoonSharp.Interpreter.Interop
 
 				foreach (var p in Parameters)
 				{
-					DynValue pt = DynValue.NewPrimeTable();
+					DynValue pt = DynValue.NewTable();
 					pars.Table.Set(++i, pt);
 					p.PrepareForWiring(pt.Table);
 				}

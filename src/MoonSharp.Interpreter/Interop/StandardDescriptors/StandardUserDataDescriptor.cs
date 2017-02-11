@@ -185,9 +185,9 @@ namespace MoonSharp.Interpreter.Interop
 				t.Set("visibility", DynValue.NewString(this.Type.GetClrVisibility()));
 
 				t.Set("class", DynValue.NewString(this.GetType().FullName));
-				DynValue tm = DynValue.NewPrimeTable();
+				DynValue tm = DynValue.NewTable();
 				t.Set("members", tm);
-				DynValue tmm = DynValue.NewPrimeTable();
+				DynValue tmm = DynValue.NewTable();
 				t.Set("metamembers", tmm);
 
 				Serialize(tm.Table, Members);
@@ -203,7 +203,7 @@ namespace MoonSharp.Interpreter.Interop
 
 				if (sd != null)
 				{
-					DynValue mt = DynValue.NewPrimeTable();
+					DynValue mt = DynValue.NewTable();
 					t.Set(pair.Key, mt);
 					sd.PrepareForWiring(mt.Table);
 				}

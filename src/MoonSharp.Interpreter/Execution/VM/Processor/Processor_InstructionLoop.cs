@@ -185,7 +185,7 @@ namespace MoonSharp.Interpreter.Execution.VM
 								m_ValueStack.Push(DynValue.NewTable());
 							else
 #warning TODO?
-								m_ValueStack.Push(DynValue.NewPrimeTable());
+								m_ValueStack.Push(DynValue.NewTable());
 							break;
 						case OpCode.IterPrep:
 							ExecIterPrep(i);

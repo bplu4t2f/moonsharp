@@ -115,7 +115,7 @@ namespace MoonSharp.Interpreter.Tree.Expressions
 				throw new DynamicExpressionException("Dynamic Expressions cannot define new non-prime tables.");
 			}
 
-			DynValue tval = DynValue.NewPrimeTable();
+			DynValue tval = DynValue.NewTable();
 			Table t = tval.Table;
 
 			int idx = 0;

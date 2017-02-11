@@ -366,7 +366,7 @@ namespace MoonSharp.Interpreter
 		/// <returns></returns>
 		public static Table GetDescriptionOfRegisteredTypes(bool useHistoricalData = false)
 		{
-			DynValue output = DynValue.NewPrimeTable();
+			DynValue output = DynValue.NewTable();
 			var registeredTypesPairs = useHistoricalData ? TypeDescriptorRegistry.RegisteredTypesHistory : TypeDescriptorRegistry.RegisteredTypes;
 
 			foreach (var descpair in registeredTypesPairs)
@@ -375,7 +375,7 @@ namespace MoonSharp.Interpreter
 
 				if (sd != null)
 				{
-					DynValue t = DynValue.NewPrimeTable();
+					DynValue t = DynValue.NewTable();
 					output.Table.Set(descpair.Key.FullName, t);
 					sd.PrepareForWiring(t.Table);
 				}
