@@ -140,6 +140,7 @@ namespace MoonSharp.Interpreter.Platforms
 		/// <returns></returns>
 		public override Stream IO_OpenFile(Script script, string filename, Encoding encoding, string mode)
 		{
+#warning TODO remove script
 			return new FileStream(filename, ParseFileMode(mode), ParseFileAccess(mode), FileShare.ReadWrite | FileShare.Delete);
 		}
 

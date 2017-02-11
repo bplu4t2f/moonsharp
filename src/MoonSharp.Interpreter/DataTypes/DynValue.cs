@@ -834,10 +834,9 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Creates a new DynValue from a CLR object
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <returns></returns>
-		public static DynValue FromObject(Script script, object obj)
+		public static DynValue FromObject(object obj)
 		{
 #warning TODO remove argument
 			return MoonSharp.Interpreter.Interop.Converters.ClrToScriptConversions.ObjectToDynValue(obj);

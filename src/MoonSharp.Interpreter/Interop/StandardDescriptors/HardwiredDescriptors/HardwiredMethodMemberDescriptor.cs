@@ -13,7 +13,7 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors.HardwiredDescriptors
 			object[] pars = base.BuildArgumentList(obj, context, args, out outParams);
 			object retv = Invoke(context.OwnerScript, obj, pars, CalcArgsCount(pars));
 
-			return DynValue.FromObject(context.OwnerScript, retv);
+			return DynValue.FromObject(retv);
 		}
 
 		private int CalcArgsCount(object[] pars)

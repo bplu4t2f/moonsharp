@@ -87,7 +87,7 @@ namespace MoonSharp.Interpreter
 			}
 			set
 			{
-				Set(keys, DynValue.FromObject(null, value));
+				Set(keys, DynValue.FromObject(value));
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace MoonSharp.Interpreter
 			}
 			set
 			{
-				Set(key, DynValue.FromObject(null, value));
+				Set(key, DynValue.FromObject(value));
 			}
 		}
 
@@ -274,7 +274,7 @@ namespace MoonSharp.Interpreter
 			else if (key is int)
 				Set((int)key, value);
 			else
-				Set(DynValue.FromObject(null, key), value);
+				Set(DynValue.FromObject(key), value);
 		}
 
 		/// <summary>
@@ -415,7 +415,7 @@ namespace MoonSharp.Interpreter
 			if (key is int)
 				return RawGet((int)key);
 
-			return RawGet(DynValue.FromObject(null, key));
+			return RawGet(DynValue.FromObject(key));
 		}
 
 		/// <summary>
@@ -503,7 +503,7 @@ namespace MoonSharp.Interpreter
 			if (key is int)
 				return Remove((int)key);
 
-			return Remove(DynValue.FromObject(null, key));
+			return Remove(DynValue.FromObject(key));
 		}
 
 		/// <summary>

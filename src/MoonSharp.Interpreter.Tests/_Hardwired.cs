@@ -10253,8 +10253,8 @@ namespace MyNamespace
 					string refp_0 = ((string)(pars[1]));
 					object retv = ((MoonSharp.Interpreter.Tests.EndToEnd.VtUserDataOverloadsTests.OverloadsTestClass)(obj)).Method2(((string)(pars[0])), ref refp_0);
 					return MoonSharp.Interpreter.DynValue.NewTuple(new MoonSharp.Interpreter.DynValue[] {
-                                MoonSharp.Interpreter.DynValue.FromObject(script, retv),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_0)});
+                                MoonSharp.Interpreter.DynValue.FromObject(retv),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_0)});
 				}
 			}
 
@@ -10274,8 +10274,8 @@ namespace MyNamespace
 					string refp_0 = ((string)(pars[1]));
 					object retv = ((MoonSharp.Interpreter.Tests.EndToEnd.VtUserDataOverloadsTests.OverloadsTestClass)(obj)).Method2(((string)(pars[0])), ref refp_0, ((int)(pars[2])));
 					return MoonSharp.Interpreter.DynValue.NewTuple(new MoonSharp.Interpreter.DynValue[] {
-                                MoonSharp.Interpreter.DynValue.FromObject(script, retv),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_0)});
+                                MoonSharp.Interpreter.DynValue.FromObject(retv),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_0)});
 				}
 			}
 
@@ -10410,9 +10410,9 @@ namespace MyNamespace
 					string refp_1;
 					object retv = ((MoonSharp.Interpreter.Tests.EndToEnd.VtUserDataMethodsTests.SomeClass)(obj)).ManipulateString(((string)(pars[0])), ref refp_0, out refp_1);
 					return MoonSharp.Interpreter.DynValue.NewTuple(new MoonSharp.Interpreter.DynValue[] {
-                                MoonSharp.Interpreter.DynValue.FromObject(script, retv),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_0),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_1)});
+                                MoonSharp.Interpreter.DynValue.FromObject(retv),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_0),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_1)});
 				}
 			}
 
@@ -13276,9 +13276,9 @@ namespace MyNamespace
 					string refp_1;
 					object retv = ((MoonSharp.Interpreter.Tests.EndToEnd.UserDataMethodsTests.SomeClass)(obj)).ManipulateString(((string)(pars[0])), ref refp_0, out refp_1);
 					return MoonSharp.Interpreter.DynValue.NewTuple(new MoonSharp.Interpreter.DynValue[] {
-                                MoonSharp.Interpreter.DynValue.FromObject(script, retv),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_0),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_1)});
+                                MoonSharp.Interpreter.DynValue.FromObject(retv),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_0),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_1)});
 				}
 			}
 
@@ -14069,8 +14069,8 @@ namespace MyNamespace
 					int refp_0;
 					object retv = ((System.Collections.Generic.Dictionary<int, int>)(obj)).TryGetValue(((int)(pars[0])), out refp_0);
 					return MoonSharp.Interpreter.DynValue.NewTuple(new MoonSharp.Interpreter.DynValue[] {
-                                MoonSharp.Interpreter.DynValue.FromObject(script, retv),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_0)});
+                                MoonSharp.Interpreter.DynValue.FromObject(retv),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_0)});
 				}
 			}
 
@@ -14403,8 +14403,8 @@ namespace MyNamespace
 					string refp_0 = ((string)(pars[1]));
 					object retv = ((MoonSharp.Interpreter.Tests.EndToEnd.UserDataOverloadsTests.OverloadsTestClass)(obj)).Method2(((string)(pars[0])), ref refp_0);
 					return MoonSharp.Interpreter.DynValue.NewTuple(new MoonSharp.Interpreter.DynValue[] {
-                                MoonSharp.Interpreter.DynValue.FromObject(script, retv),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_0)});
+                                MoonSharp.Interpreter.DynValue.FromObject(retv),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_0)});
 				}
 			}
 
@@ -14424,8 +14424,8 @@ namespace MyNamespace
 					string refp_0 = ((string)(pars[1]));
 					object retv = ((MoonSharp.Interpreter.Tests.EndToEnd.UserDataOverloadsTests.OverloadsTestClass)(obj)).Method2(((string)(pars[0])), ref refp_0, ((int)(pars[2])));
 					return MoonSharp.Interpreter.DynValue.NewTuple(new MoonSharp.Interpreter.DynValue[] {
-                                MoonSharp.Interpreter.DynValue.FromObject(script, retv),
-                                MoonSharp.Interpreter.DynValue.FromObject(script, refp_0)});
+                                MoonSharp.Interpreter.DynValue.FromObject(retv),
+                                MoonSharp.Interpreter.DynValue.FromObject(refp_0)});
 				}
 			}
 

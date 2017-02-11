@@ -497,7 +497,7 @@ namespace MoonSharp.Interpreter
 			DynValue[] dargs = new DynValue[args.Length];
 
 			for (int i = 0; i < dargs.Length; i++)
-				dargs[i] = DynValue.FromObject(this, args[i]);
+				dargs[i] = DynValue.FromObject(args[i]);
 
 			return Call(function, dargs);
 		}
@@ -510,7 +510,7 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="System.ArgumentException">Thrown if function is not of DataType.Function</exception>
 		public DynValue Call(object function)
 		{
-			return Call(DynValue.FromObject(this, function));
+			return Call(DynValue.FromObject(function));
 		}
 
 		/// <summary>
@@ -522,7 +522,7 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="System.ArgumentException">Thrown if function is not of DataType.Function</exception>
 		public DynValue Call(object function, params object[] args)
 		{
-			return Call(DynValue.FromObject(this, function), args);
+			return Call(DynValue.FromObject(function), args);
 		}
 
 		/// <summary>
@@ -555,7 +555,7 @@ namespace MoonSharp.Interpreter
 		/// <exception cref="System.ArgumentException">Thrown if function is not of DataType.Function or DataType.ClrFunction</exception>
 		public DynValue CreateCoroutine(object function)
 		{
-			return CreateCoroutine(DynValue.FromObject(this, function));
+			return CreateCoroutine(DynValue.FromObject(function));
 		}
 
 		/// <summary>

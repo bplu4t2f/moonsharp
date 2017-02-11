@@ -6,6 +6,7 @@ using MoonSharp.Interpreter.Execution.VM;
 
 namespace MoonSharp.Interpreter
 {
+#warning TODO does this have to be IScriptPrivateResource?
 	/// <summary>
 	/// A class representing a script coroutine
 	/// </summary>
@@ -205,7 +206,7 @@ namespace MoonSharp.Interpreter
 			DynValue[] dargs = new DynValue[args.Length];
 
 			for (int i = 0; i < dargs.Length; i++)
-				dargs[i] = DynValue.FromObject(this.OwnerScript, args[i]);
+				dargs[i] = DynValue.FromObject(args[i]);
 
 			return Resume(dargs);
 		}
@@ -222,7 +223,7 @@ namespace MoonSharp.Interpreter
 			DynValue[] dargs = new DynValue[args.Length];
 
 			for (int i = 0; i < dargs.Length; i++)
-				dargs[i] = DynValue.FromObject(context.GetScript(), args[i]);
+				dargs[i] = DynValue.FromObject(args[i]);
 
 			return Resume(context, dargs);
 		}

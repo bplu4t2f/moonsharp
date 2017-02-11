@@ -23,7 +23,7 @@ namespace MoonSharp.Interpreter.CoreLib.IO
 
 			} while (readValue.IsNotNil());
 
-			return DynValue.FromObject(executionContext.GetScript(), readLines.Select(s => s));
+			return DynValue.FromObject(readLines.Select(s => s));
 		}
 
 		public DynValue read(ScriptExecutionContext executionContext, CallbackArguments args)

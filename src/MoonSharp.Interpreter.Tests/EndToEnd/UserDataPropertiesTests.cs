@@ -855,9 +855,8 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 		[Test]
 		public void Interop_OutOfRangeNumber()
 		{
-			Script s = new Script();
 			long big = long.MaxValue;
-			var v = DynValue.FromObject(s, big);
+			var v = DynValue.FromObject(big);
 			Assert.IsNotNull(v);
 		}
 

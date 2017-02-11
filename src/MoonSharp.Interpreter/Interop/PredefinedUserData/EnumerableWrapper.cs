@@ -61,13 +61,14 @@ namespace MoonSharp.Interpreter.Interop
 
 		public DynValue Index(Script script, DynValue index, bool isDirectIndexing)
 		{
+#warning TODO do we need script argument?
 			if (index.Type == DataType.String)
 			{
 				string idx = index.String;
 
 				if (idx == "Current" || idx == "current")
 				{
-					return DynValue.FromObject(script, m_Enumerator.Current);
+					return DynValue.FromObject(m_Enumerator.Current);
 				}
 				else if (idx == "MoveNext" || idx == "moveNext" || idx == "move_next")
 				{

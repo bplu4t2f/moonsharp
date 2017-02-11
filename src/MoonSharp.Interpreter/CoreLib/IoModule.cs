@@ -187,7 +187,7 @@ namespace MoonSharp.Interpreter.CoreLib
 
 				readLines.Add(DynValue.Nil);
 
-				return DynValue.FromObject(executionContext.GetScript(), readLines.Select(s => s));
+				return DynValue.FromObject(readLines.Select(s => s));
 			}
 			catch (Exception ex)
 			{
