@@ -12,7 +12,6 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// Implementors should raise exceptions if the value cannot be executed or if access to an
 		/// instance member through a static userdata is attempted.
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="context">The context.</param>
 		/// <param name="args">The arguments.</param>

@@ -42,17 +42,18 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Performs an "index" "get" operation.
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
+		/// <param name="context">The original script execution context that was used. Since an indexer might be a CLR indexing method,
+		/// this call needs to be in a <see cref="ScriptExecutionContext"/>.</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="index">The index.</param>
 		/// <param name="isDirectIndexing">If set to true, it's indexed with a name, if false it's indexed through brackets.</param>
 		/// <returns></returns>
-		public DynValue Index(Script script, object obj, DynValue index, bool isDirectIndexing)
+		public DynValue Index(ScriptExecutionContext context, object obj, DynValue index, bool isDirectIndexing)
 		{
 			IUserDataType u = obj as IUserDataType;
 
 			if (u != null)
-				return u.Index(script, index, isDirectIndexing);
+				return u.Index(index, isDirectIndexing);
 
 			return null;
 		}
@@ -60,18 +61,19 @@ namespace MoonSharp.Interpreter
 		/// <summary>
 		/// Performs an "index" "set" operation.
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
+		/// <param name="context">The original script execution context that was used. Since an indexer might be a CLR indexing method,
+		/// this call needs to be in a <see cref="ScriptExecutionContext"/>.</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="index">The index.</param>
 		/// <param name="value">The value to be set</param>
 		/// <param name="isDirectIndexing">If set to true, it's indexed with a name, if false it's indexed through brackets.</param>
 		/// <returns></returns>
-		public bool SetIndex(Script script, object obj, DynValue index, DynValue value, bool isDirectIndexing)
+		public bool SetIndex(ScriptExecutionContext context, object obj, DynValue index, DynValue value, bool isDirectIndexing)
 		{
 			IUserDataType u = obj as IUserDataType;
 
 			if (u != null)
-				return u.SetIndex(script, index, value, isDirectIndexing);
+				return u.SetIndex(index, value, isDirectIndexing);
 
 			return false;
 		}

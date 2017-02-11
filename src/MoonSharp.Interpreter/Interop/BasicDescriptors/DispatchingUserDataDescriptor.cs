@@ -210,12 +210,13 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <summary>
 		/// Performs an "index" "get" operation. This tries to resolve minor variations of member names.
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
+		/// <param name="context">The original script execution context that was used. Since an indexer might be a CLR indexing method,
+		/// this call needs to be in a <see cref="ScriptExecutionContext"/>.</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="index">The index.</param>
 		/// <param name="isDirectIndexing">If set to true, it's indexed with a name, if false it's indexed through brackets.</param>
 		/// <returns></returns>
-		public virtual DynValue Index(Script script, object obj, DynValue index, bool isDirectIndexing)
+		public virtual DynValue Index(ScriptExecutionContext context, object obj, DynValue index, bool isDirectIndexing)
 		{
 			if (!isDirectIndexing)
 			{
@@ -224,7 +225,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 					.WithAccessOrNull(MemberDescriptorAccess.CanExecute);
 
 				if (mdesc != null)
-					return ExecuteIndexer(mdesc, script, obj, index, null);
+					return ExecuteIndexer(context, mdesc, obj, index, null);
 			}
 
 			index = index.ToScalar();
@@ -232,10 +233,10 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			if (index.Type != DataType.String)
 				return null;
 
-			DynValue v = TryIndex(script, obj, index.String);
-			if (v == null) v = TryIndex(script, obj, UpperFirstLetter(index.String));
-			if (v == null) v = TryIndex(script, obj, Camelify(index.String));
-			if (v == null) v = TryIndex(script, obj, UpperFirstLetter(Camelify(index.String)));
+			DynValue v = TryIndex(obj, index.String);
+			if (v == null) v = TryIndex(obj, UpperFirstLetter(index.String));
+			if (v == null) v = TryIndex(obj, Camelify(index.String));
+			if (v == null) v = TryIndex(obj, UpperFirstLetter(Camelify(index.String)));
 
 			if (v == null && m_ExtMethodsVersion < UserData.GetExtensionMethodsChangeVersion())
 			{
@@ -297,13 +298,11 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <summary>
 		/// Tries to perform an indexing operation by checking methods and properties for the given indexName
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="indexName">Member name to be indexed.</param>
 		/// <returns></returns>
-		protected virtual DynValue TryIndex(Script script, object obj, string indexName)
+		protected virtual DynValue TryIndex(object obj, string indexName)
 		{
-#warning TODO remove script
 			IMemberDescriptor desc;
 
 			if (m_Members.TryGetValue(indexName, out desc))
@@ -317,13 +316,14 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <summary>
 		/// Performs an "index" "set" operation. This tries to resolve minor variations of member names.
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
+		/// <param name="context">The original script execution context that was used. Since an indexer might be a CLR indexing method,
+		/// this call needs to be in a <see cref="ScriptExecutionContext"/>.</param>
 		/// <param name="obj">The object (null if a static request is done)</param>
 		/// <param name="index">The index.</param>
 		/// <param name="value">The value to be set</param>
 		/// <param name="isDirectIndexing">If set to true, it's indexed with a name, if false it's indexed through brackets.</param>
 		/// <returns></returns>
-		public virtual bool SetIndex(Script script, object obj, DynValue index, DynValue value, bool isDirectIndexing)
+		public virtual bool SetIndex(ScriptExecutionContext context, object obj, DynValue index, DynValue value, bool isDirectIndexing)
 		{
 			if (!isDirectIndexing)
 			{
@@ -333,7 +333,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 
 				if (mdesc != null)
 				{
-					ExecuteIndexer(mdesc, script, obj, index, value);
+					ExecuteIndexer(context, mdesc, obj, index, value);
 					return true;
 				}
 			}
@@ -343,10 +343,10 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			if (index.Type != DataType.String)
 				return false;
 
-			bool v = TrySetIndex(script, obj, index.String, value);
-			if (!v) v = TrySetIndex(script, obj, UpperFirstLetter(index.String), value);
-			if (!v) v = TrySetIndex(script, obj, Camelify(index.String), value);
-			if (!v) v = TrySetIndex(script, obj, UpperFirstLetter(Camelify(index.String)), value);
+			bool v = TrySetIndex(obj, index.String, value);
+			if (!v) v = TrySetIndex(obj, UpperFirstLetter(index.String), value);
+			if (!v) v = TrySetIndex(obj, Camelify(index.String), value);
+			if (!v) v = TrySetIndex(obj, UpperFirstLetter(Camelify(index.String)), value);
 
 			return v;
 		}
@@ -354,14 +354,12 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <summary>
 		/// Tries to perform an indexing "set" operation by checking methods and properties for the given indexName
 		/// </summary>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="indexName">Member name to be indexed.</param>
 		/// <param name="value">The value.</param>
 		/// <returns></returns>
-		protected virtual bool TrySetIndex(Script script, object obj, string indexName, DynValue value)
+		protected virtual bool TrySetIndex(object obj, string indexName, DynValue value)
 		{
-#warning TODO remove script
 			IMemberDescriptor descr = m_Members.GetOrDefault(indexName);
 
 			if (descr != null)
@@ -421,14 +419,15 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <summary>
 		/// Executes the specified indexer method.
 		/// </summary>
+		/// <param name="execCtx">The original script execution context that was used. Since an indexer might be a CLR indexing method,
+		/// this call needs to be in a <see cref="ScriptExecutionContext"/>.</param>
 		/// <param name="mdesc">The method descriptor</param>
-		/// <param name="script">The script.</param>
 		/// <param name="obj">The object.</param>
 		/// <param name="index">The indexer parameter</param>
 		/// <param name="value">The dynvalue to set on a setter, or null.</param>
 		/// <returns></returns>
 		/// <exception cref="System.NotImplementedException"></exception>
-		protected virtual DynValue ExecuteIndexer(IMemberDescriptor mdesc, Script script, object obj, DynValue index, DynValue value)
+		protected virtual DynValue ExecuteIndexer(ScriptExecutionContext execCtx, IMemberDescriptor mdesc, object obj, DynValue index, DynValue value)
 		{
 			IList<DynValue> values;
 
@@ -457,7 +456,6 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			}
 
 			CallbackArguments args = new CallbackArguments(values, false);
-			ScriptExecutionContext execCtx = script.CreateDynamicExecutionContext();
 
 			DynValue v = mdesc.GetValue(obj);
 

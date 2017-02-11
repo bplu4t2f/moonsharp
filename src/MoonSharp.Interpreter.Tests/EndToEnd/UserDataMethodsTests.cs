@@ -291,12 +291,12 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 				get { return typeof(SomeOtherClassCustomDescriptor); }
 			}
 
-			public DynValue Index(Script script, object obj, DynValue index, bool dummy)
+			public DynValue Index(ScriptExecutionContext context, object obj, DynValue index, bool dummy)
 			{
 				return DynValue.NewNumber(index.Number * 4);
 			}
 
-			public bool SetIndex(Script script, object obj, DynValue index, DynValue value, bool dummy)
+			public bool SetIndex(ScriptExecutionContext context, object obj, DynValue index, DynValue value, bool dummy)
 			{
 				throw new NotImplementedException();
 			}
@@ -322,12 +322,12 @@ namespace MoonSharp.Interpreter.Tests.EndToEnd
 
 		public class SelfDescribingClass : IUserDataType
 		{
-			public DynValue Index(Script script, DynValue index, bool isNameIndex)
+			public DynValue Index(DynValue index, bool isNameIndex)
 			{
 				return DynValue.NewNumber(index.Number * 3);
 			}
 
-			public bool SetIndex(Script script, DynValue index, DynValue value, bool isNameIndex)
+			public bool SetIndex(DynValue index, DynValue value, bool isNameIndex)
 			{
 				throw new NotImplementedException();
 			}

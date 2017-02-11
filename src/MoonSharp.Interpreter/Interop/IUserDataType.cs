@@ -11,20 +11,19 @@ namespace MoonSharp.Interpreter.Interop
 		/// <summary>
 		/// Performs an "index" "get" operation.
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
+#warning TODO maybe we should not remove script from here to not break too much API. Maybe someone has used it.
 		/// <param name="index">The index.</param>
 		/// <param name="isDirectIndexing">If set to true, it's indexed with a name, if false it's indexed through brackets.</param>
 		/// <returns></returns>
-		DynValue Index(Script script, DynValue index, bool isDirectIndexing);
+		DynValue Index(DynValue index, bool isDirectIndexing);
 		/// <summary>
 		/// Performs an "index" "set" operation.
 		/// </summary>
-		/// <param name="script">The script originating the request</param>
 		/// <param name="index">The index.</param>
 		/// <param name="value">The value to be set</param>
 		/// <param name="isDirectIndexing">If set to true, it's indexed with a name, if false it's indexed through brackets.</param>
 		/// <returns></returns>
-		bool SetIndex(Script script, DynValue index, DynValue value, bool isDirectIndexing);
+		bool SetIndex(DynValue index, DynValue value, bool isDirectIndexing);
 		/// <summary>
 		/// 
 		/// Gets a "meta" operation on this userdata. If a descriptor does not support this functionality,

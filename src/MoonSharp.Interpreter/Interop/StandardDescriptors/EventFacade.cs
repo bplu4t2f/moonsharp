@@ -25,7 +25,7 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors
 			m_RemoveCallback = removeCallback;
 		}
 
-		public DynValue Index(Script script, DynValue index, bool isDirectIndexing)
+		public DynValue Index(DynValue index, bool isDirectIndexing)
 		{
 			if (index.Type == DataType.String)
 			{
@@ -38,7 +38,7 @@ namespace MoonSharp.Interpreter.Interop.StandardDescriptors
 			throw new ScriptRuntimeException("Events only support add and remove methods");
 		}
 
-		public bool SetIndex(Script script, DynValue index, DynValue value, bool isDirectIndexing)
+		public bool SetIndex(DynValue index, DynValue value, bool isDirectIndexing)
 		{
 			throw new ScriptRuntimeException("Events do not have settable fields");
 		}

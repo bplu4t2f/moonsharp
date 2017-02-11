@@ -1240,8 +1240,9 @@ namespace MoonSharp.Interpreter.Execution.VM
 				else if (obj.Type == DataType.UserData)
 				{
 					UserData ud = obj.UserData;
-
-					if (!ud.Descriptor.SetIndex(this.GetScript(), ud.Object, originalIdx, value, isNameIndex))
+					// Theoretically we have a Callback (not null) because the indexer could be a CLR callback, but it's too far abstracted away here.
+					var execCtx = new ScriptExecutionContext(this, null, i.SourceCodeRef);
+					if (!ud.Descriptor.SetIndex(execCtx, ud.Object, originalIdx, value, isNameIndex))
 					{
 						throw ScriptRuntimeException.UserDataMissingField(ud.Descriptor.Name, idx.String);
 					}
@@ -1322,8 +1323,9 @@ namespace MoonSharp.Interpreter.Execution.VM
 				else if (obj.Type == DataType.UserData)
 				{
 					UserData ud = obj.UserData;
-
-					var v = ud.Descriptor.Index(this.GetScript(), ud.Object, originalIdx, isNameIndex);
+					// Theoretically we have a Callback (not null) because the indexer could be a CLR callback, but it's too far abstracted away here.
+					var execCtx = new ScriptExecutionContext(this, null, i.SourceCodeRef);
+					var v = ud.Descriptor.Index(execCtx, ud.Object, originalIdx, isNameIndex);
 
 					if (v == null)
 					{
