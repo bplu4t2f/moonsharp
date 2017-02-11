@@ -36,8 +36,17 @@ namespace MoonSharp.Interpreter
 		/// </summary>
 		public  CoroutineType Type { get; private set; }
 
-		private CallbackFunction m_ClrCallback;
-		private Processor m_Processor;
+		/// <summary>
+		/// This is null if this is a Lua coroutine (<see cref="Type"/> is <see cref="CoroutineType.Coroutine"/>).
+		/// </summary>
+		private readonly CallbackFunction m_ClrCallback;
+
+		/// <summary>
+		/// The processor associated with this instance.
+		/// <para>This is only valid if this is a Lua coroutine (<see cref="Type"/> is <see cref="CoroutineType.Coroutine"/>. If this is a CLR
+		/// callback wrapped as a <see cref="Coroutine"/>, this is null.</para>
+		/// </summary>
+		private readonly Processor m_Processor;
 
 
 		internal Coroutine(CallbackFunction function)
