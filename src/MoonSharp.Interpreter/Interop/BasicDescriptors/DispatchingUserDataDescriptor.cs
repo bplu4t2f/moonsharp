@@ -490,7 +490,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		/// <param name="metaname">The name of the metamember.</param>
 		/// </summary>
 		/// <returns></returns>
-		public virtual DynValue MetaIndex(Script script, object obj, string metaname)
+		public virtual DynValue MetaIndex(Script _unused, object obj, string metaname)
 		{
 			IMemberDescriptor desc = m_MetaMembers.GetOrDefault(metaname);
 
@@ -502,29 +502,29 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			switch (metaname)
 			{
 				case "__add":
-					return DispatchMetaOnMethod(script, obj, "op_Addition");
+					return DispatchMetaOnMethod(obj, "op_Addition");
 				case "__sub":
-					return DispatchMetaOnMethod(script, obj, "op_Subtraction");
+					return DispatchMetaOnMethod(obj, "op_Subtraction");
 				case "__mul":
-					return DispatchMetaOnMethod(script, obj, "op_Multiply");
+					return DispatchMetaOnMethod(obj, "op_Multiply");
 				case "__div":
-					return DispatchMetaOnMethod(script, obj, "op_Division");
+					return DispatchMetaOnMethod(obj, "op_Division");
 				case "__mod":
-					return DispatchMetaOnMethod(script, obj, "op_Modulus");
+					return DispatchMetaOnMethod(obj, "op_Modulus");
 				case "__unm":
-					return DispatchMetaOnMethod(script, obj, "op_UnaryNegation");
+					return DispatchMetaOnMethod(obj, "op_UnaryNegation");
 				case "__eq":
-					return MultiDispatchEqual(script, obj);
+					return MultiDispatchEqual(obj);
 				case "__lt":
-					return MultiDispatchLessThan(script, obj);
+					return MultiDispatchLessThan(obj);
 				case "__le":
-					return MultiDispatchLessThanOrEqual(script, obj);
+					return MultiDispatchLessThanOrEqual(obj);
 				case "__len":
-					return TryDispatchLength(script, obj);
+					return TryDispatchLength(obj);
 				case "__tonumber":
-					return TryDispatchToNumber(script, obj);
+					return TryDispatchToNumber(obj);
 				case "__tobool":
-					return TryDispatchToBool(script, obj);
+					return TryDispatchToBool(obj);
 				case "__iterator":
 					return ClrToScriptConversions.EnumerationToDynValue(obj);
 				default:
@@ -551,7 +551,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		}
 
 
-		private DynValue MultiDispatchLessThanOrEqual(Script script, object obj)
+		private DynValue MultiDispatchLessThanOrEqual(object obj)
 		{
 			IComparable comp = obj as IComparable;
 			if (comp != null)
@@ -564,7 +564,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			return null;
 		}
 
-		private DynValue MultiDispatchLessThan(Script script, object obj)
+		private DynValue MultiDispatchLessThan(object obj)
 		{
 			IComparable comp = obj as IComparable;
 			if (comp != null)
@@ -577,7 +577,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			return null;
 		}
 
-		private DynValue TryDispatchLength(Script script, object obj)
+		private DynValue TryDispatchLength(object obj)
 		{
 			if (obj == null) return null;
 
@@ -591,7 +591,7 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		}
 
 
-		private DynValue MultiDispatchEqual(Script script, object obj)
+		private DynValue MultiDispatchEqual(object obj)
 		{
 			return DynValue.NewCallback(
 				(context, args) => DynValue.NewBoolean(CheckEquality(obj, args[0].ToObject(), args[1].ToObject())));
@@ -613,9 +613,8 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 			else return true;
 		}
 
-		private DynValue DispatchMetaOnMethod(Script script, object obj, string methodName)
+		private DynValue DispatchMetaOnMethod(object obj, string methodName)
 		{
-#warning TODO remove script
 			IMemberDescriptor desc = m_Members.GetOrDefault(methodName);
 
 			if (desc != null)
@@ -627,24 +626,24 @@ namespace MoonSharp.Interpreter.Interop.BasicDescriptors
 		}
 
 
-		private DynValue TryDispatchToNumber(Script script, object obj)
+		private DynValue TryDispatchToNumber(object obj)
 		{
 			foreach (Type t in NumericConversions.NumericTypesOrdered)
 			{
 				var name = t.GetConversionMethodName();
-				var v = DispatchMetaOnMethod(script, obj, name);
+				var v = DispatchMetaOnMethod(obj, name);
 				if (v != null) return v;
 			}
 			return null;
 		}
 
 
-		private DynValue TryDispatchToBool(Script script, object obj)
+		private DynValue TryDispatchToBool(object obj)
 		{
 			var name = typeof(bool).GetConversionMethodName();
-			var v = DispatchMetaOnMethod(script, obj, name);
+			var v = DispatchMetaOnMethod(obj, name);
 			if (v != null) return v;
-			return DispatchMetaOnMethod(script, obj, "op_True");
+			return DispatchMetaOnMethod(obj, "op_True");
 		}
 
 		#endregion
