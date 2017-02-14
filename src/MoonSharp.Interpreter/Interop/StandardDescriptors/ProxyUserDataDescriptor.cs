@@ -48,7 +48,7 @@ namespace MoonSharp.Interpreter.Interop
 		/// </summary>
 		/// <param name="obj">The object.</param>
 		/// <returns></returns>
-		private object Proxy(object obj)
+		public object Proxy(object obj)
 		{
 			return obj != null ? m_ProxyFactory.CreateProxyObject(obj) : null;
 		}

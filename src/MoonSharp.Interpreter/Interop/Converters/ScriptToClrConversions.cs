@@ -166,6 +166,38 @@ namespace MoonSharp.Interpreter.Interop.Converters
 						if (udDesc.IsTypeCompatible(desiredType, udObj))
 							return udObj;
 
+						var proxyDesc = udDesc as ProxyUserDataDescriptor;
+						if (proxyDesc != null)
+						{
+							// Normally, even if udDesc is ProxyUserDataDescriptor, 
+							// a callback would accept TTarget instead of TProxy, in which
+							// case the condition the condition above was already fulfilled
+							// and this code is never reached.
+							// TTarget udObj
+							// desiredType = typeof(TProxy)
+
+							// Special case if the invoked callback accepts TProxy. Now
+							// we must check if the desriedType would be OK if we were to
+							// wrap the udObj (which is presumably of type TTarget) in a
+							// TProxy.
+							// 2 Conditions must be fulfilled:
+							// - TProxy must be desiredType (i.e. instances of TProxy must be assignable to desiredType)
+							// - udObj must be TTarget, so that it can be converted to TProxy via the proxy factory.
+
+							var tProxy = proxyDesc.InnerDescriptor.Type;
+							if (desiredType.IsAssignableFrom(tProxy) &&
+								Framework.Do.IsInstanceOfType(proxyDesc.Type, udObj))
+							{
+								// This call may throw if udObj is not TTarget.
+								var proxyObj = proxyDesc.Proxy(udObj);
+								// Theoretically this check is redundant.
+								if (proxyDesc.IsTypeCompatible(desiredType, proxyObj))
+								{
+									return proxyObj;
+								}
+							}
+						}
+
 						if (stringSubType != StringConversions.StringSubtype.None)
 							str = udDesc.AsString(udObj);
 					}
